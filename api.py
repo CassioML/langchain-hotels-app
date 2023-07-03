@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends
 
-from utils.ai import capitalize, get_answer
+from utils.ai import capitalize, get_answer, enable_llm_cache
 from utils.db import get_keyspace, get_session
 from utils.models import QuestionRequest, Answer
 
@@ -11,8 +11,18 @@ def fa_db():
 def fa_ks():
     yield get_keyspace()
 
+# init
+
+def init():
+    enable_llm_cache(
+        get_session(),
+        get_keyspace(),
+    )
+
+
 # app
 
+init()
 app = FastAPI()
 
 
