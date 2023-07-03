@@ -1,0 +1,4 @@
+cassandra-driver==3.28.0
+fastapi==0.99.1
+python-dotenv==1.0.0
+uvicorn==0.22.0
