@@ -16,4 +16,4 @@ Copy `.env.template` to `.env` and fill the values.
 
 ### Notebooks
 
-Additionally, `pip install jupyter==1.0.0`.
+Additionally, `pip install jupyter==1.0.0`, then `jupyter notebook`.
