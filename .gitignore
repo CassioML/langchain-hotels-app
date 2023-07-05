@@ -1,5 +1,10 @@
+# Third-party data
+setup/original/Datafiniti_Hotel_Reviews_Jun19.csv
+
+# Secrets
 .env
+
+# Python artifacts and the like
 __pycache__
 .ipynb_checkpoints
-setup/original/Datafiniti_Hotel_Reviews_Jun19.csv
 venv
