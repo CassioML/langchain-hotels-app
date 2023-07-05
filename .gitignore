@@ -1,3 +1,4 @@
 .env
 __pycache__
 .ipynb_checkpoints
+setup/original/Datafiniti_Hotel_Reviews_Jun19.csv
