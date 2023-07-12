@@ -1,7 +1,7 @@
 cassandra-driver==3.28.0
 fastapi==0.99.1
 # REVERT TO:
-langchain==0.0.221
+#langchain==0.0.221
 # TEMPORARILY
 git+https://github.com/hemidactylus/langchain@cassio-full-preview#egg=langchain
 bs4
