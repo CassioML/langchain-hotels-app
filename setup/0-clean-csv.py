@@ -1,5 +1,7 @@
-import pandas as pd
 import hashlib
+import uuid
+
+import pandas as pd
 
 if __name__ == '__main__':
 
@@ -7,6 +9,7 @@ if __name__ == '__main__':
     chosen_columns = pd.DataFrame(raw_csv, columns=['id','reviews.date', 'city', 'country', 'name', 'reviews.rating', 'reviews.text', 'reviews.title', 'reviews.username'])
 
     rename_map = {
+        'id': 'hotel_id',
         'reviews.date': 'date',
         'city': 'hotel_city',
         'country': 'hotel_country',
@@ -18,10 +21,6 @@ if __name__ == '__main__':
     }
     renamed_csv = chosen_columns.rename(columns=rename_map)
 
-    def hotel_id(row):
-        desc = '/'.join([row['hotel_name'], row['hotel_city'], row['hotel_country']])
-        return hashlib.md5(desc.encode()).hexdigest()[:8]
-
     DISCARDABLE_ENDING = '... More'
     def clean_review_text(row):
         text = row['text']
@@ -30,8 +29,10 @@ if __name__ == '__main__':
         else:
             return text
 
+    def review_id(row):
+        return uuid.uuid4().hex
 
-    renamed_csv['hotel_id'] = renamed_csv.apply(hotel_id, axis=1)
+    renamed_csv['id'] = renamed_csv.apply(review_id, axis=1)
     renamed_csv['text'] = renamed_csv.apply(clean_review_text, axis=1)
 
     file_name = 'setup/hotel_reviews.csv'

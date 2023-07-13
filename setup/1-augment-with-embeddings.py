@@ -5,6 +5,8 @@ import tqdm
 import pandas as pd
 
 from utils.ai import get_embeddings
+from utils.reviews import review_body
+from setup.embedding_dump import compress_embeddings_map, deflate_embeddings_map
 
 EMBEDDING_FILE_NAME = 'setup/precalculated_embeddings.json'
 BATCH_SIZE = 20
@@ -26,8 +28,8 @@ if __name__ == '__main__':
     #
     embeddings = get_embeddings()
     if os.path.isfile(EMBEDDING_FILE_NAME):
-        # review_id -> vector
-        enrichment = json.load(open(EMBEDDING_FILE_NAME))
+        # review_id -> vector, stored specially to shrink size
+        enrichment = deflate_embeddings_map(json.load(open(EMBEDDING_FILE_NAME)))
     else:
         enrichment = {}
 
@@ -35,13 +37,13 @@ if __name__ == '__main__':
     hotel_data = pd.read_csv('setup/hotel_reviews.csv')
     #
     todos = []
-    for row_index, row in hotel_data.iterrows():
-        id, text, title = row['id'], row['text'], row['title']
+    for _, row in hotel_data.iterrows():
+        id = row['id']
         if id not in enrichment or args.force:
             if args.n is None or len(todos) < args.n:
                 todos.append({
                     'id': id,
-                    'body': f'{title}: {text}',
+                    'body': review_body(row),
                 })
         if args.n is not None and len(todos) >= args.n:
             break
@@ -58,7 +60,7 @@ if __name__ == '__main__':
             enrichment[item['id']] = vector
         #
         with open(EMBEDDING_FILE_NAME, 'w') as o_json:
-            json.dump(enrichment, o_json, indent=4)
+            json.dump(compress_embeddings_map(enrichment), o_json, indent=4)
         done += len(embedding_vectors)
 
     print(f'Finished. {done} embeddings computed.')

@@ -11,6 +11,8 @@ load_dotenv(dotenv_file)
 
 OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
 
+EMBEDDING_DIMENSION = 1536
+
 llm = None
 embeddings = None
 

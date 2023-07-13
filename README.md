@@ -6,7 +6,15 @@ Create a `python3.8+` virtualenv and `pip install -r requirements.txt`.
 
 Copy `.env.template` to `.env` and fill the values.
 
+Launch the script to populate the reviews vector table:
+
+```
+python -m setup.2-populate-vector-table
+```
+
 ### Prepare dataset
+
+_Note: these steps are not necessary, their result is checked in the repo for you._
 
 Preliminarly, you need a virtualenv with `requirements.txt` and `requirements-setup.txt`.
 
@@ -18,17 +26,38 @@ To clean it:
 python -m setup.0-clean-csv
 ```
 
-To calculate embeddings (note: the script has options for incremental and force recalculation):
+To calculate embeddings (note: the script has options for incremental and forced recalculation):
 
 ```
 python -m setup.1-augment-with-embeddings
 ```
 
+This creates the json file with all embeddings ready to be written to DB (note:
+the script admits limiting the number of rows to write with e.g. `-n 100`):
+
+```
+python -m setup.2-populate-vector-table
+```
+
+Note that this whole section has been run already (time- and token-consuming!),
+the json is checked in, and the only necessary step is writing to DB.
+
 ## Running
 
-`uvicorn api:app`
+Launch the API with
 
-`curl ...`
+```
+uvicorn api:app
+```
+
+Once you see the `Uvicorn running on http://127.0.0.1:8000` message, try with:
+
+```
+curl -XPOST \
+  localhost:8000/find_reviews \
+  -d '{"review": "At times I actually feared for my life"}' \
+  -H 'Content-Type: application/json' | jq
+```
 
 ## Experiment
 

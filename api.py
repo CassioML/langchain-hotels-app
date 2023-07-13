@@ -1,15 +1,24 @@
+from typing import List
+
 from fastapi import FastAPI, Depends
 
-from utils.ai import capitalize, get_answer, enable_llm_cache
+from utils.ai import capitalize, get_embeddings, get_answer, enable_llm_cache
 from utils.db import get_keyspace, get_session
-from utils.models import QuestionRequest, Answer
+from utils.models import QuestionRequest, Answer, ReviewRequest
+from utils.review_vectors import find_similar_reviews, get_review_vectorstore
 
 # helpers
-def fa_db():
+def fa_session():
     yield get_session()
 
 def fa_ks():
     yield get_keyspace()
+
+def fa_review_store():
+    emb = get_embeddings()
+    session = get_session()
+    ks = get_keyspace()
+    yield get_review_vectorstore(session=session, keyspace=ks, embeddings=emb)
 
 # init
 
@@ -37,8 +46,8 @@ def cap(input):
 
 
 @app.get('/people/{n}')
-def people(n: int, db=Depends(fa_db), ks=Depends(fa_ks)):
-    rows = db.execute(f'SELECT * FROM {ks}.people LIMIT %s', (n, ))
+def people(n: int, session=Depends(fa_session), ks=Depends(fa_ks)):
+    rows = session.execute(f'SELECT * FROM {ks}.people LIMIT %s', (n, ))
 
     returned = [
         {
@@ -58,3 +67,10 @@ def qa(question_request: QuestionRequest) -> Answer:
         question=question_request.question,
         answer=answer,
     )
+
+# TODO: handle per-hotel search
+# TODO: replace with 'summarize reviews found' (etc)
+@app.post('/find_reviews')
+def find_reviews(review_request: ReviewRequest, review_store=Depends(fa_review_store)) -> List[str]:
+    similar_reviews = find_similar_reviews(review_request.review, review_store)
+    return similar_reviews
