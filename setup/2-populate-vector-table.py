@@ -5,15 +5,14 @@ import pandas as pd
 
 import cassio
 
-from setup.embedding_dump import compress_embeddings_map, deflate_embeddings_map
+from embedding_dump import compress_embeddings_map, deflate_embeddings_map
+from setup_constants import EMBEDDING_FILE_NAME, HOTEL_REVIEW_FILE_NAME
 
 from utils.reviews import review_body
 from utils.ai import EMBEDDING_DIMENSION
 from utils.db import get_session, get_keyspace
 from utils.review_vectors import REVIEW_VECTOR_TABLE_NAME
 
-
-EMBEDDING_FILE_NAME = 'setup/precalculated_embeddings.json'
 BATCH_SIZE = 10
 
 if __name__ == '__main__':
@@ -33,7 +32,7 @@ if __name__ == '__main__':
     else:
         enrichment = {}
 
-    hotel_data = pd.read_csv('setup/hotel_reviews.csv')
+    hotel_data = pd.read_csv(HOTEL_REVIEW_FILE_NAME)
 
     # create cassIO abstraction
     session = get_session()

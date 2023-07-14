@@ -6,9 +6,9 @@ import pandas as pd
 
 from utils.ai import get_embeddings
 from utils.reviews import review_body
-from setup.embedding_dump import compress_embeddings_map, deflate_embeddings_map
+from embedding_dump import compress_embeddings_map, deflate_embeddings_map
+from setup_constants import EMBEDDING_FILE_NAME, HOTEL_REVIEW_FILE_NAME
 
-EMBEDDING_FILE_NAME = 'setup/precalculated_embeddings.json'
 BATCH_SIZE = 20
 
 if __name__ == '__main__':
@@ -34,7 +34,7 @@ if __name__ == '__main__':
         enrichment = {}
 
     #
-    hotel_data = pd.read_csv('setup/hotel_reviews.csv')
+    hotel_data = pd.read_csv(HOTEL_REVIEW_FILE_NAME)
     #
     todos = []
     for _, row in hotel_data.iterrows():
@@ -44,6 +44,7 @@ if __name__ == '__main__':
                 todos.append({
                     'id': id,
                     'body': review_body(row),
+
                 })
         if args.n is not None and len(todos) >= args.n:
             break

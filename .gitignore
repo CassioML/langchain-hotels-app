@@ -8,3 +8,6 @@ setup/original/Datafiniti_Hotel_Reviews_Jun19.csv
 __pycache__
 .ipynb_checkpoints
 venv
+
+# IDE stuff
+.idea/

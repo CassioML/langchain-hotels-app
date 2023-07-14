@@ -1,7 +1,6 @@
-import hashlib
 import uuid
-
 import pandas as pd
+from setup_constants import HOTEL_REVIEW_FILE_NAME
 
 if __name__ == '__main__':
 
@@ -35,7 +34,7 @@ if __name__ == '__main__':
     renamed_csv['id'] = renamed_csv.apply(review_id, axis=1)
     renamed_csv['text'] = renamed_csv.apply(clean_review_text, axis=1)
 
-    file_name = 'setup/hotel_reviews.csv'
+    file_name = HOTEL_REVIEW_FILE_NAME
     renamed_csv.to_csv(file_name)
 
     print(f'Saved to {file_name}')

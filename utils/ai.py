@@ -6,6 +6,8 @@ from langchain.llms import OpenAI
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.cache import CassandraCache
 
+LLM_PROVIDER = 'OpenAI'
+
 dotenv_file = find_dotenv('.env')
 load_dotenv(dotenv_file)
 
