@@ -2,6 +2,13 @@ import uuid
 import pandas as pd
 from setup_constants import HOTEL_REVIEW_FILE_NAME
 
+# Script that cleans up the raw CSV data and stores it in a new CSV:
+#  - Picks only the columns of interest.
+#  - Cleans up trailing truncation marker from truncated reviews.
+#  - Assigns a synthetic, unique review_id because the original dataset does not contain one.
+#
+# The resulting CSV file will be used as the review data in subsequent setup steps.
+
 if __name__ == '__main__':
 
     raw_csv = pd.read_csv('setup/original/Datafiniti_Hotel_Reviews_Jun19.csv')
@@ -21,6 +28,7 @@ if __name__ == '__main__':
     renamed_csv = chosen_columns.rename(columns=rename_map)
 
     DISCARDABLE_ENDING = '... More'
+
     def clean_review_text(row):
         text = row['text']
         if text[-len(DISCARDABLE_ENDING):] == DISCARDABLE_ENDING:

@@ -7,18 +7,22 @@ from utils.db import get_keyspace, get_session
 from utils.models import QuestionRequest, Answer, ReviewRequest
 from utils.review_vectors import find_similar_reviews, get_review_vectorstore
 
+
 # helpers
 def fa_session():
     yield get_session()
 
+
 def fa_ks():
     yield get_keyspace()
+
 
 def fa_review_store():
     emb = get_embeddings()
     session = get_session()
     ks = get_keyspace()
     yield get_review_vectorstore(session=session, keyspace=ks, embeddings=emb)
+
 
 # init
 
@@ -67,6 +71,7 @@ def qa(question_request: QuestionRequest) -> Answer:
         question=question_request.question,
         answer=answer,
     )
+
 
 # TODO: handle per-hotel search
 # TODO: replace with 'summarize reviews found' (etc)

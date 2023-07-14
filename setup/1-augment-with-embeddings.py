@@ -9,6 +9,21 @@ from utils.reviews import review_body
 from embedding_dump import compress_embeddings_map, deflate_embeddings_map
 from setup_constants import EMBEDDING_FILE_NAME, HOTEL_REVIEW_FILE_NAME
 
+# Important note:
+# This step can be skipped if using the precalculated embeddings available as part of the setup assets.
+# Note that the call to embed data contained in this script is likely to incur a financial cost.
+#
+# Script that embeds the review data contained in the CSV file cleaned up at the previous step.
+# If some of the data has already been embedded, this script will skip it to avoid re-embedding it unnecessarily.
+#
+# This script performs the following operations:
+#  - Loads the already-embedded data, if any.
+#  - Loops over the contents of the hotel review CSV, identifying the reviews that have not yet been embedded.
+#  - Embeds those reviews and stores them to a JSON file, with the review_id as document id and the vector as content.
+#
+# The resulting JSON file is compressed in order to reduce storage footprint.
+
+
 BATCH_SIZE = 20
 
 if __name__ == '__main__':
@@ -25,35 +40,32 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
-    #
     embeddings = get_embeddings()
     if os.path.isfile(EMBEDDING_FILE_NAME):
-        # review_id -> vector, stored specially to shrink size
+        # review_id -> vector, which was stored in a compressed format to shrink file size
         enrichment = deflate_embeddings_map(json.load(open(EMBEDDING_FILE_NAME)))
     else:
         enrichment = {}
 
-    #
-    hotel_data = pd.read_csv(HOTEL_REVIEW_FILE_NAME)
-    #
-    todos = []
-    for _, row in hotel_data.iterrows():
-        id = row['id']
-        if id not in enrichment or args.force:
-            if args.n is None or len(todos) < args.n:
-                todos.append({
-                    'id': id,
-                    'body': review_body(row),
+    hotel_review_data = pd.read_csv(HOTEL_REVIEW_FILE_NAME)
 
+    reviews_to_embed = []
+    for _, row in hotel_review_data.iterrows():
+        review_id = row['id']
+        if review_id not in enrichment or args.force:
+            if args.n is None or len(reviews_to_embed) < args.n:
+                reviews_to_embed.append({
+                    'id': review_id,
+                    'body': review_body(row),
                 })
-        if args.n is not None and len(todos) >= args.n:
+        if args.n is not None and len(reviews_to_embed) >= args.n:
             break
     
-    # browse 'todos' and compute embeddings, then store them to json
+    # scan 'todos' and compute embeddings, then store them to json
     done = 0
-    num_batches = (len(todos) + BATCH_SIZE - 1) // BATCH_SIZE
+    num_batches = (len(reviews_to_embed) + BATCH_SIZE - 1) // BATCH_SIZE
     for batch_index in tqdm.tqdm(range(num_batches)):
-        this_batch = todos[BATCH_SIZE*batch_index : BATCH_SIZE*(batch_index+1)]
+        this_batch = reviews_to_embed[BATCH_SIZE * batch_index: BATCH_SIZE * (batch_index + 1)]
         bodies = [item['body'] for item in this_batch]
         embedding_vectors = embeddings.embed_documents(bodies)
         #

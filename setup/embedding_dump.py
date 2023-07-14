@@ -14,6 +14,7 @@ def compress_embeddings_map(deflated_emb_map):
         for k, v in deflated_emb_map.items()
     }
 
+
 def deflate_embeddings_map(compressed_emb_map):
     def _deflate_floats(f_buf_str):
         byte_buf = base64.b64decode(f_buf_str)
