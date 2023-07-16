@@ -47,9 +47,8 @@ def capitalize(s):
 
 
 def get_answer(question):
-    global llm
-    llm = get_llm()
-    return llm(question).strip()
+    answering_llm = get_llm()
+    return answering_llm(question).strip()
 
 
 if __name__ == '__main__':
