@@ -6,6 +6,7 @@ from utils.ai import capitalize, get_embeddings, get_answer, enable_llm_cache
 from utils.db import get_keyspace, get_session
 from utils.models import QuestionRequest, Answer, ReviewRequest
 from utils.review_vectors import find_similar_reviews, get_review_vectorstore
+from utils.review_llm import summarize_review_list
 
 
 # helpers
@@ -80,6 +81,12 @@ def find_reviews(review_request: ReviewRequest, review_store=Depends(fa_review_s
     similar_reviews = find_similar_reviews(review_request.review, review_store)
     return similar_reviews
 
+
+# TEMPORARY - not hotel-specific
+@app.post('/summarize_reviews')
+def summarize_reviews(review_request: ReviewRequest, review_store=Depends(fa_review_store)) -> str:
+    similar_reviews = find_similar_reviews(review_request.review, review_store)
+    return summarize_review_list(similar_reviews, review_request.review)
 
 # Searches hotels by city and country. For each hotel, finds reviews relevant to the user's trip preferences.
 # @app.post('/find_hotels')
