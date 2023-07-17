@@ -1,25 +1,25 @@
 import pandas as pd
-from utils.db import get_session, get_keyspace
-from setup_constants import HOTEL_REVIEW_FILE_NAME
 
-hotel_table_name = "hotels"
+from common_constants import HOTEL_TABLE_NAME
+from setup_constants import HOTEL_REVIEW_FILE_NAME
+from utils.db import get_session, get_keyspace
 
 
 def create_hotel_table_with_index():
     session = get_session()
     keyspace = get_keyspace()
 
-    session.execute(f"""create table if not exists {keyspace}.{hotel_table_name} (
+    session.execute(f"""create table if not exists {keyspace}.{HOTEL_TABLE_NAME} (
                             id text primary key,
                             name text, 
                             city text, 
                             country text)""")
 
-    session.execute(f"""create custom index if not exists name_sai_idx on {keyspace}.{hotel_table_name} (name) 
+    session.execute(f"""create custom index if not exists name_sai_idx on {keyspace}.{HOTEL_TABLE_NAME} (name) 
                             using 'StorageAttachedIndex'""")
-    session.execute(f"""create custom index if not exists city_sai_idx on {keyspace}.{hotel_table_name} (city) 
+    session.execute(f"""create custom index if not exists city_sai_idx on {keyspace}.{HOTEL_TABLE_NAME} (city) 
                             using 'StorageAttachedIndex'""")
-    session.execute(f"""create custom index if not exists country_sai_idx on {keyspace}.{hotel_table_name} (country) 
+    session.execute(f"""create custom index if not exists country_sai_idx on {keyspace}.{HOTEL_TABLE_NAME} (country) 
                             using 'StorageAttachedIndex'""")
 
 
@@ -29,7 +29,7 @@ def populate_hotel_table_from_csv():
 
     hotel_review_data = pd.read_csv(HOTEL_REVIEW_FILE_NAME)
 
-    insert_hotel_stmt = session.prepare(f"insert into {keyspace}.{hotel_table_name} (id, name, city, country) values (?, ?, ?, ?)")
+    insert_hotel_stmt = session.prepare(f"insert into {keyspace}.{HOTEL_TABLE_NAME} (id, name, city, country) values (?, ?, ?, ?)")
 
     inserted_hotel_ids = set()
 

@@ -16,7 +16,7 @@ python -m setup.2-populate-vector-table
 
 _Note: these steps are not necessary, their result is checked in the repo for you._
 
-Preliminarly, you need a virtualenv with `requirements.txt` and `requirements-setup.txt`.
+Firstly, you need a virtualenv with `requirements.txt` and `requirements-setup.txt`.
 
 Download `Datafiniti_Hotel_Reviews_Jun19.csv` from [here](https://www.kaggle.com/datasets/datafiniti/hotel-reviews?select=Datafiniti_Hotel_Reviews_Jun19.csv) (unzip if necessary) and put it into `setup/original`.
 
@@ -41,6 +41,16 @@ python -m setup.2-populate-vector-table
 
 Note that this whole section has been run already (time- and token-consuming!),
 the json is checked in, and the only necessary step is writing to DB.
+
+### Populate hotel table
+
+The non-embedded hotel data is stored in a separate table. To populate it:
+
+``` 
+python -m setup.3-populate-hotel-table.py
+```
+
+This script creates the table and loads the non-embedded data from the `hotel_reviews.csv` file into it.
 
 ## Running
 

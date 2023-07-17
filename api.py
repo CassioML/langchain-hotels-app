@@ -79,3 +79,15 @@ def qa(question_request: QuestionRequest) -> Answer:
 def find_reviews(review_request: ReviewRequest, review_store=Depends(fa_review_store)) -> List[str]:
     similar_reviews = find_similar_reviews(review_request.review, review_store)
     return similar_reviews
+
+
+# Searches hotels by city and country. For each hotel, finds reviews relevant to the user's trip preferences.
+# @app.post('/find_hotels')
+# def find_hotels(hotel_request: HotelSearchWithReviewsRequest,
+# review_store=Depends(fa_review_store)) -> List[HotelSearchWithReviewsAnswer]:
+#     hotels = find_hotels_by_location(hotel_request.hotel_city, hotel_request.hotel_country)
+#
+#     for hotel in hotels:
+
+
+
