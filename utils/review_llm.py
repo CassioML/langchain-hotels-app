@@ -23,25 +23,5 @@ def summarize_review_list(reviews: list[str], trip_preferences: str) -> str:
 
     chain = load_summarize_chain(llm=summarizing_llm, chain_type="stuff")
     docs = [Document(page_content=populated_prompt)]
-    output = chain.run(docs)
-    ##print(f"Summary: {output}")
-    return output
+    return chain.run(docs)
 
-
-# review_list = [
-#   """Great place for business meetings: I came for a seminar which ran from Monday to Wednesday and also stayed a few
-#   extra nights to relax.The rooms and amenities were top notch. Staff was friendly and accommodating.
-#   I used the fitness center most mornings and had no trouble despite it being quite small. Unfortunately I had no time
-#   to use the spa so I cannot comment on that. I'm short, I would definitely stay here again.""",
-#   """Trade show visit: Simple but clean and all amenities necessary for a business stay. Good breakfast for this price
-#   range. Staff always cleans tables as guests leave and helpful cheerful front desk staff. Traveled with some foreign
-#   guests and they made them very comfortable as well.""",
-#   """Business Conference: Check in was quick, which is always a plus. The room I stayed in was clean and well appointed
-#   with a radical view of the city. Where they truly shined was the breakout sessions they put together during my
-#   conference. The food for said breakouts was tasty as well as thoughtfully and artistically displayed.
-#   One breakout had all food floating, on mini boats, around a moat the had made in the common area."""
-# ]
-#
-# preferences = "business traveler"
-#
-# summarize_review_list(review_list, preferences)
