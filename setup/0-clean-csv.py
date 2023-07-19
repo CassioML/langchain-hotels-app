@@ -27,12 +27,15 @@ if __name__ == '__main__':
     }
     renamed_csv = chosen_columns.rename(columns=rename_map)
 
-    DISCARDABLE_ENDING = '... More'
+    DISCARDABLE_ENDING_WITH_SPACE = '... More'
+    DISCARDABLE_ENDING_WITHOUT_SPACE = '...More'
 
     def clean_review_text(row):
         text = row['text']
-        if text[-len(DISCARDABLE_ENDING):] == DISCARDABLE_ENDING:
-            return text[:-len(DISCARDABLE_ENDING)]
+        if text[-len(DISCARDABLE_ENDING_WITH_SPACE):] == DISCARDABLE_ENDING_WITH_SPACE:
+            return text[:-len(DISCARDABLE_ENDING_WITH_SPACE)]
+        elif text[-len(DISCARDABLE_ENDING_WITHOUT_SPACE):] == DISCARDABLE_ENDING_WITHOUT_SPACE:
+            return text[:-len(DISCARDABLE_ENDING_WITHOUT_SPACE)]
         else:
             return text
 
