@@ -86,7 +86,8 @@ def find_reviews(review_request: ReviewRequest, review_store=Depends(fa_review_s
 @app.post('/summarize_reviews')
 def summarize_reviews(review_request: ReviewRequest, review_store=Depends(fa_review_store)) -> str:
     similar_reviews = find_similar_reviews(review_request.review, review_store)
-    return summarize_review_list(similar_reviews, review_request.review)
+    fake_user_preferences = "Travels with kids. Highly values amenities. Hates having to walk."
+    return summarize_review_list(similar_reviews, fake_user_preferences)
 
 # Searches hotels by city and country. For each hotel, finds reviews relevant to the user's trip preferences.
 # @app.post('/find_hotels')

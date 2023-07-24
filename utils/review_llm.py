@@ -11,9 +11,33 @@ def summarize_review_list(reviews: list[str], trip_preferences: str) -> str:
     concatenated_reviews = "\n".join(review for review in reviews)
     # print(concatenated_reviews)
 
+    # THE FOLLOWING TO BE MOVED TO A 'prompts' MODULE
+
+    # prompt_template = """ You are an assistant helping travelers choose hotels.
+    # Write a very short summary of the following reviews, for someone whose travel preferences are {prefs}:
+    # {hotel_reviews}
+
+    # EXAMPLE SUMMARY: The hotel is good, cozy and well furnished, but is noisy and, sometimes, the waiters are impolite.
+
+    # CONCISE SUMMARY: """
+
     prompt_template = """ You are an assistant helping travelers choose hotels.
-    Write a two-paragraph summary of the following reviews, for someone whose travel preferences are {prefs}:
+    Write a bullet-point summary of the following "input reviews" for someone with the travel profile as given below.
+    Do not exceed writing 7 concise bullet points.
+    
+    Absolutely do not use information other than given in the "input reviews" below.
+    
+    TRAVELER PROFILE: {prefs}.
+    
+    INPUT REVIEWS:
     {hotel_reviews}
+
+    EXAMPLE SUMMARY:
+        - Good hotel, cozy and well furnished.
+        - Sometimes noisy at night.
+        - Some of the staff are slightly rude.
+        - Weak pressure in the showers and water not always very hot.
+        - Kitchen is awesome.
 
     CONCISE SUMMARY: """
 

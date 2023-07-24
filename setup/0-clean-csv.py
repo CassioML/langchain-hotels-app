@@ -1,6 +1,6 @@
 import uuid
 import pandas as pd
-from setup_constants import HOTEL_REVIEW_FILE_NAME
+from setup.setup_constants import HOTEL_REVIEW_FILE_NAME, RAW_REVIEW_SOURCE_FILE_NAME
 
 # Script that cleans up the raw CSV data and stores it in a new CSV:
 #  - Picks only the columns of interest.
@@ -11,7 +11,7 @@ from setup_constants import HOTEL_REVIEW_FILE_NAME
 
 if __name__ == '__main__':
 
-    raw_csv = pd.read_csv('setup/original/Datafiniti_Hotel_Reviews_Jun19.csv')
+    raw_csv = pd.read_csv(RAW_REVIEW_SOURCE_FILE_NAME)
     chosen_columns = pd.DataFrame(raw_csv, columns=['id','reviews.date', 'city', 'country', 'name', 'reviews.rating', 'reviews.text', 'reviews.title', 'reviews.username'])
 
     rename_map = {
@@ -31,13 +31,19 @@ if __name__ == '__main__':
     DISCARDABLE_ENDING_WITHOUT_SPACE = '...More'
 
     def clean_review_text(row):
-        text = row['text']
-        if text[-len(DISCARDABLE_ENDING_WITH_SPACE):] == DISCARDABLE_ENDING_WITH_SPACE:
-            return text[:-len(DISCARDABLE_ENDING_WITH_SPACE)]
-        elif text[-len(DISCARDABLE_ENDING_WITHOUT_SPACE):] == DISCARDABLE_ENDING_WITHOUT_SPACE:
-            return text[:-len(DISCARDABLE_ENDING_WITHOUT_SPACE)]
+        text0 = row['text']
+        #
+        if text0.find(DISCARDABLE_ENDING_WITH_SPACE) > -1:
+            text1 = text0[:text0.find(DISCARDABLE_ENDING_WITH_SPACE)]
         else:
-            return text
+            text1 = text0
+        #
+        if text1.find(DISCARDABLE_ENDING_WITHOUT_SPACE) > -1:
+            text2 = text1[:text1.find(DISCARDABLE_ENDING_WITHOUT_SPACE)]
+        else:
+            text2 = text1
+        #
+        return text2
 
     def review_id(row):
         return uuid.uuid4().hex

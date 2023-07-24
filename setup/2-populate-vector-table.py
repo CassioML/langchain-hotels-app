@@ -5,8 +5,8 @@ import pandas as pd
 
 import cassio
 
-from embedding_dump import deflate_embeddings_map
-from setup_constants import EMBEDDING_FILE_NAME, HOTEL_REVIEW_FILE_NAME
+from setup.embedding_dump import deflate_embeddings_map
+from setup.setup_constants import EMBEDDING_FILE_NAME, HOTEL_REVIEW_FILE_NAME
 
 from utils.reviews import review_body
 from utils.ai import EMBEDDING_DIMENSION
@@ -25,7 +25,7 @@ from utils.review_vectors import REVIEW_VECTOR_TABLE_NAME
 # The data is inserted asynchronously in batches to reduce loading time.
 
 
-BATCH_SIZE = 10
+DEFAULT_BATCH_SIZE = 50
 
 if __name__ == '__main__':
     #
@@ -35,6 +35,10 @@ if __name__ == '__main__':
     parser.add_argument(
         "-n", metavar="NUM_ROWS", type=int,
         help="Number of rows to insert", default=None,
+    )
+    parser.add_argument(
+        "-b", metavar="BATCH_SIZE", type=int,
+        help="Batch size (for concurrent writes)", default=DEFAULT_BATCH_SIZE,
     )
     args = parser.parse_args()
 
@@ -93,9 +97,10 @@ if __name__ == '__main__':
     this_batch = []
     for eli in eligibles:
         this_batch.append(eli)
-        if len(this_batch) >= BATCH_SIZE:
+        if len(this_batch) >= args.b:
             # the batch is full: flush, then increment inserted counter
             inserted += _flush_batch(reviews_table, this_batch)
+            print(f'  * {inserted} rows written.')
             this_batch = []
         if args.n is not None and inserted >= args.n:
             break

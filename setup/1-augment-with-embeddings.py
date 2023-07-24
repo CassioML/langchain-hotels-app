@@ -6,8 +6,8 @@ import pandas as pd
 
 from utils.ai import get_embeddings
 from utils.reviews import review_body
-from embedding_dump import compress_embeddings_map, deflate_embeddings_map
-from setup_constants import EMBEDDING_FILE_NAME, HOTEL_REVIEW_FILE_NAME
+from setup.embedding_dump import compress_embeddings_map, deflate_embeddings_map
+from setup.setup_constants import EMBEDDING_FILE_NAME, HOTEL_REVIEW_FILE_NAME
 
 # Important note:
 # This step can be skipped if using the precalculated embeddings available as part of the setup assets.
