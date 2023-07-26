@@ -67,6 +67,16 @@ curl -XPOST \
   localhost:8000/find_reviews \
   -d '{"review": "At times I actually feared for my life"}' \
   -H 'Content-Type: application/json' | jq
+
+curl -XPOST \
+  localhost:8000/summarize_reviews \
+  -d '{"review": "I enjoyed a long walk to the city"}' \
+  -H 'Content-Type: application/json' | jq
+
+curl -XPOST \
+  localhost:8000/find_hotels \
+  -d '{"country": "US", "city": "Phoenix"}' \
+  -H 'Content-Type: application/json' | jq
 ```
 
 ## Experiment

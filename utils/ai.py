@@ -40,17 +40,3 @@ def enable_llm_cache(session, keyspace):
         session=session,
         keyspace=keyspace,    
     )
-
-
-def capitalize(s):
-    return s.upper()
-
-
-def get_answer(question):
-    answering_llm = get_llm()
-    return answering_llm(question).strip()
-
-
-if __name__ == '__main__':
-    cap = 'Capitalize me'
-    print(capitalize(cap))
