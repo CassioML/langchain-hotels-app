@@ -54,10 +54,13 @@ This script creates the table and loads the non-embedded data from the `hotel_re
 
 ## Running
 
+### API
+
 Launch the API with
 
 ```
 uvicorn api:app
+# (optionally add "--reload")
 ```
 
 Once you see the `Uvicorn running on http://127.0.0.1:8000` message, try with:
@@ -78,6 +81,11 @@ curl -XPOST \
   -d '{"country": "US", "city": "Phoenix"}' \
   -H 'Content-Type: application/json' | jq
 ```
+
+### Client
+
+In another shell, go to the `client` directory and `npm install`, then
+`npm start` and check you browser on `localhost:3000`.
 
 ## Experiment
 
