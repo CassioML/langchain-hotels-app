@@ -2,6 +2,7 @@ from typing import List
 
 from fastapi import FastAPI, Depends
 
+from utils.localCORS import permitReactLocalhostClient
 from utils.ai import get_embeddings, enable_llm_cache
 from utils.db import get_keyspace, get_session
 from utils.dbio import find_hotels_by_country_city
@@ -38,7 +39,7 @@ def init():
 
 init()
 app = FastAPI()
-
+permitReactLocalhostClient(app)
 
 @app.get('/')
 def index():
