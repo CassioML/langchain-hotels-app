@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List, Union
 
 from fastapi import FastAPI, Depends
 
@@ -60,10 +60,15 @@ def find_reviews(review_request: ReviewRequest, review_store=Depends(fa_review_s
 
 # TEMPORARY - not hotel-specific
 @app.post('/summarize_reviews')
-def summarize_reviews(review_request: ReviewRequest, review_store=Depends(fa_review_store)) -> str:
+def summarize_reviews(review_request: ReviewRequest, review_store=Depends(fa_review_store)) -> Dict[str, Union[str, List[str]]]:
     similar_reviews = find_similar_reviews(review_request.review, review_store)
     fake_user_preferences = "Travels with kids. Highly values amenities. Hates having to walk."
-    return summarize_review_list(similar_reviews, fake_user_preferences)
+    summary = summarize_review_list(similar_reviews, fake_user_preferences)
+    return {
+        "reviews": similar_reviews,
+        "summary": summary,
+    }
+
 
 # Searches hotels by city and country.
 @app.post('/find_hotels')
