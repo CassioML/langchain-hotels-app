@@ -5,7 +5,7 @@ from setup.setup_constants import HOTEL_REVIEW_FILE_NAME
 from utils.db import get_session, get_keyspace
 
 
-def create_hotel_table_with_index():
+def create_hotel_table():
     session = get_session()
     keyspace = get_keyspace()
 
@@ -53,5 +53,5 @@ def populate_hotel_table_from_csv():
 
 
 if __name__ == '__main__':
-    create_hotel_table_with_index()
+    create_hotel_table()
     populate_hotel_table_from_csv()

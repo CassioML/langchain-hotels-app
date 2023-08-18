@@ -1,3 +1,5 @@
+from typing import List
+
 from langchain import PromptTemplate
 from langchain.docstore.document import Document
 from langchain.chains.summarize import load_summarize_chain
@@ -5,7 +7,7 @@ from utils.ai import get_llm
 
 
 # TODO should this function go in the ai module?
-def summarize_review_list(reviews: list[str], trip_preferences: str) -> str:
+def summarize_review_list(reviews: List[str], trip_preferences: str) -> str:
     summarizing_llm = get_llm()
 
     concatenated_reviews = "\n".join(review for review in reviews)

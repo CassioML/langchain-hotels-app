@@ -1,3 +1,5 @@
+from typing import Dict
+
 from pydantic import BaseModel
 
 
@@ -15,3 +17,11 @@ class Hotel(BaseModel):
     country: str
     name: str
     id: str
+
+
+class UserProfileRequest(BaseModel):
+    user_id: str
+
+class UserProfileSubmitRequest(BaseModel):
+    user_id: str
+    profileData: Dict[str, bool]

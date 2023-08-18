@@ -1,21 +1,23 @@
 import './App.css';
 
+// import {RequestStatus} from "../interfaces/interfaces";
+
 const HotelResults = (props: any) => {
 
   const {searchStatus, searchResults} = props;
 
-  if (searchStatus === 0) {
+  if (searchStatus === "initialized") {
     return <div></div>;
-  } else if (searchStatus === 1) {
+  } else if (searchStatus === "in_flight") {
     return <div>Searching ...</div>;
-  } else {
-    // assume results are there
-    console.log(JSON.stringify(searchResults));
+  } else if (searchStatus === "completed") {
     return <div>
       <ul>
-        {searchResults.map( (r: any) => <li id={r.id}>{`${r.name} (${r.id})`}</li>)}
+        {searchResults.map( (r: any) => <li key={r.id}>{`${r.name} (${r.id})`}</li>)}
       </ul>
     </div>
+  } else {
+    return <div>Search errored!</div>;
   }
 }
 

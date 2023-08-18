@@ -1,4 +1,4 @@
-from db import get_session, get_keyspace
+from utils.db import get_session, get_keyspace
 
 from common_constants import HOTEL_TABLE_NAME
 

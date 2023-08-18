@@ -1,7 +1,7 @@
 import './App.css';
 import {searchHotels} from "../utils/hotel_search";
 import HotelResults from "./HotelResults";
-// import {UserDesc} from "../interfaces/interfaces";
+import {RequestStatus} from "../interfaces/interfaces";
 
 import { /*useEffect,*/ useState } from "react"
 
@@ -11,7 +11,7 @@ const HotelBrowser = () => {
   const [editHotelCountry, setEditHotelCountry] = useState('');
   const [editHotelCity, setEditHotelCity] = useState('');
 
-  const [searchStatus, setSearchStatus] = useState(0); // 0=no search, 1=running, 2=results are there
+  const [searchStatus, setSearchStatus] = useState<RequestStatus>("initialized");
   const [searchResults, setSearchResults] = useState([]);
 
   const trySearchHotels = (city: string, country: string) => {
@@ -19,19 +19,19 @@ const HotelBrowser = () => {
 
     if (city && country) {
 
-      setSearchStatus(1)
+      setSearchStatus("in_flight")
 
-      const fake_callback = (results: any) => {
-        setSearchResults(results.data);
-        setSearchStatus(2);
+      const callback = (results: any) => {
+        setSearchResults(results);
+        setSearchStatus("completed");
       }
 
       const err_back = () => {
-        // setSearchStatus(3);
+        setSearchStatus("errored");
         console.log("ERROR!");
       }
 
-      searchHotels(city, country, fake_callback, err_back)
+      searchHotels(city, country, callback, err_back)
 
     }
     
@@ -70,7 +70,7 @@ const HotelBrowser = () => {
         onClick={() => {
           setEditHotelCountry("");
           setEditHotelCity("");
-          setSearchStatus(0);
+          setSearchStatus("initialized");
           setSearchResults([]);
         }}
       >
