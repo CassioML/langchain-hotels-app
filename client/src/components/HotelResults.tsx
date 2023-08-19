@@ -2,6 +2,8 @@ import './App.css';
 
 // import {RequestStatus} from "../interfaces/interfaces";
 
+import HotelResult from "./HotelResult";
+
 const HotelResults = (props: any) => {
 
   const {searchStatus, searchResults} = props;
@@ -13,7 +15,7 @@ const HotelResults = (props: any) => {
   } else if (searchStatus === "completed") {
     return <div>
       <ul>
-        {searchResults.map( (r: any) => <li key={r.id}>{`${r.name} (${r.id})`}</li>)}
+        {searchResults.map( (r: any) => <HotelResult key={r.id} hotel={r}/>)}
       </ul>
     </div>
   } else {

@@ -8,6 +8,7 @@ import {UserDesc} from "../interfaces/interfaces";
 
 import UserProfile from "./UserProfile";
 import HotelBrowser from "./HotelBrowser";
+import HotelDetails from "./HotelDetails";
 
 
 const SiteContents = ({userId}: UserDesc) => {
@@ -25,6 +26,7 @@ const SiteContents = ({userId}: UserDesc) => {
 
             <Routes>
               <Route path="/browse" element={<HotelBrowser />} />
+              <Route path="/browse/:hotel_id" element={<HotelDetails />} />
               <Route
                 path="/profile"
                 element={<UserProfile userId={userId} />}

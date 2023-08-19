@@ -6,7 +6,17 @@ from utils.localCORS import permitReactLocalhostClient
 from utils.ai import get_embeddings, enable_llm_cache
 from utils.db import get_keyspace, get_session
 from utils.dbio import find_hotels_by_country_city
-from utils.models import HotelSearchRequest, Hotel, ReviewRequest, UserProfileRequest, UserProfileSubmitRequest
+from utils.models import (
+    CustomizedHotelDetails,
+    Hotel,
+    HotelDetailsRequest,
+    HotelReview,
+    HotelSearchRequest,
+    HotelSummary,
+    ReviewRequest,
+    UserProfileRequest,
+    UserProfileSubmitRequest,
+)
 from utils.review_vectors import find_similar_reviews, get_review_vectorstore
 from utils.review_llm import summarize_review_list
 from utils.users import read_user_profile, write_user_profile, update_user_desc
@@ -113,3 +123,30 @@ def get_hotels(hotel_request: HotelSearchRequest) -> List[Hotel]:
             id="hotel_id_1",
         ),
     ]
+
+@app.post('/v1/base_hotel_summary')
+def get_base_hotel_summary(payload: HotelDetailsRequest) -> HotelSummary:
+    import time
+    time.sleep(1.5)
+    print(f"asked SUMMARY [{payload.request_id}] for {payload.country}/{payload.city}/{payload.id}")
+    return HotelSummary(
+        request_id=payload.request_id,
+        summary=f"A fake summary for hotel #{payload.id}",
+    )
+
+@app.post('/v1/customized_hotel_details/{hotel_id}')
+def get_customized_hotel_details(hotel_id: str) -> CustomizedHotelDetails:
+    import time
+    time.sleep(0.8)
+    return CustomizedHotelDetails(
+        name=f"Hotel Name {hotel_id}",
+        summary=f"Fake AI-generated summary for hotel {hotel_id}",
+        reviews=[
+            HotelReview(
+                id=f"r_{hotel_id}_{i}",
+                title=f"Review #{i}",
+                body=f"This is review #{i} for hotel with id={hotel_id}. Nice view on a dumpster.",
+            )
+            for i in range(3)
+        ]
+    )

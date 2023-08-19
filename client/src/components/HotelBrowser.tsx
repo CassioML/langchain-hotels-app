@@ -16,7 +16,6 @@ const HotelBrowser = () => {
 
   const trySearchHotels = (city: string, country: string) => {
 
-
     if (city && country) {
 
       setSearchStatus("in_flight")
@@ -47,7 +46,7 @@ const HotelBrowser = () => {
             name="hotel_country"
             value={editHotelCountry}
             onChange={(e) => setEditHotelCountry(e.target.value.toUpperCase())}
-            // onKeyPress={(e) => {if (e.key === 'Enter') { trySetUserId(editUserId) }}}
+            onKeyPress={(e) => {if (e.key === 'Enter') { trySearchHotels(editHotelCountry, editHotelCity) }}}
           />
         </p>
       <p>
@@ -58,7 +57,7 @@ const HotelBrowser = () => {
             name="hotel_city"
             value={editHotelCity}
             onChange={(e) => setEditHotelCity(e.target.value)}
-            // onKeyPress={(e) => {if (e.key === 'Enter') { trySetUserId(editUserId) }}}
+            onKeyPress={(e) => {if (e.key === 'Enter') { trySearchHotels(editHotelCountry, editHotelCity) }}}
           />
       </p>
       <button
