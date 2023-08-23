@@ -10,13 +10,14 @@ import {RequestStatus} from "../interfaces/interfaces";
 const HotelDetails = (props: any) => {
 
   const {hotel_id} = useParams();
+  const {userId} = props;
 
   const [hotelDetails, setHotelDetails] = useState<any>();
   const [detailsStatus, setDetailsStatus] = useState<RequestStatus>("initialized");
 
   useEffect(
     () => {
-      console.log(`asking for customized details on ${hotel_id}`);
+      console.log(`asking for customized details on ${hotel_id} for ${userId}`);
       setDetailsStatus("in_flight")
 
       const callback = (results: any) => {
@@ -29,9 +30,9 @@ const HotelDetails = (props: any) => {
         console.log("ERROR (baseHotelSummary)!");
       }
 
-      customizedHotelDetails(hotel_id || "", callback, err_back);
+      customizedHotelDetails(hotel_id || "", userId, callback, err_back);
     },
-    [hotel_id]
+    [hotel_id, userId]
   );
 
   return <div>

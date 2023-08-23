@@ -14,7 +14,7 @@ from utils.models import (
     HotelSearchRequest,
     HotelSummary,
     ReviewRequest,
-    UserProfileRequest,
+    UserRequest,
     UserProfileSubmitRequest,
 )
 from utils.review_vectors import find_similar_reviews, get_review_vectorstore
@@ -87,7 +87,7 @@ def find_hotels(hotel_request: HotelSearchRequest) -> List[Hotel]:
 
 
 @app.post('/v1/get_user_profile')
-def get_user_profile(payload: UserProfileRequest) -> UserProfile:
+def get_user_profile(payload: UserRequest) -> UserProfile:
     return read_user_profile(payload.user_id)
 
 
@@ -135,12 +135,20 @@ def get_base_hotel_summary(payload: HotelDetailsRequest) -> HotelSummary:
     )
 
 @app.post('/v1/customized_hotel_details/{hotel_id}')
-def get_customized_hotel_details(hotel_id: str) -> CustomizedHotelDetails:
+def get_customized_hotel_details(hotel_id: str, payload: UserRequest) -> CustomizedHotelDetails:
+    """
+    TODO:
+    1. retrieve user data (esp. textual description)
+    2. retrieve *user-relevant* reviews with ANN search
+    3. stuff 1 and 2 into a prompt "get me a short summary"
+    4. call the LLM to get the short summary (which takes advantage of the auto cache prompt->response)
+    5. return the summary and the reviews used (+ name), as in the structure below
+    """
     import time
     time.sleep(0.8)
     return CustomizedHotelDetails(
         name=f"Hotel Name {hotel_id}",
-        summary=f"Fake AI-generated summary for hotel {hotel_id}",
+        summary=f"Fake AI-generated summary for hotel {hotel_id} and user {payload.user_id}",
         reviews=[
             HotelReview(
                 id=f"r_{hotel_id}_{i}",

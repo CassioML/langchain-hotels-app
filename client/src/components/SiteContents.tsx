@@ -26,7 +26,7 @@ const SiteContents = ({userId}: UserDesc) => {
 
             <Routes>
               <Route path="/browse" element={<HotelBrowser />} />
-              <Route path="/browse/:hotel_id" element={<HotelDetails />} />
+              <Route path="/browse/:hotel_id" element={<HotelDetails userId={userId} />} />
               <Route
                 path="/profile"
                 element={<UserProfile userId={userId} />}

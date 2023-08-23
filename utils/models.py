@@ -43,7 +43,7 @@ class Hotel(BaseModel):
     id: str
 
 
-class UserProfileRequest(BaseModel):
+class UserRequest(BaseModel):
     user_id: str
 
 class UserProfileSubmitRequest(BaseModel):

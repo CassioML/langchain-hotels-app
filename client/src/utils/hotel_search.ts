@@ -35,10 +35,10 @@ export const baseHotelSummary = (hotel: any, request_id: string, callback: any, 
   });
 }
 
-export const customizedHotelDetails = (hotel_id: string, callback: any, error_callback: any) => {
+export const customizedHotelDetails = (hotel_id: string, userId: string, callback: any, error_callback: any) => {
   axios.post(
     `http://127.0.0.1:8000/v1/customized_hotel_details/${hotel_id}`,
-    {}
+    {user_id: userId}
   )
   .then((response: any) => {
     callback(response.data);
