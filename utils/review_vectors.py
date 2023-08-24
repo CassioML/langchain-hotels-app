@@ -21,7 +21,4 @@ def get_review_vectorstore(session, keyspace, embeddings):
 def find_similar_reviews(query_review: str, store: VectorStore):
     # return a list of (dict-shaped) rows from the vector store
     docs = store.similarity_search(query_review, k=3)
-    return [
-        doc.page_content
-        for doc in docs
-    ]
+    return [doc.page_content for doc in docs]

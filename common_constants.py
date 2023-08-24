@@ -1,2 +1,2 @@
-HOTEL_TABLE_NAME = "hotels"
+HOTELS_TABLE_NAME = "hotels"
 USERS_TABLE_NAME = "users"

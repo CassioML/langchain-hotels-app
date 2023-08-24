@@ -16,22 +16,25 @@ from utils.models import (
     ReviewRequest,
     UserRequest,
     UserProfileSubmitRequest,
+    UserProfile,
 )
 from utils.review_vectors import find_similar_reviews, get_review_vectorstore
 from utils.review_llm import summarize_review_list
-from utils.users import read_user_profile, write_user_profile, update_user_desc
-
-UserProfile = Dict[str, Any]
+from utils.users import read_user_preferences, write_user_profile, update_user_desc
 
 db_session = get_session()
 db_keyspace = get_keyspace()
 
+
 def fa_review_store():
     emb = get_embeddings()
-    yield get_review_vectorstore(session=db_session, keyspace=db_keyspace, embeddings=emb)
+    yield get_review_vectorstore(
+        session=db_session, keyspace=db_keyspace, embeddings=emb
+    )
 
 
 # init
+
 
 def init():
     enable_llm_cache(
@@ -46,28 +49,36 @@ init()
 app = FastAPI()
 permitReactLocalhostClient(app)
 
-@app.get('/')
-def index():
-    return {'data': 'Here it is.'}
-
-
-@app.get('/capitalize/{input}')
-def cap(input):
-    return {'data': capitalize(input)}
+#
+# @app.get("/")
+# def index():
+#     return {"data": "Here it is."}
+#
+#
+# @app.get("/capitalize/{input}")
+# def cap(input):
+#     return {"data": capitalize(input)}
 
 
 # TODO: handle per-hotel search
 # TODO: replace with 'summarize reviews found' (etc)
-@app.post('/find_reviews')
-def find_reviews(review_request: ReviewRequest, review_store=Depends(fa_review_store)) -> List[str]:
+@app.post("/find_reviews")
+def find_reviews(
+    review_request: ReviewRequest, review_store=Depends(fa_review_store)
+) -> List[str]:
     similar_reviews = find_similar_reviews(review_request.review, review_store)
     return similar_reviews
 
+
 # TEMPORARY - not hotel-specific
-@app.post('/summarize_reviews')
-def summarize_reviews(review_request: ReviewRequest, review_store=Depends(fa_review_store)) -> Dict[str, Union[str, List[str]]]:
+@app.post("/summarize_reviews")
+def summarize_reviews(
+    review_request: ReviewRequest, review_store=Depends(fa_review_store)
+) -> Dict[str, Union[str, List[str]]]:
     similar_reviews = find_similar_reviews(review_request.review, review_store)
-    fake_user_preferences = "Travels with kids. Highly values amenities. Hates having to walk."
+    fake_user_preferences = (
+        "Travels with kids. Highly values amenities. Hates having to walk."
+    )
     summary = summarize_review_list(similar_reviews, fake_user_preferences)
     return {
         "reviews": similar_reviews,
@@ -76,9 +87,11 @@ def summarize_reviews(review_request: ReviewRequest, review_store=Depends(fa_rev
 
 
 # Searches hotels by city and country.
-@app.post('/find_hotels')
+@app.post("/find_hotels")
 def find_hotels(hotel_request: HotelSearchRequest) -> List[Hotel]:
-    hotels = find_hotels_by_country_city(db_session, db_keyspace, **hotel_request.dict())
+    hotels = find_hotels_by_country_city(
+        db_session, db_keyspace, **hotel_request.dict()
+    )
     return hotels
 
 
@@ -86,16 +99,28 @@ def find_hotels(hotel_request: HotelSearchRequest) -> List[Hotel]:
 ## the plan: these will become the real endpoints, all others would be scrubbed.
 
 
-@app.post('/v1/get_user_profile')
+@app.post("/v1/get_user_profile")
 def get_user_profile(payload: UserRequest) -> UserProfile:
-    return read_user_profile(payload.user_id)
+    return read_user_preferences(payload.user_id)
 
 
-@app.post('/v1/set_user_profile')
-def get_user_profile(payload: UserProfileSubmitRequest, bg_tasks: BackgroundTasks) -> Dict[str, str]:
+@app.post("/v1/set_user_profile")
+def set_user_profile(
+    payload: UserProfileSubmitRequest, bg_tasks: BackgroundTasks
+) -> Dict[str, bool]:
+    # TODO replace the hardcoded additional prefs with the input coming from the front-end
     try:
-        write_user_profile(payload.user_id, payload.profileData)
-        bg_tasks.add_task(update_user_desc, user_id=payload.user_id, profile=payload.profileData)
+        write_user_profile(
+            payload.user_id,
+            payload.profileData,
+            "I love ice skating and ice-cream parlours",
+        )
+        bg_tasks.add_task(
+            update_user_desc,
+            user_id=payload.user_id,
+            base_preferences=payload.profileData,
+            additional_preferences="I love ice skating and ice-cream parlours",
+        )
         return {
             "success": True,
         }
@@ -105,9 +130,10 @@ def get_user_profile(payload: UserProfileSubmitRequest, bg_tasks: BackgroundTask
         }
 
 
-@app.post('/v1/find_hotels')
+@app.post("/v1/find_hotels")
 def get_hotels(hotel_request: HotelSearchRequest) -> List[Hotel]:
     import time
+
     time.sleep(1)
     return [
         Hotel(
@@ -124,18 +150,25 @@ def get_hotels(hotel_request: HotelSearchRequest) -> List[Hotel]:
         ),
     ]
 
-@app.post('/v1/base_hotel_summary')
+
+@app.post("/v1/base_hotel_summary")
 def get_base_hotel_summary(payload: HotelDetailsRequest) -> HotelSummary:
     import time
+
     time.sleep(1.5)
-    print(f"asked SUMMARY [{payload.request_id}] for {payload.country}/{payload.city}/{payload.id}")
+    print(
+        f"asked SUMMARY [{payload.request_id}] for {payload.country}/{payload.city}/{payload.id}"
+    )
     return HotelSummary(
         request_id=payload.request_id,
         summary=f"A fake summary for hotel #{payload.id}",
     )
 
-@app.post('/v1/customized_hotel_details/{hotel_id}')
-def get_customized_hotel_details(hotel_id: str, payload: UserRequest) -> CustomizedHotelDetails:
+
+@app.post("/v1/customized_hotel_details/{hotel_id}")
+def get_customized_hotel_details(
+    hotel_id: str, payload: UserRequest
+) -> CustomizedHotelDetails:
     """
     TODO:
     1. retrieve user data (esp. textual description)
@@ -145,6 +178,7 @@ def get_customized_hotel_details(hotel_id: str, payload: UserRequest) -> Customi
     5. return the summary and the reviews used (+ name), as in the structure below
     """
     import time
+
     time.sleep(0.8)
     return CustomizedHotelDetails(
         name=f"Hotel Name {hotel_id}",
@@ -156,5 +190,5 @@ def get_customized_hotel_details(hotel_id: str, payload: UserRequest) -> Customi
                 body=f"This is review #{i} for hotel with id={hotel_id}. Nice view on a dumpster.",
             )
             for i in range(3)
-        ]
+        ],
     )

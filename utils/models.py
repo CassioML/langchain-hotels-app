@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Any
 
 from pydantic import BaseModel
 
@@ -46,6 +46,12 @@ class Hotel(BaseModel):
 class UserRequest(BaseModel):
     user_id: str
 
+
 class UserProfileSubmitRequest(BaseModel):
     user_id: str
     profileData: Dict[str, bool]
+
+
+class UserProfile(BaseModel):
+    base_preferences: Dict[str, Any]  # TODO should we be using Any?
+    additional_preferences: str

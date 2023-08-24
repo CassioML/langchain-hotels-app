@@ -6,12 +6,12 @@ from langchain.llms import OpenAI
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.cache import CassandraCache
 
-LLM_PROVIDER = 'OpenAI'
+LLM_PROVIDER = "OpenAI"
 
-dotenv_file = find_dotenv('.env')
+dotenv_file = find_dotenv(".env")
 load_dotenv(dotenv_file)
 
-OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
+OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 
 EMBEDDING_DIMENSION = 1536
 
@@ -38,5 +38,5 @@ def get_embeddings():
 def enable_llm_cache(session, keyspace):
     langchain.llm_cache = CassandraCache(
         session=session,
-        keyspace=keyspace,    
+        keyspace=keyspace,
     )

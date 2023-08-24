@@ -44,10 +44,11 @@ def summarize_review_list(reviews: List[str], trip_preferences: str) -> str:
     CONCISE SUMMARY: """
 
     query_prompt_template = PromptTemplate.from_template(prompt_template)
-    populated_prompt = query_prompt_template.format(prefs=trip_preferences, hotel_reviews=concatenated_reviews)
+    populated_prompt = query_prompt_template.format(
+        prefs=trip_preferences, hotel_reviews=concatenated_reviews
+    )
     print(populated_prompt)
 
     chain = load_summarize_chain(llm=summarizing_llm, chain_type="stuff")
     docs = [Document(page_content=populated_prompt)]
     return chain.run(docs)
-

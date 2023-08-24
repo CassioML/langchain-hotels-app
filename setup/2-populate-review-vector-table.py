@@ -27,18 +27,24 @@ from utils.review_vectors import REVIEW_VECTOR_TABLE_NAME
 
 DEFAULT_BATCH_SIZE = 50
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     #
     parser = argparse.ArgumentParser(
         description="Store reviews with embeddings to cassIO vector table"
     )
     parser.add_argument(
-        "-n", metavar="NUM_ROWS", type=int,
-        help="Number of rows to insert", default=None,
+        "-n",
+        metavar="NUM_ROWS",
+        type=int,
+        help="Number of rows to insert",
+        default=None,
     )
     parser.add_argument(
-        "-b", metavar="BATCH_SIZE", type=int,
-        help="Batch size (for concurrent writes)", default=DEFAULT_BATCH_SIZE,
+        "-b",
+        metavar="BATCH_SIZE",
+        type=int,
+        help="Batch size (for concurrent writes)",
+        default=DEFAULT_BATCH_SIZE,
     )
     args = parser.parse_args()
 
@@ -67,28 +73,25 @@ if __name__ == '__main__':
 
     def _metadata(row):
         return {
-            'hotel_id': row['hotel_id'],
-            'rating': row['rating'],
+            "hotel_id": row["hotel_id"],
+            "rating": row["rating"],
         }
 
     eligibles = (
         {
-            'document': review_body(row),
-            'embedding_vector': enrichment[row['id']],
-            'document_id': row['id'],
-            'metadata': _metadata(row),
-            'ttl_seconds': None,
+            "document": review_body(row),
+            "embedding_vector": enrichment[row["id"]],
+            "document_id": row["id"],
+            "metadata": _metadata(row),
+            "ttl_seconds": None,
         }
         for _, row in hotel_data.iterrows()
-        if row['id'] in enrichment
+        if row["id"] in enrichment
     )
 
     def _flush_batch(table, batch):
         if batch:
-            futures = [
-                table.put_async(**insertion)
-                for insertion in batch
-            ]
+            futures = [table.put_async(**insertion) for insertion in batch]
             for future in futures:
                 future.result()
         #
@@ -100,7 +103,7 @@ if __name__ == '__main__':
         if len(this_batch) >= args.b:
             # the batch is full: flush, then increment inserted counter
             inserted += _flush_batch(reviews_table, this_batch)
-            print(f'  * {inserted} rows written.')
+            print(f"  * {inserted} rows written.")
             this_batch = []
         if args.n is not None and inserted >= args.n:
             break
@@ -108,4 +111,4 @@ if __name__ == '__main__':
     inserted += _flush_batch(reviews_table, this_batch)
     this_batch = []
 
-    print(f'Finished. {inserted} rows written.')
+    print(f"Finished. {inserted} rows written.")
