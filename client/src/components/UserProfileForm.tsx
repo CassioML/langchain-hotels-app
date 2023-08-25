@@ -45,10 +45,6 @@ const UserProfileForm = (props: UserDesc & {submitState: any, setSubmitState: an
         <form onSubmit={handleSubmit(onSubmitHandler)} className="form">
           <div>
             <ul>
-              <li>
-                <label htmlFor="pets">Cares about pets</label>
-                <input {...register("pets")} name="pets" id="pets" type="checkbox" />
-              </li>
             
               <li>
                 <label htmlFor="business">Travels for business</label>
@@ -58,6 +54,11 @@ const UserProfileForm = (props: UserDesc & {submitState: any, setSubmitState: an
               <li>
                 <label htmlFor="family_and_kids">Travels with family</label>
                 <input {...register("family_and_kids")} name="family_and_kids" id="family_and_kids" type="checkbox" />
+              </li>
+              
+              <li>
+                <label htmlFor="romantic_getaway">Travels for a romantic getaway</label>
+                <input {...register("romantic_getaway")} name="romantic_getaway" id="romantic_getaway" type="checkbox" />
               </li>
             
               <li>
@@ -86,13 +87,13 @@ const UserProfileForm = (props: UserDesc & {submitState: any, setSubmitState: an
               </li>
 
               <li>
-                <label htmlFor="romantic_getaway">Travels for a romantic getaway</label>
-                <input {...register("romantic_getaway")} name="romantic_getaway" id="romantic_getaway" type="checkbox" />
+                <label htmlFor="relaxing">Enjoys a relaxing holiday</label>
+                <input {...register("relaxing")} name="relaxing" id="relaxing" type="checkbox" />
               </li>
 
               <li>
-                <label htmlFor="relaxing">Enjoys a relaxing holiday</label>
-                <input {...register("relaxing")} name="relaxing" id="relaxing" type="checkbox" />
+                <label htmlFor="pets">Cares about pets</label>
+                <input {...register("pets")} name="pets" id="pets" type="checkbox" />
               </li>
 
             </ul>
