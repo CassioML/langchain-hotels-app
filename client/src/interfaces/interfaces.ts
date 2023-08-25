@@ -12,13 +12,28 @@ export interface UserProps {
 export type UserProfileDesc = {
   pets: boolean;
   business: boolean;
-  sightseeing: boolean;  
+  family_and_kids: boolean;
+  sightseeing: boolean;
+  fine_dining: boolean;
+  adventure_and_theme_parks: boolean;
+  outdoor_activities: boolean;
+  clubbing_and_nightlife: boolean;
+  romantic_getaway: boolean;
+  relaxing: boolean;
 }
 
 export const DEFAULT_PROFILE = {
   pets: false,
   business: true,
-  sightseeing: false,
+  family_and_kids: false,
+  sightseeing: true,
+  fine_dining: false,
+  adventure_and_theme_parks: false,
+  outdoor_activities: true,
+  clubbing_and_nightlife: false,
+  romantic_getaway: false,
+  relaxing: true,
+
 }
 
 // export type UserProfileDesc = {

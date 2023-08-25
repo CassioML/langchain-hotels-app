@@ -21,8 +21,16 @@ const UserProfile = (props: UserDesc) => {
       (api_profile: any) => {
         const this_profile: UserProfileDesc = {
           pets: api_profile.pets,
-          sightseeing: api_profile.sightseeing,
           business: api_profile.business,
+          family_and_kids: api_profile.family_and_kids,
+          sightseeing: api_profile.sightseeing,
+          fine_dining: api_profile.fine_dining,
+          adventure_and_theme_parks: api_profile.adventure_and_theme_parks,
+          outdoor_activities: api_profile.outdoor_activities,
+          clubbing_and_nightlife: api_profile.clubbing_and_nightlife,
+          romantic_getaway: api_profile.romantic_getaway,
+          relaxing: api_profile.relaxing,
+
         };
         setProfile(this_profile);
         setSubmitState("completed");
