@@ -63,7 +63,10 @@ def update_user_desc(user_id, base_preferences, additional_preferences):
     may like.
     
     Keep it concise and clear. Use two or three short sentences and a neutral tone. Write in first person. 
-    Only use the information provided in the profile.
+    Only use the information provided in the user's travel profile.
+    
+    Only use the example summaries to understand the style of the summary. Do not use the information in the example 
+    summaries when summarizing the current user's travel profile. 
     
     EXAMPLE SUMMARY: I travel with my family and enjoy going to zoos and adventure parks. I am interested in 
     family-friendly hotels with cots.
