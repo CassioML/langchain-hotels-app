@@ -119,7 +119,7 @@ def set_user_profile(
             update_user_desc,
             user_id=payload.user_id,
             base_preferences=payload.profileData,
-            additional_preferences="I love ice skating and ice-cream parlours",
+            additional_preferences="public transport links",
         )
         return {
             "success": True,
