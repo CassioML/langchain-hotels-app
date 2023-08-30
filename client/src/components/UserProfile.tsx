@@ -2,7 +2,7 @@ import './App.css';
 
 import { useEffect, useState } from "react"
 
-import {UserDesc, UserProfileDesc, RequestStatus, DEFAULT_PROFILE} from "../interfaces/interfaces";
+import {UserDesc, UserProfileBasePreferences, RequestStatus, DEFAULT_BASE_PREFERENCES} from "../interfaces/interfaces";
 import {getAPIUserProfile} from "../utils/user_profile";
 
 import UserProfileForm from "./UserProfileForm"
@@ -12,27 +12,20 @@ const UserProfile = (props: UserDesc) => {
   const {userId} = props;
 
   const [submitState, setSubmitState] = useState<RequestStatus>("initialized");
-  const [profile, setProfile] = useState<UserProfileDesc>(DEFAULT_PROFILE);
+  const [profile, setProfile] = useState<UserProfileBasePreferences>(DEFAULT_BASE_PREFERENCES);
 
   const refreshProfile = () => {
     setSubmitState("in_flight");
     getAPIUserProfile(
       userId || "",
       (api_profile: any) => {
-        const this_profile: UserProfileDesc = {
-          pets: api_profile.pets,
-          business: api_profile.business,
-          family_and_kids: api_profile.family_and_kids,
-          sightseeing: api_profile.sightseeing,
-          fine_dining: api_profile.fine_dining,
-          adventure_and_theme_parks: api_profile.adventure_and_theme_parks,
-          outdoor_activities: api_profile.outdoor_activities,
-          clubbing_and_nightlife: api_profile.clubbing_and_nightlife,
-          romantic_getaway: api_profile.romantic_getaway,
-          relaxing: api_profile.relaxing,
-
-        };
-        setProfile(this_profile);
+        const _profile = api_profile || {};
+        const base_preferences = api_profile.base_preferences || {};
+        const these_base_prefs: UserProfileBasePreferences = {
+          ...DEFAULT_BASE_PREFERENCES,
+          ...base_preferences,
+        }
+        setProfile(these_base_prefs);
         setSubmitState("completed");
       },
       (e: any) => {console.log(`err ${e}`); setSubmitState("errored");}

@@ -9,7 +9,7 @@ export interface UserProps {
   setUserId: Dispatch<SetStateAction<string|undefined>>;
 }
 
-export type UserProfileDesc = {
+export type UserProfileBasePreferences = {
   pets: boolean;
   business: boolean;
   family_and_kids: boolean;
@@ -22,7 +22,7 @@ export type UserProfileDesc = {
   relaxing: boolean;
 }
 
-export const DEFAULT_PROFILE = {
+export const DEFAULT_BASE_PREFERENCES = {
   pets: false,
   business: true,
   family_and_kids: false,
@@ -35,9 +35,5 @@ export const DEFAULT_PROFILE = {
   relaxing: true,
 
 }
-
-// export type UserProfileDesc = {
-//   userId: string;
-// } & ProfileDesc;
 
 export type RequestStatus = "initialized" | "in_flight" | "completed" | "errored"

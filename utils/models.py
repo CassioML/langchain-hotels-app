@@ -54,4 +54,4 @@ class UserProfile(BaseModel):
 
 class UserProfileSubmitRequest(BaseModel):
     user_id: str
-    profileData: UserProfile
+    user_profile: UserProfile

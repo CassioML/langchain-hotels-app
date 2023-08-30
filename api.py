@@ -100,7 +100,7 @@ def find_hotels(hotel_request: HotelSearchRequest) -> List[Hotel]:
 
 
 @app.post("/v1/get_user_profile")
-def get_user_profile(payload: UserRequest) -> UserProfile:
+def get_user_profile(payload: UserRequest) -> Union[UserProfile, None]:
     return read_user_preferences(payload.user_id)
 
 
@@ -108,18 +108,15 @@ def get_user_profile(payload: UserRequest) -> UserProfile:
 def set_user_profile(
     payload: UserProfileSubmitRequest, bg_tasks: BackgroundTasks
 ) -> Dict[str, bool]:
-    # TODO replace the hardcoded additional prefs with the input coming from the front-end
     try:
         write_user_profile(
             payload.user_id,
-            payload.profileData,
-            # "I love ice skating and ice-cream parlours",
+            payload.user_profile,
         )
         bg_tasks.add_task(
             update_user_desc,
             user_id=payload.user_id,
-            profile_data=payload.profileData,
-            # additional_preferences="I love ice skating and ice-cream parlours",
+            user_profile=payload.user_profile,
         )
         return {
             "success": True,

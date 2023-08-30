@@ -2,17 +2,17 @@ import './App.css';
 import { useEffect } from "react"
 import { useForm } from "react-hook-form";
 
-import {UserDesc, UserProfileDesc} from "../interfaces/interfaces";
+import {UserDesc, UserProfileBasePreferences} from "../interfaces/interfaces";
 
 import {setAPIUserProfile} from "../utils/user_profile";
 
-const UserProfileForm = (props: UserDesc & {submitState: any, setSubmitState: any, profile: UserProfileDesc, refreshProfile: any}) => {
+const UserProfileForm = (props: UserDesc & {submitState: any, setSubmitState: any, profile: UserProfileBasePreferences, refreshProfile: any}) => {
 
   const {userId, submitState, setSubmitState, profile, refreshProfile} = props;
 
-  const {register, handleSubmit, reset} = useForm<UserProfileDesc>();
+  const {register, handleSubmit, reset} = useForm<UserProfileBasePreferences>();
 
-  const onSubmitHandler = (values: UserProfileDesc) => {
+  const onSubmitHandler = (values: UserProfileBasePreferences) => {
     setSubmitState("in_flight");
     setAPIUserProfile(
       userId || "",
@@ -97,6 +97,7 @@ const UserProfileForm = (props: UserDesc & {submitState: any, setSubmitState: an
               </li>
 
             </ul>
+
             <button type="submit" className="inlineButton">Save</button>
           </div>
         </form>
