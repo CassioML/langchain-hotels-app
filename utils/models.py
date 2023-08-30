@@ -47,11 +47,11 @@ class UserRequest(BaseModel):
     user_id: str
 
 
+class UserProfile(BaseModel):
+    base_preferences: Dict[str, bool]
+    additional_preferences: str
+
+
 class UserProfileSubmitRequest(BaseModel):
     user_id: str
-    profileData: Dict[str, bool]
-
-
-class UserProfile(BaseModel):
-    base_preferences: Dict[str, Any]  # TODO should we be using Any?
-    additional_preferences: str
+    profileData: UserProfile

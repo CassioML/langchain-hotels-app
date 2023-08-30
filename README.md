@@ -52,6 +52,12 @@ python -m setup.3-populate-hotel-table.py
 
 This script creates the table and loads the non-embedded data from the `hotel_reviews.csv` file into it.
 
+### Users table
+
+```
+python -m setup.4-create-users-table
+```
+
 ## Running
 
 ### API

@@ -32,17 +32,18 @@ def read_user_preferences(user_id):
         return {}
 
 
-def write_user_profile(user_id, base_preferences, additional_preferences):
+def write_user_profile(user_id, user_profile):
     session = get_session()
     keyspace = get_keyspace()
 
     session.execute(
         f"INSERT INTO {keyspace}.{USERS_TABLE_NAME} (id, base_preferences, additional_preferences) VALUES (%s, %s, %s);",
-        (user_id, json.dumps(base_preferences), additional_preferences),
+        (user_id, json.dumps(user_profile.base_preferences), user_profile.additional_preferences),
     )
 
 
-def update_user_desc(user_id, base_preferences, additional_preferences):
+# def update_user_desc(user_id, base_preferences, additional_preferences):
+def update_user_desc(user_id, user_profile):
     import time
 
     print("Updating automated travel preferences for user ", user_id)
@@ -54,9 +55,9 @@ def update_user_desc(user_id, base_preferences, additional_preferences):
     summarizing_llm = get_llm()
 
     base_profile = ", ".join(
-        "%s=%s" % (k.upper(), "yes" if v else "no") for k, v in base_preferences.items()
+        "%s=%s" % (k.upper(), "yes" if v else "no") for k, v in user_profile.base_preferences.items()
     )
-    full_profile = ", ".join([base_profile, additional_preferences])
+    full_profile = ", ".join([base_profile, user_profile.additional_preferences])
 
     prompt_template = """
     Summarize the following user's travel profile. This summary will be user to search for hotels that this user 

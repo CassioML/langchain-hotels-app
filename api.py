@@ -113,13 +113,13 @@ def set_user_profile(
         write_user_profile(
             payload.user_id,
             payload.profileData,
-            "I love ice skating and ice-cream parlours",
+            # "I love ice skating and ice-cream parlours",
         )
         bg_tasks.add_task(
             update_user_desc,
             user_id=payload.user_id,
-            base_preferences=payload.profileData,
-            additional_preferences="I love ice skating and ice-cream parlours",
+            profile_data=payload.profileData,
+            # additional_preferences="I love ice skating and ice-cream parlours",
         )
         return {
             "success": True,
