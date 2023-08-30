@@ -85,12 +85,12 @@ def update_user_desc(user_id, user_profile):
     contained in the example summaries when summarizing the current user's travel preferences. 
     Only use the information provided in the user's travel preferences.
     
-    EXAMPLE SUMMARY 1: I travel with my family and enjoy going to zoos and adventure parks. I am interested in 
-    family-friendly hotels that can accommodate pets.
+    EXAMPLE SUMMARY 1: I travel with a group of androids and enjoy going to droid repair factories and swamps. I am interested in 
+    creature-friendly hotels that can accommodate aliens.
     
-    EXAMPLE SUMMARY 2: I am a business traveller who values convenient business facilities and close proximity to 
-    transportation and sightseeing options. I am not interested in family activities, theme parks or 
-    kid-friendly amenities.
+    EXAMPLE SUMMARY 2: I am a pixie traveller who values convenient barrows and close proximity to 
+    stone circles and horse-riding options. I am not interested in dragons, crowded cities or 
+    axe-grinding.
     
     USER'S TRAVEL PREFERENCES:
     {travel_prefs}
