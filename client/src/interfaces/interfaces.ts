@@ -10,30 +10,52 @@ export interface UserProps {
 }
 
 export type UserProfileBasePreferences = {
-  pets: boolean;
-  business: boolean;
-  family_and_kids: boolean;
-  sightseeing: boolean;
-  fine_dining: boolean;
   adventure_and_theme_parks: boolean;
-  outdoor_activities: boolean;
+  business: boolean;
   clubbing_and_nightlife: boolean;
-  romantic_getaway: boolean;
+  family_and_kids: boolean;
+  fine_dining: boolean;
+  outdoor_activities: boolean;
+  pets: boolean;
   relaxing: boolean;
+  romantic_getaway: boolean;
+  sightseeing: boolean;
 }
 
-export const DEFAULT_BASE_PREFERENCES = {
-  pets: false,
-  business: true,
-  family_and_kids: false,
-  sightseeing: true,
-  fine_dining: false,
+const DEFAULT_BASE_PREFERENCES = {
   adventure_and_theme_parks: false,
+  business: true,
+  clubbing_and_nightlife: true,
+  family_and_kids: true,
+  fine_dining: true,
   outdoor_activities: true,
-  clubbing_and_nightlife: false,
-  romantic_getaway: false,
+  pets: true,
   relaxing: true,
+  romantic_getaway: true,
+  sightseeing: true,
+}
 
+export const BASE_PREFERENCES_LABELS = {
+  adventure_and_theme_parks: "Enjoys adventure and theme parks",
+  business: "Travels for business",
+  clubbing_and_nightlife: "Enjoys clubbing and nightlife",
+  family_and_kids: "Travels with family",
+  fine_dining: "Enjoys fine dining and gourmet restaurants",
+  outdoor_activities: "Loves outdoor activities",
+  pets: "Cares about pets",
+  relaxing: "Enjoys a relaxing holiday",
+  romantic_getaway: "Travels for a romantic getaway",
+  sightseeing: "Loves sightseeing",
+}
+
+export type UserProfile = {
+  base_preferences: UserProfileBasePreferences;
+  additional_preferences: string;
+}
+
+export const DEFAULT_USER_PROFILE = {
+  base_preferences: DEFAULT_BASE_PREFERENCES,
+  additional_preferences: "",
 }
 
 export type RequestStatus = "initialized" | "in_flight" | "completed" | "errored"

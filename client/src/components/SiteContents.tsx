@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import './App.css';
 import {UserDesc} from "../interfaces/interfaces";
 
-import UserProfile from "./UserProfile";
+import UserProfileComponent from "./UserProfileComponent";
 import HotelBrowser from "./HotelBrowser";
 import HotelDetails from "./HotelDetails";
 
@@ -29,7 +29,7 @@ const SiteContents = ({userId}: UserDesc) => {
               <Route path="/browse/:hotel_id" element={<HotelDetails userId={userId} />} />
               <Route
                 path="/profile"
-                element={<UserProfile userId={userId} />}
+                element={<UserProfileComponent userId={userId} />}
               />
             </Routes>
 

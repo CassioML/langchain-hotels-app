@@ -2,18 +2,19 @@ import './App.css';
 import { useEffect } from "react"
 import { useForm } from "react-hook-form";
 
-import {UserDesc, UserProfileBasePreferences} from "../interfaces/interfaces";
+import {UserDesc, UserProfile, UserProfileBasePreferences, BASE_PREFERENCES_LABELS} from "../interfaces/interfaces";
 
 import {setAPIUserProfile} from "../utils/user_profile";
 
-const UserProfileForm = (props: UserDesc & {submitState: any, setSubmitState: any, profile: UserProfileBasePreferences, refreshProfile: any}) => {
+const UserProfileForm = (props: UserDesc & {submitState: any, setSubmitState: any, profile: UserProfile, refreshProfile: any}) => {
 
   const {userId, submitState, setSubmitState, profile, refreshProfile} = props;
 
-  const {register, handleSubmit, reset} = useForm<UserProfileBasePreferences>();
+  const {register, handleSubmit, reset} = useForm<UserProfile>();
 
-  const onSubmitHandler = (values: UserProfileBasePreferences) => {
+  const onSubmitHandler = (values: UserProfile) => {
     setSubmitState("in_flight");
+    // console.log(`values = ${JSON.stringify(values)}`);
     setAPIUserProfile(
       userId || "",
       values,
@@ -45,59 +46,105 @@ const UserProfileForm = (props: UserDesc & {submitState: any, setSubmitState: an
         <form onSubmit={handleSubmit(onSubmitHandler)} className="form">
           <div>
             <ul>
-            
+
               <li>
-                <label htmlFor="business">Travels for business</label>
-                <input {...register("business")} name="business" id="business" type="checkbox" />
+                <input
+                      {...register("base_preferences.adventure_and_theme_parks")}
+                      type="checkbox"
+                      id="cb_adventure_and_theme_parks"
+                />
+                <label htmlFor="cb_adventure_and_theme_parks">{BASE_PREFERENCES_LABELS["adventure_and_theme_parks"]}</label>
               </li>
 
               <li>
-                <label htmlFor="family_and_kids">Travels with family</label>
-                <input {...register("family_and_kids")} name="family_and_kids" id="family_and_kids" type="checkbox" />
-              </li>
-              
-              <li>
-                <label htmlFor="romantic_getaway">Travels for a romantic getaway</label>
-                <input {...register("romantic_getaway")} name="romantic_getaway" id="romantic_getaway" type="checkbox" />
-              </li>
-            
-              <li>
-                <label htmlFor="sightseeing">Loves sightseeing</label>
-                <input {...register("sightseeing")} name="sightseeing" id="sightseeing" type="checkbox" />
+                <input
+                      {...register("base_preferences.business")}
+                      type="checkbox"
+                      id="cb_business"
+                />
+                <label htmlFor="cb_business">{BASE_PREFERENCES_LABELS["business"]}</label>
               </li>
 
               <li>
-                <label htmlFor="fine_dining">Enjoys fine dining and gourmet restaurants</label>
-                <input {...register("fine_dining")} name="fine_dining" id="fine_dining" type="checkbox" />
+                <input
+                      {...register("base_preferences.clubbing_and_nightlife")}
+                      type="checkbox"
+                      id="cb_clubbing_and_nightlife"
+                />
+                <label htmlFor="cb_clubbing_and_nightlife">{BASE_PREFERENCES_LABELS["clubbing_and_nightlife"]}</label>
               </li>
 
               <li>
-                <label htmlFor="adventure_and_theme_parks">Enjoys adventure and theme parks</label>
-                <input {...register("adventure_and_theme_parks")} name="adventure_and_theme_parks" id="adventure_and_theme_parks" type="checkbox" />
+                <input
+                      {...register("base_preferences.family_and_kids")}
+                      type="checkbox"
+                      id="cb_family_and_kids"
+                />
+                <label htmlFor="cb_family_and_kids">{BASE_PREFERENCES_LABELS["family_and_kids"]}</label>
               </li>
 
               <li>
-                <label htmlFor="outdoor_activities">Loves outdoor activities</label>
-                <input {...register("outdoor_activities")} name="outdoor_activities" id="outdoor_activities" type="checkbox" />
+                <input
+                      {...register("base_preferences.fine_dining")}
+                      type="checkbox"
+                      id="cb_fine_dining"
+                />
+                <label htmlFor="cb_fine_dining">{BASE_PREFERENCES_LABELS["fine_dining"]}</label>
               </li>
 
               <li>
-                <label htmlFor="clubbing_and_nightlife">Enjoys clubbing and nightlife</label>
-                <input {...register("clubbing_and_nightlife")} name="clubbing_and_nightlife" id="clubbing_and_nightlife" type="checkbox" />
+                <input
+                      {...register("base_preferences.outdoor_activities")}
+                      type="checkbox"
+                      id="cb_outdoor_activities"
+                />
+                <label htmlFor="cb_outdoor_activities">{BASE_PREFERENCES_LABELS["outdoor_activities"]}</label>
               </li>
 
               <li>
-                <label htmlFor="relaxing">Enjoys a relaxing holiday</label>
-                <input {...register("relaxing")} name="relaxing" id="relaxing" type="checkbox" />
+                <input
+                      {...register("base_preferences.pets")}
+                      type="checkbox"
+                      id="cb_pets"
+                />
+                <label htmlFor="cb_pets">{BASE_PREFERENCES_LABELS["pets"]}</label>
               </li>
 
               <li>
-                <label htmlFor="pets">Cares about pets</label>
-                <input {...register("pets")} name="pets" id="pets" type="checkbox" />
+                <input
+                      {...register("base_preferences.relaxing")}
+                      type="checkbox"
+                      id="cb_relaxing"
+                />
+                <label htmlFor="cb_relaxing">{BASE_PREFERENCES_LABELS["relaxing"]}</label>
+              </li>
+
+              <li>
+                <input
+                      {...register("base_preferences.romantic_getaway")}
+                      type="checkbox"
+                      id="cb_romantic_getaway"
+                />
+                <label htmlFor="cb_romantic_getaway">{BASE_PREFERENCES_LABELS["romantic_getaway"]}</label>
+              </li>
+
+              <li>
+                <input
+                      {...register("base_preferences.sightseeing")}
+                      type="checkbox"
+                      id="cb_sightseeing"
+                />
+                <label htmlFor="cb_sightseeing">{BASE_PREFERENCES_LABELS["sightseeing"]}</label>
               </li>
 
             </ul>
-
+            <p>
+              <label htmlFor="adpr">Add Pref</label>
+              <input
+                    {...register("additional_preferences")}
+                    id="adpr"
+              />
+            </p>
             <button type="submit" className="inlineButton">Save</button>
           </div>
         </form>

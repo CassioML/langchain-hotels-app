@@ -2,17 +2,17 @@ import './App.css';
 
 import { useEffect, useState } from "react"
 
-import {UserDesc, UserProfileBasePreferences, RequestStatus, DEFAULT_BASE_PREFERENCES} from "../interfaces/interfaces";
+import {UserDesc, UserProfile, UserProfileBasePreferences, RequestStatus, DEFAULT_USER_PROFILE} from "../interfaces/interfaces";
 import {getAPIUserProfile} from "../utils/user_profile";
 
 import UserProfileForm from "./UserProfileForm"
 
-const UserProfile = (props: UserDesc) => {
+const UserProfileComponent = (props: UserDesc) => {
 
   const {userId} = props;
 
   const [submitState, setSubmitState] = useState<RequestStatus>("initialized");
-  const [profile, setProfile] = useState<UserProfileBasePreferences>(DEFAULT_BASE_PREFERENCES);
+  const [profile, setProfile] = useState<UserProfile>(DEFAULT_USER_PROFILE);
 
   const refreshProfile = () => {
     setSubmitState("in_flight");
@@ -20,12 +20,16 @@ const UserProfile = (props: UserDesc) => {
       userId || "",
       (api_profile: any) => {
         const _profile = api_profile || {};
-        const base_preferences = api_profile.base_preferences || {};
+        const base_preferences = _profile.base_preferences || {};
         const these_base_prefs: UserProfileBasePreferences = {
-          ...DEFAULT_BASE_PREFERENCES,
+          ...DEFAULT_USER_PROFILE.base_preferences,
           ...base_preferences,
         }
-        setProfile(these_base_prefs);
+        const this_profile = {
+          base_preferences: these_base_prefs,
+          additional_preferences: _profile.additional_preferences,
+        }
+        setProfile(this_profile);
         setSubmitState("completed");
       },
       (e: any) => {console.log(`err ${e}`); setSubmitState("errored");}
@@ -52,4 +56,4 @@ const UserProfile = (props: UserDesc) => {
   );
 }
 
-export default UserProfile
+export default UserProfileComponent

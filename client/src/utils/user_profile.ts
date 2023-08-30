@@ -1,14 +1,11 @@
 import axios from "axios";
 
-import {UserProfileBasePreferences} from "../interfaces/interfaces";
+import {UserProfile} from "../interfaces/interfaces";
 
-export const setAPIUserProfile = (userId: string, profileData: UserProfileBasePreferences, callback: any, error_callback: any) => {
+export const setAPIUserProfile = (userId: string, user_profile: UserProfile, callback: any, error_callback: any) => {
   const payload = {
     user_id: userId,
-    user_profile: {
-      base_preferences: profileData,
-      additional_preferences: "I love AI",
-    }
+    user_profile,
   };
   axios.post(
     'http://127.0.0.1:8000/v1/set_user_profile',
