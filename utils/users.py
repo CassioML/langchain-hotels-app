@@ -78,7 +78,7 @@ def update_user_desc(user_id, user_profile):
     Summarize the following user's travel preferences, creating a short description that will be used to search for 
     hotels that this user may like.
     
-    Keep it concise and clear. Use two or three short sentences and a neutral tone. Write in first person. 
+    Keep it concise and clear. Use at least two and at most three short sentences and a neutral tone. Write in first person. 
     
     Here are two example summaries with information that is not relevant to the current user. 
     Only use these example summaries to understand the style of the summary. Absolutely do not use any information 
@@ -89,8 +89,8 @@ def update_user_desc(user_id, user_profile):
     creature-friendly hotels that can accommodate aliens.
     
     EXAMPLE SUMMARY 2: I am a pixie traveller who values convenient barrows and close proximity to 
-    stone circles and horse-riding options. I am not interested in dragons, crowded cities or 
-    axe-grinding.
+    stone circles and bell-tolling options. I am not interested in dragons, crowded cities or 
+    axe-grinding. I enjoy playing the harpsichord.
     
     USER'S TRAVEL PREFERENCES:
     {travel_prefs}
