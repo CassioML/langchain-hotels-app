@@ -16,6 +16,7 @@ user_profile_select_stmt = None
 user_profile_insert_stmt = None
 user_profile_update_stmt = None
 
+
 def read_user_preferences(user_id) -> Union[UserProfile, None]:
     session = get_session()
     keyspace = get_keyspace()
@@ -49,7 +50,12 @@ def write_user_profile(user_id, user_profile):
         )
 
     session.execute(
-        user_profile_insert_stmt, (user_id, json.dumps(user_profile.base_preferences), user_profile.additional_preferences),
+        user_profile_insert_stmt,
+        (
+            user_id,
+            json.dumps(user_profile.base_preferences),
+            user_profile.additional_preferences,
+        ),
     )
 
 
@@ -65,11 +71,13 @@ def update_user_desc(user_id, user_profile):
 
     summarizing_llm = get_llm()
 
-# leave out the prefs that are false, instead of having them as no
-#     base_profile = ", ".join(
-#         "%s=%s" % (k.upper(), "yes" if v else "no") for k, v in base_preferences.items()
-#     )
-    base_profile = ", ".join(k.upper() for k, v in user_profile.base_preferences.items() if v)
+    # leave out the prefs that are false, instead of having them as no
+    #     base_profile = ", ".join(
+    #         "%s=%s" % (k.upper(), "yes" if v else "no") for k, v in base_preferences.items()
+    #     )
+    base_profile = ", ".join(
+        k.upper() for k, v in user_profile.base_preferences.items() if v
+    )
 
     travel_preferences = ", ".join([base_profile, user_profile.additional_preferences])
 

@@ -1,5 +1,7 @@
 import uuid
+import random
 import pandas as pd
+import numpy as np
 from setup.setup_constants import HOTEL_REVIEW_FILE_NAME, RAW_REVIEW_SOURCE_FILE_NAME
 
 # Script that cleans up the raw CSV data and stores it in a new CSV:
@@ -18,6 +20,8 @@ if __name__ == "__main__":
             "reviews.date",
             "city",
             "country",
+            "latitude",
+            "longitude",
             "name",
             "reviews.rating",
             "reviews.text",
@@ -31,6 +35,8 @@ if __name__ == "__main__":
         "reviews.date": "date",
         "city": "hotel_city",
         "country": "hotel_country",
+        "latitude": "hotel_latitude",
+        "longitude": "hotel_longitude",
         "name": "hotel_name",
         "reviews.rating": "rating",
         "reviews.text": "text",
@@ -62,6 +68,7 @@ if __name__ == "__main__":
 
     renamed_csv["id"] = renamed_csv.apply(review_id, axis=1)
     renamed_csv["text"] = renamed_csv.apply(clean_review_text, axis=1)
+    renamed_csv["review_upvotes"] = np.random.randint(1, 21, size=len(renamed_csv))
 
     file_name = HOTEL_REVIEW_FILE_NAME
     renamed_csv.to_csv(file_name)

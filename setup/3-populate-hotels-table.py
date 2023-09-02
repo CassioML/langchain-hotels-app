@@ -4,6 +4,8 @@ from common_constants import HOTELS_TABLE_NAME
 from setup.setup_constants import HOTEL_REVIEW_FILE_NAME
 from utils.db import get_session, get_keyspace
 
+insert_hotel_stmt = None
+
 
 def create_hotel_table():
     session = get_session()
@@ -15,6 +17,8 @@ def create_hotel_table():
                             city text, 
                             id text,
                             name text,
+                            latitude float,
+                            longitude float,
                             primary key (( country, city), id )
                             )"""
     )
@@ -27,14 +31,23 @@ def populate_hotel_table_from_csv():
     session = get_session()
     keyspace = get_keyspace()
 
-    insert_hotel_stmt = session.prepare(
-        f"insert into {keyspace}.{HOTELS_TABLE_NAME} (id, name, city, country) values (?, ?, ?, ?)"
-    )
+    global insert_hotel_stmt
+    if insert_hotel_stmt is None:
+        insert_hotel_stmt = session.prepare(
+            f"insert into {keyspace}.{HOTELS_TABLE_NAME} (id, name, city, country, latitude, longitude) values (?, ?, ?, ?, ?, ?)"
+        )
 
     hotel_review_data = pd.read_csv(HOTEL_REVIEW_FILE_NAME)
     chosen_columns = pd.DataFrame(
         hotel_review_data,
-        columns=["hotel_id", "hotel_name", "hotel_city", "hotel_country"],
+        columns=[
+            "hotel_id",
+            "hotel_name",
+            "hotel_city",
+            "hotel_country",
+            "hotel_latitude",
+            "hotel_longitude",
+        ],
     )
     renamed_columns = chosen_columns.rename(
         columns={
@@ -42,6 +55,8 @@ def populate_hotel_table_from_csv():
             "hotel_name": "name",
             "hotel_city": "city",
             "hotel_country": "country",
+            "hotel_latitude": "latitude",
+            "hotel_longitude": "longitude",
         }
     )
     hotel_df = renamed_columns.drop_duplicates()
@@ -51,7 +66,10 @@ def populate_hotel_table_from_csv():
         futures.append(
             session.execute_async(
                 insert_hotel_stmt,
-                [row[f] for f in ["id", "name", "city", "country"]],
+                [
+                    row[f]
+                    for f in ["id", "name", "city", "country", "latitude", "longitude"]
+                ],
             )
         )
 
