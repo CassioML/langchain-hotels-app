@@ -36,7 +36,7 @@ This creates the json file with all embeddings ready to be written to DB (note:
 the script admits limiting the number of rows to write with e.g. `-n 100`):
 
 ```
-python -m setup.2-populate-vector-table
+python -m setup.2-populate-review-vector-table
 ```
 
 Note that this whole section has been run already (time- and token-consuming!),
@@ -47,7 +47,7 @@ the json is checked in, and the only necessary step is writing to DB.
 The non-embedded hotel data is stored in a separate table. To populate it:
 
 ``` 
-python -m setup.3-populate-hotel-table.py
+python -m setup.3-populate-hotels-table
 ```
 
 This script creates the table and loads the non-embedded data from the `hotel_reviews.csv` file into it.

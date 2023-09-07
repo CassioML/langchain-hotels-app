@@ -3,9 +3,8 @@ fastapi==0.99.1
 # REVERT TO:
 #langchain==0.0.221
 # TEMPORARILY
-git+https://github.com/hemidactylus/langchain@cassio-full-preview#egg=langchain
-bs4
-cassio>=0.1.0
+git+https://github.com/hemidactylus/langchain@updated-full-preview--lab#egg=langchain&subdirectory=libs/langchain
+cassio>=0.1.1
 #
 openai==0.27.8
 python-dotenv==1.0.0

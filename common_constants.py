@@ -1,3 +1,4 @@
 HOTELS_TABLE_NAME = "hotels"
+CITIES_TABLE_NAME = "cities"
 REVIEWS_TABLE_NAME = "reviews"
 USERS_TABLE_NAME = "users"

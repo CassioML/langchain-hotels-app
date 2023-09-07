@@ -1,10 +1,11 @@
 import pandas as pd
 
-from common_constants import HOTELS_TABLE_NAME
+from common_constants import HOTELS_TABLE_NAME, CITIES_TABLE_NAME
 from setup.setup_constants import HOTEL_REVIEW_FILE_NAME
 from utils.db import get_session, get_keyspace
 
 insert_hotel_stmt = None
+insert_city_stmt = None
 
 
 def create_hotel_table():
@@ -22,6 +23,73 @@ def create_hotel_table():
                             primary key (( country, city), id )
                             )"""
     )
+
+
+def create_city_table():
+    session = get_session()
+    keyspace = get_keyspace()
+
+    session.execute(
+        f"""create table if not exists {keyspace}.{CITIES_TABLE_NAME} (
+                            country text,
+                            city text,
+                            latitude float,
+                            longitude float,
+                            primary key (( country, city))
+                            )"""
+    )
+
+
+def populate_city_table_from_csv():
+    # Not batched: all insertions take place concurrently.
+    # Take care if you have 100k cities to insert...
+
+    session = get_session()
+    keyspace = get_keyspace()
+
+    global insert_city_stmt
+    if insert_city_stmt is None:
+        insert_city_stmt = session.prepare(
+            f"insert into {keyspace}.{CITIES_TABLE_NAME} (country, city, latitude, longitude) values (?, ?, ?, ?)"
+        )
+
+    hotel_review_data = pd.read_csv(HOTEL_REVIEW_FILE_NAME)
+    city_centrer = pd.DataFrame(
+        hotel_review_data,
+        columns=[
+            "hotel_city",
+            "hotel_country",
+            "hotel_latitude",
+            "hotel_longitude",
+        ],
+    ).rename(
+        columns={
+            "hotel_city": "city",
+            "hotel_country": "country",
+            "hotel_latitude": "latitude",
+            "hotel_longitude": "longitude",
+        }
+    )
+    city_centres_df = city_centrer.groupby(
+        ["country", "city"], as_index=False
+    ).mean()
+
+    futures = []
+    for _, row in city_centres_df.iterrows():
+        futures.append(
+            session.execute_async(
+                insert_city_stmt,
+                [
+                    row[f]
+                    for f in ["country", "city", "latitude", "longitude"]
+                ],
+            )
+        )
+
+    for f in futures:
+        f.result()
+
+    print(f"Inserted {len(city_centres_df)} cities")
 
 
 def populate_hotel_table_from_csv():
@@ -82,3 +150,5 @@ def populate_hotel_table_from_csv():
 if __name__ == "__main__":
     create_hotel_table()
     populate_hotel_table_from_csv()
+    create_city_table()
+    populate_city_table_from_csv()
