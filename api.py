@@ -26,13 +26,6 @@ db_session = get_session()
 db_keyspace = get_keyspace()
 
 
-def fa_review_store():
-    emb = get_embeddings()
-    yield get_review_vectorstore(
-        session=db_session, keyspace=db_keyspace, embeddings=emb
-    )
-
-
 # init
 
 
@@ -64,8 +57,16 @@ permitReactLocalhostClient(app)
 # TODO: replace with 'summarize reviews found' (etc)
 @app.post("/find_reviews")
 def find_reviews(
-    review_request: ReviewRequest, review_store=Depends(fa_review_store)
+    review_request: ReviewRequest
 ) -> List[str]:
+    hotel_id = 'AVwdp-5bIN2L1WUfx-QW'
+    print("FIXME, I AM A FAKE HOTEL ID")
+    review_store = get_review_vectorstore(
+        session=db_session,
+        keyspace=db_keyspace,
+        embeddings=get_embeddings(),
+        hotel_id=hotel_id,
+    )
     similar_reviews = find_similar_reviews(review_request.review, review_store)
     return similar_reviews
 
@@ -73,8 +74,16 @@ def find_reviews(
 # TEMPORARY - not hotel-specific
 @app.post("/summarize_reviews")
 def summarize_reviews(
-    review_request: ReviewRequest, review_store=Depends(fa_review_store)
+    review_request: ReviewRequest
 ) -> Dict[str, Union[str, List[str]]]:
+    hotel_id = 'AVwdp-5bIN2L1WUfx-QW'
+    print("FIXME, I AM A FAKE HOTEL ID")
+    review_store = get_review_vectorstore(
+        session=db_session,
+        keyspace=db_keyspace,
+        embeddings=get_embeddings(),
+        hotel_id=hotel_id,
+    )
     similar_reviews = find_similar_reviews(review_request.review, review_store)
     fake_user_preferences = (
         "Travels with kids. Highly values amenities. Hates having to walk."

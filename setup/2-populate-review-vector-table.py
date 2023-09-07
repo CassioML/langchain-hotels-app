@@ -60,12 +60,11 @@ if __name__ == "__main__":
     session = get_session()
     keyspace = get_keyspace()
     # TODO: update init signature (auto_id, primary_key_type)
-    reviews_table = cassio.vector.VectorTable(
+    reviews_table = cassio.table.ClusteredMetadataVectorCassandraTable(
         session=session,
         keyspace=keyspace,
         table=REVIEW_VECTOR_TABLE_NAME,
-        embedding_dimension=EMBEDDING_DIMENSION,
-        auto_id=False,
+        vector_dimension=EMBEDDING_DIMENSION,
     )
 
     #
@@ -79,11 +78,11 @@ if __name__ == "__main__":
 
     eligibles = (
         {
-            "document": review_body(row),
-            "embedding_vector": enrichment[row["id"]],
-            "document_id": row["id"],
+            "partition_id": row["hotel_id"],
+            "body_blob": review_body(row),
+            "vector": enrichment[row["id"]],
+            "row_id": row["id"],
             "metadata": _metadata(row),
-            "ttl_seconds": None,
         }
         for _, row in hotel_data.iterrows()
         if row["id"] in enrichment
