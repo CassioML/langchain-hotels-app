@@ -65,9 +65,8 @@ def find_reviews(
         session=db_session,
         keyspace=db_keyspace,
         embeddings=get_embeddings(),
-        hotel_id=hotel_id,
     )
-    similar_reviews = find_similar_reviews(review_request.review, review_store)
+    similar_reviews = find_similar_reviews(review_request.review, hotel_id, review_store)
     return similar_reviews
 
 
@@ -82,9 +81,8 @@ def summarize_reviews(
         session=db_session,
         keyspace=db_keyspace,
         embeddings=get_embeddings(),
-        hotel_id=hotel_id,
     )
-    similar_reviews = find_similar_reviews(review_request.review, review_store)
+    similar_reviews = find_similar_reviews(review_request.review, hotel_id, review_store)
     fake_user_preferences = (
         "Travels with kids. Highly values amenities. Hates having to walk."
     )
