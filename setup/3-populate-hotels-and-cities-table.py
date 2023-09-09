@@ -54,7 +54,7 @@ def populate_city_table_from_csv():
         )
 
     hotel_review_data = pd.read_csv(HOTEL_REVIEW_FILE_NAME)
-    city_centrer = pd.DataFrame(
+    city_centres = pd.DataFrame(
         hotel_review_data,
         columns=[
             "hotel_city",
@@ -70,7 +70,7 @@ def populate_city_table_from_csv():
             "hotel_longitude": "longitude",
         }
     )
-    city_centres_df = city_centrer.groupby(
+    city_centres_df = city_centres.groupby(
         ["country", "city"], as_index=False
     ).mean()
 
