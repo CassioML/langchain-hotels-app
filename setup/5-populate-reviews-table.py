@@ -3,8 +3,9 @@ import pandas as pd
 import datetime
 
 from common_constants import REVIEWS_TABLE_NAME
-from setup.setup_constants import HOTEL_REVIEW_FILE_NAME
+from setup.setup_constants import HOTEL_REVIEW_FILE_NAME, FEATURED_INDEX_NAME
 from utils.db import get_session, get_keyspace
+from utils.reviews import choose_featured
 
 insert_review_stmt = None
 
@@ -14,14 +15,19 @@ def create_reviews_table():
     keyspace = get_keyspace()
 
     session.execute(
-        f"""create table if not exists {keyspace}.{REVIEWS_TABLE_NAME} (
+        f"""CREATE TABLE IF NOT EXISTS {keyspace}.{REVIEWS_TABLE_NAME} (
                 hotel_id text,
                 date_added timestamp,
                 id text,
-                review_text text,
-                upvotes int,
+                review_content text,
+                featured int,
                 PRIMARY KEY (hotel_id, date_added, id)
             ) WITH CLUSTERING ORDER BY (date_added DESC, id ASC)"""
+    )
+
+    session.execute(
+        f"""CREATE CUSTOM INDEX IF NOT EXISTS {FEATURED_INDEX_NAME} ON {keyspace}.{REVIEWS_TABLE_NAME}(featured) 
+            USING 'StorageAttachedIndex' """
     )
 
 
@@ -41,7 +47,7 @@ def populate_reviews_table_from_csv():
     if insert_review_stmt is None:
         insert_review_stmt = session.prepare(
             f"""insert into {keyspace}.{REVIEWS_TABLE_NAME} 
-                (hotel_id, date_added, id, review_text, upvotes) values (?, ?, ?, ?, ?)"""
+                (hotel_id, date_added, id, review_content, featured) values (?, ?, ?, ?, ?)"""
         )
 
     hotel_review_data = pd.read_csv(HOTEL_REVIEW_FILE_NAME)
@@ -55,7 +61,7 @@ def populate_reviews_table_from_csv():
             "hotel_id": "hotel_id",
             "date": "date_added",
             "id": "id",
-            "text": "review_text",
+            "text": "review_content",
             "review_upvotes": "upvotes",
         }
     )
@@ -69,8 +75,8 @@ def populate_reviews_table_from_csv():
                     row["hotel_id"],
                     parse_date(row["date_added"]),
                     row["id"],
-                    row["review_text"],
-                    row["upvotes"],
+                    row["review_content"],
+                    choose_featured(row["upvotes"]),
                 ],
             )
         )
