@@ -19,7 +19,8 @@ def create_reviews_table():
                 hotel_id text,
                 date_added timestamp,
                 id text,
-                review_content text,
+                title text,
+                content text,
                 featured int,
                 PRIMARY KEY (hotel_id, date_added, id)
             ) WITH CLUSTERING ORDER BY (date_added DESC, id ASC)"""
@@ -47,21 +48,22 @@ def populate_reviews_table_from_csv():
     if insert_review_stmt is None:
         insert_review_stmt = session.prepare(
             f"""insert into {keyspace}.{REVIEWS_TABLE_NAME} 
-                (hotel_id, date_added, id, review_content, featured) values (?, ?, ?, ?, ?)"""
+                (hotel_id, date_added, id, title, content, featured) values (?, ?, ?, ?, ?, ?)"""
         )
 
     hotel_review_data = pd.read_csv(HOTEL_REVIEW_FILE_NAME)
     
     chosen_columns = pd.DataFrame(
         hotel_review_data,
-        columns=["hotel_id", "date", "id", "text", "review_upvotes"],
+        columns=["hotel_id", "date", "id", "title", "text", "review_upvotes"],
     )
     review_df = chosen_columns.rename(
         columns={
             "hotel_id": "hotel_id",
             "date": "date_added",
             "id": "id",
-            "text": "review_content",
+            "title": "title",
+            "text": "content",
             "review_upvotes": "upvotes",
         }
     )
@@ -75,7 +77,8 @@ def populate_reviews_table_from_csv():
                     row["hotel_id"],
                     parse_date(row["date_added"]),
                     row["id"],
-                    row["review_content"],
+                    str(row["title"]),
+                    str(row["content"]),
                     choose_featured(row["upvotes"]),
                 ],
             )
