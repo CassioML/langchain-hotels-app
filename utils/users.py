@@ -60,7 +60,7 @@ def write_user_profile(user_id, user_profile):
 
 
 # def update_user_desc(user_id, base_preferences, additional_preferences):
-def update_user_desc(user_id, user_profile):
+def update_user_travel_profile_summary(user_id, user_profile):
     import time
 
     print("Updating automated travel preferences for user ", user_id)

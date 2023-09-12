@@ -5,7 +5,7 @@ import tqdm
 import pandas as pd
 
 from utils.ai import get_embeddings
-from utils.reviews import review_body
+from utils.reviews import review_for_embeddings
 from setup.embedding_dump import compress_embeddings_map, deflate_embeddings_map
 from setup.setup_constants import EMBEDDING_FILE_NAME, HOTEL_REVIEW_FILE_NAME
 
@@ -63,7 +63,7 @@ if __name__ == "__main__":
                 reviews_to_embed.append(
                     {
                         "id": review_id,
-                        "body": review_body(row),
+                        "body": review_for_embeddings(row["title"], row["text"]),
                     }
                 )
         if args.n is not None and len(reviews_to_embed) >= args.n:

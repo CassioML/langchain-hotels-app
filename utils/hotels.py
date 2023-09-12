@@ -1,6 +1,8 @@
 from utils.db import get_session, get_keyspace
 
 from common_constants import HOTELS_TABLE_NAME
+from typing import List
+from utils.models import Hotel
 
 find_hotels_prepared_stmt = None
 
@@ -11,17 +13,16 @@ def get_find_hotels_prepared_statement():
     session = get_session()
     keyspace = get_keyspace()
 
+# TODO decide if we want to have a limit on the hotels, and if so, how large + extract it to a constant
     if not find_hotels_prepared_stmt:
         find_hotels_prepared_stmt = session.prepare(
-            f"""SELECT id, name from {keyspace}.{HOTELS_TABLE_NAME} 
-                                                            where city = ? and country = ?"""
+            f"SELECT id, name FROM {keyspace}.{HOTELS_TABLE_NAME} where city = ? and country = ? limit 10"
         )
 
     return find_hotels_prepared_stmt
 
 
-# TODO add type hint for return type
-def find_hotels_by_location(city: str, country: str):
+def find_hotels_by_location(city: str, country: str) -> List[Hotel]:
     session = get_session()
 
     find_hotels_prep_stmt = get_find_hotels_prepared_statement()
@@ -30,6 +31,6 @@ def find_hotels_by_location(city: str, country: str):
 
     hotels = list({})
     for row in hotel_rows:
-        hotels.append({"id": row["id"], "name": row["name"]})
+        hotels.append(Hotel(city=city, country=country, name=row.name, id=row.id))
 
     return hotels

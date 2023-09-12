@@ -8,7 +8,7 @@ import cassio
 from setup.embedding_dump import deflate_embeddings_map
 from setup.setup_constants import EMBEDDING_FILE_NAME, HOTEL_REVIEW_FILE_NAME
 
-from utils.reviews import review_body
+from utils.reviews import review_for_embeddings
 from utils.ai import EMBEDDING_DIMENSION
 from utils.db import get_session, get_keyspace
 from utils.review_vectors import REVIEW_VECTOR_TABLE_NAME
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     eligibles = (
         {
             "partition_id": row["hotel_id"],
-            "body_blob": review_body(row),
+            "body_blob": review_for_embeddings(row["title"], row["text"]),
             "vector": enrichment[row["id"]],
             "row_id": row["id"],
             "metadata": _metadata(row),

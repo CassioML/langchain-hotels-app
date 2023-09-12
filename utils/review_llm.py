@@ -4,24 +4,15 @@ from langchain import PromptTemplate
 from langchain.docstore.document import Document
 from langchain.chains.summarize import load_summarize_chain
 from utils.ai import get_llm
+from utils.models import HotelReview
 
 
-# TODO should this function go in the ai module?
-def summarize_review_list(reviews: List[str], trip_preferences: str) -> str:
+# Calls the LLM to generate a summary of the given reviews tailored to the user's travel profile preferences.
+# TODO improve the prompt. Also rename this function with a clearer name.
+def summarize_reviews_for_user(reviews: List[HotelReview], trip_preferences: str) -> str:
     summarizing_llm = get_llm()
 
-    concatenated_reviews = "\n".join(review for review in reviews)
-    # print(concatenated_reviews)
-
-    # THE FOLLOWING TO BE MOVED TO A 'prompts' MODULE
-
-    # prompt_template = """ You are an assistant helping travelers choose hotels.
-    # Write a very short summary of the following reviews, for someone whose travel preferences are {prefs}:
-    # {hotel_reviews}
-
-    # EXAMPLE SUMMARY: The hotel is good, cozy and well furnished, but is noisy and, sometimes, the waiters are impolite.
-
-    # CONCISE SUMMARY: """
+    concatenated_reviews = "\n".join(review.body for review in reviews)
 
     prompt_template = """ You are an assistant helping travelers choose hotels.
     Write a bullet-point summary of the following "input reviews" for someone with the travel profile as given below.
@@ -47,6 +38,38 @@ def summarize_review_list(reviews: List[str], trip_preferences: str) -> str:
     populated_prompt = query_prompt_template.format(
         prefs=trip_preferences, hotel_reviews=concatenated_reviews
     )
+    print(populated_prompt)
+
+    chain = load_summarize_chain(llm=summarizing_llm, chain_type="stuff")
+    docs = [Document(page_content=populated_prompt)]
+    return chain.run(docs)
+
+
+# Calls the LLM to generate a concise summary of the given reviews for a hotel.
+# This is a general, base summary for the hotel and is not user-specific.
+# TODO improve the prompt. Also rename this function with a clearer name.
+def summarize_reviews_for_hotel(reviews: List[HotelReview]) -> str:
+    summarizing_llm = get_llm()
+
+    concatenated_reviews = "\n".join(review.body for review in reviews)
+
+    prompt_template = """ You are an assistant helping travelers choose hotels.
+        Write a bullet-point summary of the following "input reviews".
+        Do not exceed writing 2 concise bullet points.
+
+        Absolutely do not use information other than given in the "input reviews" below.
+
+        INPUT REVIEWS:
+        {hotel_reviews}
+
+        EXAMPLE SUMMARY: 
+            - Simple novel packed with meta references. 
+            - Interesting characters and surprise twist at the end.
+
+        CONCISE SUMMARY: """
+
+    query_prompt_template = PromptTemplate.from_template(prompt_template)
+    populated_prompt = query_prompt_template.format(hotel_reviews=concatenated_reviews)
     print(populated_prompt)
 
     chain = load_summarize_chain(llm=summarizing_llm, chain_type="stuff")

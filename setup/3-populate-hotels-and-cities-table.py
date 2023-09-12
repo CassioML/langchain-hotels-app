@@ -70,19 +70,14 @@ def populate_city_table_from_csv():
             "hotel_longitude": "longitude",
         }
     )
-    city_centres_df = city_centres.groupby(
-        ["country", "city"], as_index=False
-    ).mean()
+    city_centres_df = city_centres.groupby(["country", "city"], as_index=False).mean()
 
     futures = []
     for _, row in city_centres_df.iterrows():
         futures.append(
             session.execute_async(
                 insert_city_stmt,
-                [
-                    row[f]
-                    for f in ["country", "city", "latitude", "longitude"]
-                ],
+                [row[f] for f in ["country", "city", "latitude", "longitude"]],
             )
         )
 

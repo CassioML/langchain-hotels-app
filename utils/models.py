@@ -33,6 +33,7 @@ class CustomizedHotelDetails(BaseModel):
 
 class HotelSummary(BaseModel):
     request_id: str
+    reviews: List[HotelReview]
     summary: str
 
 
