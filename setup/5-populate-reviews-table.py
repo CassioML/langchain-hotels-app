@@ -71,6 +71,8 @@ def populate_reviews_table_from_csv():
             "review_upvotes": "upvotes",
         }
     )
+    review_df["title"] = review_df["title"].fillna("Review")
+    review_df["body"] = review_df["body"].fillna("(empty review)")
 
     futures = []
     for _, row in review_df.iterrows():
@@ -81,8 +83,8 @@ def populate_reviews_table_from_csv():
                     row["hotel_id"],
                     parse_date(row["date_added"]),
                     row["id"],
-                    str(row["title"]),
-                    str(row["body"]),
+                    row["title"],
+                    row["body"],
                     choose_featured(row["upvotes"]),
                 ],
             )
