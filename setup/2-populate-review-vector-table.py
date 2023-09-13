@@ -9,7 +9,7 @@ from setup.embedding_dump import deflate_embeddings_map
 from setup.setup_constants import EMBEDDING_FILE_NAME, HOTEL_REVIEW_FILE_NAME
 
 from utils.reviews import review_for_embeddings
-from utils.ai import EMBEDDING_DIMENSION
+from utils.ai import get_embeddings, EMBEDDING_DIMENSION
 from utils.db import get_session, get_keyspace
 from utils.review_vectors import REVIEW_VECTOR_TABLE_NAME
 
@@ -25,7 +25,10 @@ from utils.review_vectors import REVIEW_VECTOR_TABLE_NAME
 # The data is inserted asynchronously in batches to reduce loading time.
 
 
+this_dir = os.path.abspath(os.path.dirname(__file__))
+
 DEFAULT_BATCH_SIZE = 50
+
 
 if __name__ == "__main__":
     #
@@ -48,13 +51,16 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    if os.path.isfile(EMBEDDING_FILE_NAME):
+    embeddings = get_embeddings()
+    embedding_file_path = os.path.join(this_dir, EMBEDDING_FILE_NAME)
+    if os.path.isfile(embedding_file_path):
         # review_id -> vector, which was stored in a compressed format to shrink file size
-        enrichment = deflate_embeddings_map(json.load(open(EMBEDDING_FILE_NAME)))
+        enrichment = deflate_embeddings_map(json.load(open(embedding_file_path)))
     else:
         enrichment = {}
 
-    hotel_data = pd.read_csv(HOTEL_REVIEW_FILE_NAME)
+    hotel_review_file_path = os.path.join(this_dir, HOTEL_REVIEW_FILE_NAME)
+    hotel_data = pd.read_csv(hotel_review_file_path)
 
     # create cassIO abstraction
     session = get_session()

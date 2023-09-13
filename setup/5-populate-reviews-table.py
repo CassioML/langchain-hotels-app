@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 
 import datetime
@@ -6,6 +7,8 @@ from common_constants import REVIEWS_TABLE_NAME
 from setup.setup_constants import HOTEL_REVIEW_FILE_NAME, FEATURED_INDEX_NAME
 from utils.db import get_session, get_keyspace
 from utils.reviews import choose_featured
+
+this_dir = os.path.abspath(os.path.dirname(__file__))
 
 insert_review_stmt = None
 
@@ -51,7 +54,8 @@ def populate_reviews_table_from_csv():
                 (hotel_id, date_added, id, title, body, featured) values (?, ?, ?, ?, ?, ?)"""
         )
 
-    hotel_review_data = pd.read_csv(HOTEL_REVIEW_FILE_NAME)
+    hotel_review_file_path = os.path.join(this_dir, HOTEL_REVIEW_FILE_NAME)
+    hotel_review_data = pd.read_csv(hotel_review_file_path)
 
     chosen_columns = pd.DataFrame(
         hotel_review_data,

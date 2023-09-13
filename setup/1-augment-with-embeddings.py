@@ -24,6 +24,8 @@ from setup.setup_constants import EMBEDDING_FILE_NAME, HOTEL_REVIEW_FILE_NAME
 # The resulting JSON file is compressed in order to reduce storage footprint.
 
 
+this_dir = os.path.abspath(os.path.dirname(__file__))
+
 BATCH_SIZE = 20
 
 if __name__ == "__main__":
@@ -47,13 +49,16 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     embeddings = get_embeddings()
-    if os.path.isfile(EMBEDDING_FILE_NAME):
+    embedding_file_path = os.path.join(this_dir, EMBEDDING_FILE_NAME)
+
+    if os.path.isfile(embedding_file_path):
         # review_id -> vector, which was stored in a compressed format to shrink file size
-        enrichment = deflate_embeddings_map(json.load(open(EMBEDDING_FILE_NAME)))
+        enrichment = deflate_embeddings_map(json.load(open(embedding_file_path)))
     else:
         enrichment = {}
 
-    hotel_review_data = pd.read_csv(HOTEL_REVIEW_FILE_NAME)
+    hotel_review_file_path = os.path.join(this_dir, HOTEL_REVIEW_FILE_NAME)
+    hotel_review_data = pd.read_csv(hotel_review_file_path)
 
     reviews_to_embed = []
     for _, row in hotel_review_data.iterrows():
@@ -82,7 +87,7 @@ if __name__ == "__main__":
         for item, vector in zip(this_batch, embedding_vectors):
             enrichment[item["id"]] = vector
         #
-        with open(EMBEDDING_FILE_NAME, "w") as o_json:
+        with open(embedding_file_path, "w") as o_json:
             json.dump(compress_embeddings_map(enrichment), o_json, indent=4)
         done += len(embedding_vectors)
 

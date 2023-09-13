@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 
 from common_constants import HOTELS_TABLE_NAME, CITIES_TABLE_NAME
@@ -6,6 +8,8 @@ from utils.db import get_session, get_keyspace
 
 insert_hotel_stmt = None
 insert_city_stmt = None
+
+this_dir = os.path.abspath(os.path.dirname(__file__))
 
 
 def create_hotel_table():
@@ -53,7 +57,8 @@ def populate_city_table_from_csv():
             f"insert into {keyspace}.{CITIES_TABLE_NAME} (country, city, latitude, longitude) values (?, ?, ?, ?)"
         )
 
-    hotel_review_data = pd.read_csv(HOTEL_REVIEW_FILE_NAME)
+    hotel_review_file_path = os.path.join(this_dir, HOTEL_REVIEW_FILE_NAME)
+    hotel_review_data = pd.read_csv(hotel_review_file_path)
     city_centres = pd.DataFrame(
         hotel_review_data,
         columns=[
@@ -100,7 +105,8 @@ def populate_hotel_table_from_csv():
             f"insert into {keyspace}.{HOTELS_TABLE_NAME} (id, name, city, country, latitude, longitude) values (?, ?, ?, ?, ?, ?)"
         )
 
-    hotel_review_data = pd.read_csv(HOTEL_REVIEW_FILE_NAME)
+    hotel_review_file_path = os.path.join(this_dir, HOTEL_REVIEW_FILE_NAME)
+    hotel_review_data = pd.read_csv(hotel_review_file_path)
     chosen_columns = pd.DataFrame(
         hotel_review_data,
         columns=[

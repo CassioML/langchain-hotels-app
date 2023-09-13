@@ -6,7 +6,7 @@ def create_user_table():
     session = get_session()
     print("session opened")
     keyspace = get_keyspace()
-    print("keyspace ", keyspace)
+    print(f"keyspace '{keyspace}'")
 
     session.execute(
         f"""create table if not exists {keyspace}.{USERS_TABLE_NAME} (
