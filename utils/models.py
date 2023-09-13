@@ -16,6 +16,7 @@ class HotelDetailsRequest(BaseModel):
     request_id: str
     city: str
     country: str
+    # TODO rename to hotel_id for clarity?
     id: str
 
 

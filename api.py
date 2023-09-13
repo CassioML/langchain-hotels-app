@@ -20,8 +20,12 @@ from utils.models import (
 )
 from utils.review_vectors import find_similar_reviews, get_review_vectorstore
 from utils.review_llm import summarize_reviews_for_user, summarize_reviews_for_hotel
-from utils.reviews import select_reviews
-from utils.users import read_user_preferences, write_user_profile, update_user_travel_profile_summary
+from utils.reviews import select_general_hotel_reviews, insert_review_for_hotel
+from utils.users import (
+    read_user_preferences,
+    write_user_profile,
+    update_user_travel_profile_summary,
+)
 from utils.hotels import find_hotels_by_location
 
 db_session = get_session()
@@ -98,6 +102,7 @@ def find_hotels(hotel_request: HotelSearchRequest) -> List[Hotel]:
 ## MOCKS FOR CLIENT DEVELOPMENT.
 ## the plan: these will become the real endpoints, all others would be scrubbed.
 
+
 # Endpoint that retrieves the travel preferences (base + additional prefs) of the specified user.
 # This has been implemented (TODO remove this note)
 @app.post("/v1/get_user_profile")
@@ -143,16 +148,22 @@ def get_hotels(hotel_request: HotelSearchRequest) -> List[Hotel]:
 # This has been implemented (TODO remove this note)
 @app.post("/v1/base_hotel_summary")
 def get_base_hotel_summary(payload: HotelDetailsRequest) -> HotelSummary:
-
-    hotel_reviews = select_reviews(payload.id)
+    hotel_reviews = select_general_hotel_reviews(payload.id)
     hotel_review_summary = summarize_reviews_for_hotel(hotel_reviews)
     return HotelSummary(
         request_id=payload.request_id,
         reviews=hotel_reviews,
-        summary=hotel_review_summary
+        summary=hotel_review_summary,
     )
 
 
+# TODO review / improve the path of this endpoint
+@app.post("/v1/{hotel_id}/add_review")
+def add_review(hotel_id: str, payload: HotelReview):
+    insert_review_for_hotel(hotel_id=hotel_id, review_title=payload.title, review_body=payload.body)
+
+
+# TODO should this become a GET and have the user_id as part of the path somewhere?
 @app.post("/v1/customized_hotel_details/{hotel_id}")
 def get_customized_hotel_details(
     hotel_id: str, payload: UserRequest

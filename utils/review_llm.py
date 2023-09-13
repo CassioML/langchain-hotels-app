@@ -9,7 +9,9 @@ from utils.models import HotelReview
 
 # Calls the LLM to generate a summary of the given reviews tailored to the user's travel profile preferences.
 # TODO improve the prompt. Also rename this function with a clearer name.
-def summarize_reviews_for_user(reviews: List[HotelReview], trip_preferences: str) -> str:
+def summarize_reviews_for_user(
+    reviews: List[HotelReview], trip_preferences: str
+) -> str:
     summarizing_llm = get_llm()
 
     concatenated_reviews = "\n".join(review.body for review in reviews)

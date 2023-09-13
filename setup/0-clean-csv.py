@@ -1,8 +1,9 @@
-import uuid
 import random
 import pandas as pd
 import numpy as np
 from setup.setup_constants import HOTEL_REVIEW_FILE_NAME, RAW_REVIEW_SOURCE_FILE_NAME
+
+from utils.reviews import generate_review_id
 
 # Script that cleans up the raw CSV data and stores it in a new CSV:
 #  - Picks only the columns of interest.
@@ -64,7 +65,7 @@ if __name__ == "__main__":
         return text2
 
     def review_id(row):
-        return uuid.uuid4().hex
+        return generate_review_id()
 
     renamed_csv["id"] = renamed_csv.apply(review_id, axis=1)
     renamed_csv["text"] = renamed_csv.apply(clean_review_text, axis=1)

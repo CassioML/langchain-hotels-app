@@ -13,7 +13,7 @@ def get_find_hotels_prepared_statement():
     session = get_session()
     keyspace = get_keyspace()
 
-# TODO decide if we want to have a limit on the hotels, and if so, how large + extract it to a constant
+    # TODO decide if we want to have a limit on the hotels, and if so, how large + extract it to a constant
     if not find_hotels_prepared_stmt:
         find_hotels_prepared_stmt = session.prepare(
             f"SELECT id, name FROM {keyspace}.{HOTELS_TABLE_NAME} where city = ? and country = ? limit 10"
