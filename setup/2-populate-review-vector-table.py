@@ -8,7 +8,10 @@ import cassio
 from setup.embedding_dump import deflate_embeddings_map
 from setup.setup_constants import EMBEDDING_FILE_NAME, HOTEL_REVIEW_FILE_NAME
 
-from utils.reviews import review_for_embeddings
+from utils.reviews import (
+    get_cassio_reviews_vector_table,
+    build_embedded_review_to_store,
+)
 from utils.ai import get_embeddings, EMBEDDING_DIMENSION
 from utils.db import get_session, get_keyspace
 from utils.review_vectors import REVIEW_VECTOR_TABLE_NAME
@@ -62,34 +65,27 @@ if __name__ == "__main__":
     hotel_review_file_path = os.path.join(this_dir, HOTEL_REVIEW_FILE_NAME)
     hotel_data = pd.read_csv(hotel_review_file_path)
 
-    # create cassIO abstraction
-    session = get_session()
-    keyspace = get_keyspace()
-    # TODO: update init signature (auto_id, primary_key_type)
-    reviews_table = cassio.table.ClusteredMetadataVectorCassandraTable(
-        session=session,
-        keyspace=keyspace,
-        table=REVIEW_VECTOR_TABLE_NAME,
-        vector_dimension=EMBEDDING_DIMENSION,
-    )
+    reviews_table = get_cassio_reviews_vector_table()
 
     #
     inserted = 0
 
-    def _metadata(row):
-        return {
-            "hotel_id": row["hotel_id"],
-            "rating": row["rating"],
-        }
-
     eligibles = (
-        {
-            "partition_id": row["hotel_id"],
-            "body_blob": review_for_embeddings(row["title"], row["text"]),
-            "vector": enrichment[row["id"]],
-            "row_id": row["id"],
-            "metadata": _metadata(row),
-        }
+        # {
+        #     "partition_id": row["hotel_id"],
+        #     "body_blob": review_for_embeddings(row["title"], row["text"]),
+        #     "vector": enrichment[row["id"]],
+        #     "row_id": row["id"],
+        #     "metadata": review_metadata(row["hotel_id"], row["rating"]),
+        # }
+        build_embedded_review_to_store(
+            hotel_id=row["hotel_id"],
+            hotel_rating=row["rating"],
+            review_id=row["id"],
+            review_vector=enrichment[row["id"]],
+            review_title=row["title"],
+            review_body=row["text"],
+        )
         for _, row in hotel_data.iterrows()
         if row["id"] in enrichment
     )

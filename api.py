@@ -160,7 +160,9 @@ def get_base_hotel_summary(payload: HotelDetailsRequest) -> HotelSummary:
 # TODO review / improve the path of this endpoint
 @app.post("/v1/{hotel_id}/add_review")
 def add_review(hotel_id: str, payload: HotelReview):
-    insert_review_for_hotel(hotel_id=hotel_id, review_title=payload.title, review_body=payload.body)
+    insert_review_for_hotel(
+        hotel_id=hotel_id, review_title=payload.title, review_body=payload.body
+    )
 
 
 # TODO should this become a GET and have the user_id as part of the path somewhere?

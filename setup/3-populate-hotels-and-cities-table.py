@@ -3,7 +3,7 @@ import os
 import pandas as pd
 
 from common_constants import HOTELS_TABLE_NAME, CITIES_TABLE_NAME
-from setup.setup_constants import HOTEL_REVIEW_FILE_NAME
+from setup.setup_constants import HOTEL_REVIEW_FILE_NAME, HOTEL_ID_INDEX_NAME
 from utils.db import get_session, get_keyspace
 
 insert_hotel_stmt = None
@@ -17,15 +17,21 @@ def create_hotel_table():
     keyspace = get_keyspace()
 
     session.execute(
-        f"""create table if not exists {keyspace}.{HOTELS_TABLE_NAME} (
+        f"""CREATE TABLE IF NOT EXISTS {keyspace}.{HOTELS_TABLE_NAME} (
                             country text,
                             city text, 
                             id text,
                             name text,
+                            rating int,
                             latitude float,
                             longitude float,
-                            primary key (( country, city), id )
+                            PRIMARY KEY (( country, city), id )
                             )"""
+    )
+
+    session.execute(
+        f"""CREATE CUSTOM INDEX IF NOT EXISTS {HOTEL_ID_INDEX_NAME} ON {keyspace}.{HOTELS_TABLE_NAME}(id) 
+            USING 'StorageAttachedIndex' """
     )
 
 
@@ -34,12 +40,12 @@ def create_city_table():
     keyspace = get_keyspace()
 
     session.execute(
-        f"""create table if not exists {keyspace}.{CITIES_TABLE_NAME} (
+        f"""CREATE TABLE IF NOT EXISTS {keyspace}.{CITIES_TABLE_NAME} (
                             country text,
                             city text,
                             latitude float,
                             longitude float,
-                            primary key (( country, city))
+                            PRIMARY KEY (( country, city))
                             )"""
     )
 
@@ -102,7 +108,7 @@ def populate_hotel_table_from_csv():
     global insert_hotel_stmt
     if insert_hotel_stmt is None:
         insert_hotel_stmt = session.prepare(
-            f"insert into {keyspace}.{HOTELS_TABLE_NAME} (id, name, city, country, latitude, longitude) values (?, ?, ?, ?, ?, ?)"
+            f"insert into {keyspace}.{HOTELS_TABLE_NAME} (id, name, rating, city, country, latitude, longitude) values (?, ?, ?, ?, ?, ?, ?)"
         )
 
     hotel_review_file_path = os.path.join(this_dir, HOTEL_REVIEW_FILE_NAME)
@@ -112,6 +118,7 @@ def populate_hotel_table_from_csv():
         columns=[
             "hotel_id",
             "hotel_name",
+            "rating",
             "hotel_city",
             "hotel_country",
             "hotel_latitude",
@@ -122,6 +129,7 @@ def populate_hotel_table_from_csv():
         columns={
             "hotel_id": "id",
             "hotel_name": "name",
+            "rating": "rating",
             "hotel_city": "city",
             "hotel_country": "country",
             "hotel_latitude": "latitude",
@@ -137,7 +145,7 @@ def populate_hotel_table_from_csv():
                 insert_hotel_stmt,
                 [
                     row[f]
-                    for f in ["id", "name", "city", "country", "latitude", "longitude"]
+                    for f in ["id", "name", "rating", "city", "country", "latitude", "longitude"]
                 ],
             )
         )

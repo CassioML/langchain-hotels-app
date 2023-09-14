@@ -18,7 +18,6 @@ from utils.reviews import generate_review_id
 this_dir = os.path.abspath(os.path.dirname(__file__))
 
 if __name__ == "__main__":
-
     hotel_review_file_path = os.path.join(this_dir, HOTEL_REVIEW_FILE_NAME)
     if os.path.isfile(hotel_review_file_path):
         print(
@@ -28,8 +27,9 @@ if __name__ == "__main__":
             f"file '{HOTEL_REVIEW_FILE_NAME}' manually."
         )
     else:
-
-        raw_review_source_file_path = os.path.join(this_dir, RAW_REVIEW_SOURCE_FILE_NAME)
+        raw_review_source_file_path = os.path.join(
+            this_dir, RAW_REVIEW_SOURCE_FILE_NAME
+        )
         raw_csv = pd.read_csv(raw_review_source_file_path)
         chosen_columns = pd.DataFrame(
             raw_csv,
