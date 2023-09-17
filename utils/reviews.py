@@ -157,13 +157,14 @@ def build_embedded_review_to_store(
         "hotel_id": hotel_id,
         "rating": hotel_rating,
     }
-    return {
+    embedded = {
         "partition_id": hotel_id,
         "body_blob": format_review_content_for_embedding(title=review_title, body=review_body),
         "vector": review_vector,
         "row_id": review_id,
         "metadata": review_metadata,
     }
+    return embedded
 
 
 def embed_review(
@@ -176,7 +177,7 @@ def embed_review(
     embeddings = get_embeddings()
 
     review_doc = create_review_doc_for_embedding(review_id=review_id, review_title=review_title, review_body=review_body)
-    vector = embeddings.embed_documents(review_doc)
+    vector = embeddings.embed_documents([review_doc["body"]])[0]
     return build_embedded_review_to_store(
         hotel_id, hotel_rating, review_id, vector, review_title, review_body
     )

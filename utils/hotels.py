@@ -52,4 +52,4 @@ def find_hotel_by_id(hotel_id: str) -> Hotel:
     if row is not None:
         return Hotel(city=row.city, country=row.country, name=row.name, rating=str(row.rating), id=hotel_id)
     else:
-        return Hotel()
+        return None
