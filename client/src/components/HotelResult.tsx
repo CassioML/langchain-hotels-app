@@ -1,9 +1,9 @@
 import './App.css';
 
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 
-import {RequestStatus} from "../interfaces/interfaces";
+import {RequestStatus} from "../interfaces/enums";
 
 import {baseHotelSummary} from "../utils/hotel_search";
 
@@ -24,29 +24,31 @@ const HotelResult = (props: any) => {
         setSummaryStatus("completed");
       }
 
-      const err_back = () => {
+      const errback = () => {
         setSummaryStatus("errored");
         console.log("ERROR (baseHotelSummary)!");
       }
 
-      baseHotelSummary(hotel, hotel.id, callback, err_back);
+      baseHotelSummary(hotel, hotel.id, callback, errback);
     },
     [hotel]
   );
 
-  if (hotelSummary){
-    return <li key={hotel.id}>
-      <Link to={`/browse/${hotel.id}`}>
-        {`${hotel.name} (${hotel.id}):`} <b>{hotelSummary}</b>
-      </Link>
-    </li>;
-  }else{
-    return <li key={hotel.id}>
-      <Link to={`/browse/${hotel.id}`}>
-        {`${hotel.name} (${hotel.id})`} [...]
-      </Link>
-    </li>;
-  }
+  return <li key={hotel.id}>
+    <Link to={`/browse/${hotel.id}`}>
+      {`${hotel.name} (${hotel.id}):`}
+        { (summaryStatus === "initialized" || summaryStatus === "in_flight") &&
+          <span>...</span>
+        }
+        { (summaryStatus === "completed") &&
+          <b>{hotelSummary || "(no summary)"}</b>
+        }
+        { (summaryStatus === "errored") &&
+          <span>(could not get hotel summary)</span>
+        }
+    </Link>
+  </li>;
+
 }
 
 export default HotelResult

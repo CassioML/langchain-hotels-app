@@ -1,7 +1,5 @@
 import './App.css';
 
-// import {RequestStatus} from "../interfaces/interfaces";
-
 import HotelResult from "./HotelResult";
 
 const HotelResults = (props: any) => {

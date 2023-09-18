@@ -1,9 +1,9 @@
 import './App.css';
 import {searchHotels} from "../utils/hotel_search";
 import HotelResults from "./HotelResults";
-import {RequestStatus} from "../interfaces/interfaces";
+import {RequestStatus} from "../interfaces/enums";
 
-import { /*useEffect,*/ useState } from "react"
+import { useState } from "react"
 
 
 const HotelBrowser = () => {
@@ -25,12 +25,12 @@ const HotelBrowser = () => {
         setSearchStatus("completed");
       }
 
-      const err_back = () => {
+      const errback = () => {
         setSearchStatus("errored");
         console.log("ERROR!");
       }
 
-      searchHotels(city, country, callback, err_back)
+      searchHotels(city, country, callback, errback)
 
     }
     

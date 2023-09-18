@@ -2,7 +2,8 @@ import './App.css';
 
 import { useEffect, useState } from "react"
 
-import {UserDesc, UserProfile, UserProfileBasePreferences, RequestStatus, DEFAULT_USER_PROFILE} from "../interfaces/interfaces";
+import {UserDesc, UserProfile, UserProfileBasePreferences, DEFAULT_USER_PROFILE} from "../interfaces/interfaces";
+import {RequestStatus} from "../interfaces/enums";
 import {getAPIUserProfile} from "../utils/user_profile";
 
 import UserProfileForm from "./UserProfileForm"

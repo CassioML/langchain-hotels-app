@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const searchHotels = (country: string, city: string, callback: any, error_callback: any) => {
+export const searchHotels = (country: string, city: string, callback: any, errback: any) => {
   axios.post(
     'http://127.0.0.1:8000/v1/find_hotels',
     {city, country}
@@ -9,17 +9,17 @@ export const searchHotels = (country: string, city: string, callback: any, error
     callback(response.data);
   })
   .catch((error: any) => {
-    if(error_callback){
-      error_callback();
+    if(errback){
+      errback();
     }
   });
 }
 
-export const baseHotelSummary = (hotel: any, request_id: string, callback: any, error_callback: any) => {
+export const baseHotelSummary = (hotel: any, requestId: string, callback: any, errback: any) => {
   axios.post(
     'http://127.0.0.1:8000/v1/base_hotel_summary',
     {
-      request_id: request_id,
+      request_id: requestId,
       city: hotel.city,
       country: hotel.country,
       id: hotel.id,
@@ -29,23 +29,23 @@ export const baseHotelSummary = (hotel: any, request_id: string, callback: any, 
     callback(response.data);
   })
   .catch((error: any) => {
-    if(error_callback){
-      error_callback();
+    if(errback){
+      errback();
     }
   });
 }
 
-export const customizedHotelDetails = (hotel_id: string, userId: string, callback: any, error_callback: any) => {
+export const customizedHotelDetails = (hotelId: string, userId: string, callback: any, errback: any) => {
   axios.post(
-    `http://127.0.0.1:8000/v1/customized_hotel_details/${hotel_id}`,
+    `http://127.0.0.1:8000/v1/customized_hotel_details/${hotelId}`,
     {user_id: userId}
   )
   .then((response: any) => {
     callback(response.data);
   })
   .catch((error: any) => {
-    if(error_callback){
-      error_callback();
+    if(errback){
+      errback();
     }
   });
 }

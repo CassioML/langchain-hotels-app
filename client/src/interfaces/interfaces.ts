@@ -57,5 +57,3 @@ export const DEFAULT_USER_PROFILE = {
   base_preferences: DEFAULT_BASE_PREFERENCES,
   additional_preferences: "",
 }
-
-export type RequestStatus = "initialized" | "in_flight" | "completed" | "errored"

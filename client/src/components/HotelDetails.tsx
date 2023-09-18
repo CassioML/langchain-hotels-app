@@ -5,11 +5,11 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import {customizedHotelDetails} from "../utils/hotel_search";
-import {RequestStatus} from "../interfaces/interfaces";
+import {RequestStatus} from "../interfaces/enums";
 
 const HotelDetails = (props: any) => {
 
-  const {hotel_id} = useParams();
+  const {hotelId} = useParams();
   const {userId} = props;
 
   const [hotelDetails, setHotelDetails] = useState<any>();
@@ -17,7 +17,7 @@ const HotelDetails = (props: any) => {
 
   useEffect(
     () => {
-      console.log(`asking for customized details on ${hotel_id} for ${userId}`);
+      console.log(`asking for customized details on ${hotelId} for ${userId}`);
       setDetailsStatus("in_flight")
 
       const callback = (results: any) => {
@@ -25,14 +25,14 @@ const HotelDetails = (props: any) => {
         setDetailsStatus("completed");
       }
 
-      const err_back = () => {
+      const errback = () => {
         setDetailsStatus("errored");
         console.log("ERROR (baseHotelSummary)!");
       }
 
-      customizedHotelDetails(hotel_id || "", userId, callback, err_back);
+      customizedHotelDetails(hotelId || "", userId, callback, errback);
     },
-    [hotel_id, userId]
+    [hotelId, userId]
   );
 
   return <div>

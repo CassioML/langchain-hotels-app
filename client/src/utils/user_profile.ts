@@ -2,10 +2,10 @@ import axios from "axios";
 
 import {UserProfile} from "../interfaces/interfaces";
 
-export const setAPIUserProfile = (userId: string, user_profile: UserProfile, callback: any, error_callback: any) => {
+export const setAPIUserProfile = (userId: string, userProfile: UserProfile, callback: any, errback: any) => {
   const payload = {
     user_id: userId,
-    user_profile,
+    user_profile: userProfile,
   };
   axios.post(
     'http://127.0.0.1:8000/v1/set_user_profile',
@@ -15,13 +15,13 @@ export const setAPIUserProfile = (userId: string, user_profile: UserProfile, cal
     callback(response.data);
   })
   .catch((error: any) => {
-    if(error_callback){
-      error_callback();
+    if(errback){
+      errback();
     }
   });
 }
 
-export const getAPIUserProfile = (userId: string, callback: any, error_callback: any) => {
+export const getAPIUserProfile = (userId: string, callback: any, errback: any) => {
   axios.post(
     'http://127.0.0.1:8000/v1/get_user_profile',
     {user_id: userId}
@@ -30,8 +30,8 @@ export const getAPIUserProfile = (userId: string, callback: any, error_callback:
     callback(response.data);
   })
   .catch((error: any) => {
-    if(error_callback){
-      error_callback();
+    if(errback){
+      errback();
     }
   });
 }
