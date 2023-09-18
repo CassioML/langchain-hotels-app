@@ -42,7 +42,7 @@ class Hotel(BaseModel):
     city: str
     country: str
     name: str
-    rating: str
+    rating: int
     id: str
 
 

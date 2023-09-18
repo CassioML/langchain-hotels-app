@@ -2,7 +2,7 @@ import './App.css';
 import { useEffect } from "react"
 import { useForm } from "react-hook-form";
 
-import {UserDesc, UserProfile, UserProfileBasePreferences, BASE_PREFERENCES_LABELS} from "../interfaces/interfaces";
+import {UserDesc, UserProfile, BASE_PREFERENCES_LABELS} from "../interfaces/interfaces";
 
 import {setAPIUserProfile} from "../utils/user_profile";
 

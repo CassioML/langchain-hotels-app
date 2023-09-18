@@ -1,5 +1,35 @@
 import { Dispatch, SetStateAction } from "react";
 
+export interface SuccessMarker {
+  success: boolean;
+}
+
+export interface Hotel {
+  city: string;
+  country: string;
+  name: string;
+  rating: number;
+  id: string;
+}
+
+export interface HotelReview {
+    title: string;
+    body: string;
+    id: string;
+}
+
+export interface HotelSummary {
+  request_id: string;
+  reviews: HotelReview[];
+  summary: string;
+}
+
+export interface CustomizedHotelDetails {
+  name: string;
+  reviews: HotelReview[];
+  summary: string;
+}
+
 export interface UserDesc {
   userId: string|undefined;
 }
