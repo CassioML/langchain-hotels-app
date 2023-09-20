@@ -8,7 +8,7 @@ from utils.models import HotelReview
 
 from utils.ai import get_embeddings, EMBEDDING_DIMENSION
 from utils.db import get_session, get_keyspace
-from utils.review_vectors import REVIEW_VECTOR_TABLE_NAME
+from utils.review_vectors import REVIEW_VECTOR_TABLE_NAME, get_review_vectorstore
 from utils.hotels import find_hotel_by_id
 
 from typing import List, Dict
@@ -67,14 +67,28 @@ def insert_review_for_hotel(
     hotel = find_hotel_by_id(hotel_id)
 
     # TODO check that the hotel was found
-    embedded_review = embed_review(
-        hotel_id=hotel_id,
-        hotel_rating=hotel.rating,
-        review_id=review_id,
-        review_title=review_title,
-        review_body=review_body,
+
+    db_session = get_session()
+    db_keyspace = get_keyspace()
+    embeddings = get_embeddings()
+
+    review_store = get_review_vectorstore(
+        session=db_session,
+        keyspace=db_keyspace,
+        embeddings=embeddings,
+    )    
+
+    review_metadata = {
+        "hotel_id": hotel_id,
+        "rating": hotel.rating,
+    }
+
+    review_store.add_texts(
+        texts=[format_review_content_for_embedding(review_title, review_body)],
+        metadatas=[review_metadata],
+        ids=[review_id],
+        partition_id=hotel_id,
     )
-    insert_into_reviews_vector_table(embedded_review)
 
 
 def generate_review_id():
@@ -85,34 +99,11 @@ def format_review_content_for_embedding(title: str, body: str) -> str:
     return f"{title}: {body}"
 
 
-def create_review_doc_for_embedding(review_id: str, review_title: str, review_body: str) -> {}:
-    return {
-        "id": review_id,
-        "body": format_review_content_for_embedding(review_title, review_body),
-    }
-
-
 def choose_featured(num_upvotes: int) -> int:
     if num_upvotes > FEATURED_VOTE_THRESHOLD:
         return 1
     else:
         return 0
-
-
-def get_cassio_reviews_vector_table() -> (
-    cassio.table.ClusteredMetadataVectorCassandraTable
-):
-    # create cassIO abstraction
-    session = get_session()
-    keyspace = get_keyspace()
-    # TODO: update init signature (auto_id, primary_key_type)
-    reviews_table = cassio.table.ClusteredMetadataVectorCassandraTable(
-        session=session,
-        keyspace=keyspace,
-        table=REVIEW_VECTOR_TABLE_NAME,
-        vector_dimension=EMBEDDING_DIMENSION,
-    )
-    return reviews_table
 
 
 def insert_into_reviews_table(
@@ -135,52 +126,3 @@ def insert_into_reviews_table(
         insert_review_stmt,
         (hotel_id, date_added, review_id, review_title, review_body, featured),
     )
-
-
-def insert_into_reviews_vector_table(embedded_review: Dict):
-    reviews_vector_table = get_cassio_reviews_vector_table()
-    reviews_vector_table.put_async(**embedded_review)
-
-
-# TODO figure out type hint for vector
-# here and in populate-review-vector-table
-def build_embedded_review_to_store(
-    hotel_id: str,
-    hotel_rating: str,
-    review_id: str,
-    review_vector,
-    review_title: str,
-    review_body: str,
-) -> {}:
-
-    review_metadata = {
-        "hotel_id": hotel_id,
-        "rating": hotel_rating,
-    }
-    embedded = {
-        "partition_id": hotel_id,
-        "body_blob": format_review_content_for_embedding(title=review_title, body=review_body),
-        "vector": review_vector,
-        "row_id": review_id,
-        "metadata": review_metadata,
-    }
-    return embedded
-
-
-def embed_review(
-    hotel_id: str,
-    hotel_rating: str,
-    review_id: str,
-    review_title: str,
-    review_body: str,
-) -> {}:
-    embeddings = get_embeddings()
-
-    review_doc = create_review_doc_for_embedding(review_id=review_id, review_title=review_title, review_body=review_body)
-    vector = embeddings.embed_documents([review_doc["body"]])[0]
-    return build_embedded_review_to_store(
-        hotel_id, hotel_rating, review_id, vector, review_title, review_body
-    )
-
-
-
