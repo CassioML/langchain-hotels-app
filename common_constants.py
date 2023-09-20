@@ -1,5 +1,6 @@
 HOTELS_TABLE_NAME = "hotels"
 CITIES_TABLE_NAME = "cities"
 REVIEWS_TABLE_NAME = "reviews"
+REVIEW_VECTOR_TABLE_NAME = "hotel_reviews_embeddings"
 USERS_TABLE_NAME = "users"
 FEATURED_VOTE_THRESHOLD = 13

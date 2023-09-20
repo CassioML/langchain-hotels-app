@@ -1,11 +1,10 @@
-from typing import Any, Dict, List, Union
+from typing import Dict, List, Union
 
-from fastapi import FastAPI, BackgroundTasks, Depends
+from fastapi import FastAPI, BackgroundTasks
 
 from utils.localCORS import permitReactLocalhostClient
-from utils.ai import get_embeddings, enable_llm_cache
+from utils.ai import enable_llm_cache
 from utils.db import get_keyspace, get_session
-from utils.dbio import find_hotels_by_country_city
 from utils.models import (
     CustomizedHotelDetails,
     Hotel,
@@ -13,13 +12,12 @@ from utils.models import (
     HotelReview,
     HotelSearchRequest,
     HotelSummary,
-    ReviewRequest,
     UserRequest,
     UserProfileSubmitRequest,
     UserProfile,
 )
-from utils.review_vectors import find_similar_reviews, get_review_vectorstore
-from utils.review_llm import summarize_reviews_for_user, summarize_reviews_for_hotel
+
+from utils.review_llm import summarize_reviews_for_hotel
 from utils.reviews import select_general_hotel_reviews, insert_review_for_hotel
 from utils.users import (
     read_user_preferences,
@@ -47,60 +45,6 @@ def init():
 init()
 app = FastAPI()
 permitReactLocalhostClient(app)
-
-
-# TODO: handle per-hotel search
-# TODO: replace with 'summarize reviews found' (etc)
-@app.post("/find_reviews")
-def find_reviews(review_request: ReviewRequest) -> List[str]:
-    hotel_id = "AVwdp-5bIN2L1WUfx-QW"
-    print("FIXME, I AM A FAKE HOTEL ID")
-    review_store = get_review_vectorstore(
-        session=db_session,
-        keyspace=db_keyspace,
-        embeddings=get_embeddings(),
-    )
-    similar_reviews = find_similar_reviews(
-        review_request.review, hotel_id, review_store
-    )
-    return similar_reviews
-
-
-# TODO - change to be hotel-specific
-@app.post("/summarize_reviews")
-def summarize_reviews(
-    review_request: ReviewRequest,
-) -> Dict[str, Union[str, List[str]]]:
-    hotel_id = "AVwdp-5bIN2L1WUfx-QW"
-    print("FIXME, I AM A FAKE HOTEL ID")
-    review_store = get_review_vectorstore(
-        session=db_session,
-        keyspace=db_keyspace,
-        embeddings=get_embeddings(),
-    )
-    similar_reviews = find_similar_reviews(
-        review_request.review, hotel_id, review_store
-    )
-    fake_user_preferences = (
-        "Travels with kids. Highly values amenities. Hates having to walk."
-    )
-    summary = summarize_reviews_for_user(similar_reviews, fake_user_preferences)
-    return {
-        "reviews": similar_reviews,
-        "summary": summary,
-    }
-
-
-@app.post("/find_hotels")
-def find_hotels(hotel_request: HotelSearchRequest) -> List[Hotel]:
-    hotels = find_hotels_by_country_city(
-        db_session, db_keyspace, **hotel_request.dict()
-    )
-    return hotels
-
-
-## MOCKS FOR CLIENT DEVELOPMENT.
-## the plan: these will become the real endpoints, all others would be scrubbed.
 
 
 # Endpoint that retrieves the travel preferences (base + additional prefs) of the specified user.
@@ -157,11 +101,15 @@ def get_base_hotel_summary(payload: HotelDetailsRequest) -> HotelSummary:
     )
 
 
-# TODO review / improve the path of this endpoint
+# Endpoint that inserts a review for a hotel.
+# This has been implemented (TODO remove this note)
 @app.post("/v1/{hotel_id}/add_review")
 def add_review(hotel_id: str, payload: HotelReview):
     insert_review_for_hotel(
-        hotel_id=hotel_id, review_title=payload.title, review_body=payload.body, review_rating=payload.rating
+        hotel_id=hotel_id,
+        review_title=payload.title,
+        review_body=payload.body,
+        review_rating=payload.rating,
     )
 
 

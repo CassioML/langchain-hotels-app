@@ -9,8 +9,6 @@ find_hotel_by_id_stmt = None
 
 
 def get_find_hotels_prepared_statement():
-
-
     return find_hotels_stmt
 
 

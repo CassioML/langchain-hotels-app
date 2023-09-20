@@ -5,28 +5,21 @@ import pandas as pd
 from itertools import groupby
 from typing import Dict, List
 
-import cassio
-
 from setup.embedding_dump import deflate_embeddings_map
 from setup.setup_constants import EMBEDDING_FILE_NAME, HOTEL_REVIEW_FILE_NAME
 
-# from utils.reviews import (
-#     get_cassio_reviews_vector_table,
-#     build_embedded_review_to_store,
-# )
-from utils.ai import get_embeddings, EMBEDDING_DIMENSION
+from utils.ai import EMBEDDING_DIMENSION
 from utils.db import get_session, get_keyspace
-from utils.review_vectors import get_review_vectorstore, REVIEW_VECTOR_TABLE_NAME
-from utils.reviews import format_review_content_for_embedding
+from utils.reviews import format_review_content_for_embedding, get_review_vectorstore
 
 # We create an ad-hoc "Embeddings" class, sitting on the precalculated embeddings,
-# to perform all these insertions idiomatically through the lanchain
-# abstraction. This is to avoid having to work at the bare-CassIO lebel
-# while still taking advantage of the stored json with precalculated stuff.
+# to perform all these insertions idiomatically through the LangChain
+# abstraction. This is to avoid having to work at the bare-CassIO level
+# while still taking advantage of the stored json with precalculated vectors.
 from langchain.embeddings.base import Embeddings
 
-class JustPreCalculatedEmbeddings(Embeddings):
 
+class JustPreCalculatedEmbeddings(Embeddings):
     def __init__(self, precalc_dict: Dict[str, List[float]]) -> None:
         self.precalc_dict = precalc_dict
 
@@ -97,16 +90,16 @@ if __name__ == "__main__":
     hotel_review_data = pd.read_csv(hotel_review_file_path)
 
     # sadly the precalc map for this "embeddings" must be sentence -> vector,
-    # so we need a 'join'
-    # (which amounts to a preprocess pass through the hotel reviews dataframe)
+    # so we need a 'join' (which amounts to a preprocess pass through the hotel reviews dataframe)
     precalc_text_to_vector_map = {
-        format_review_content_for_embedding(title=row["title"], body=row["text"]): enrichment[row["id"]]
+        format_review_content_for_embedding(
+            title=row["title"], body=row["text"]
+        ): enrichment[row["id"]]
         for _, row in hotel_review_data.iterrows()
         if row["id"] in enrichment
     }
     c_embeddings = JustPreCalculatedEmbeddings(precalc_dict=precalc_text_to_vector_map)
 
-    # reviews_table = get_cassio_reviews_vector_table()
     db_session = get_session()
     db_keyspace = get_keyspace()
     review_vectorstore = get_review_vectorstore(
@@ -120,7 +113,9 @@ if __name__ == "__main__":
 
     eligibles = (
         {
-            "text": format_review_content_for_embedding(title=row["title"], body=row["text"]),
+            "text": format_review_content_for_embedding(
+                title=row["title"], body=row["text"]
+            ),
             "metadata": {"hotel_id": row["hotel_id"], "rating": row["rating"]},
             "id": row["id"],
             "partition_id": row["hotel_id"],
@@ -132,20 +127,21 @@ if __name__ == "__main__":
     def _flush_batch(store, batch):
         if batch:
             # collapse the arguments to lists: {"texts": [...], "ids": [... etc
-            texts, metadatas, ids, partition_ids = list(zip(*((
-                eli["text"], eli["metadata"], eli["id"], eli["partition_id"]
-            ) for eli in batch)))
+            texts, metadatas, ids, partition_ids = list(
+                zip(
+                    *(
+                        (eli["text"], eli["metadata"], eli["id"], eli["partition_id"])
+                        for eli in batch
+                    )
+                )
+            )
             # sanity check:
             assert len(set(partition_ids)) == 1
             # we need to group by partition_id and do separate inserts
             review_vectorstore.add_texts(
-                texts=texts,
-                metadatas=metadatas,
-                ids=ids,
-                partition_id=partition_ids[0]
+                texts=texts, metadatas=metadatas, ids=ids, partition_id=partition_ids[0]
             )
         return len(batch)
-
 
     groups_by_partition_id = groupby(
         sorted(eligibles, key=lambda eli: eli["partition_id"]),

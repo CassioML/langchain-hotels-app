@@ -65,7 +65,13 @@ if __name__ == "__main__":
         review_id = row["id"]
         if review_id not in enrichment or args.force:
             if args.n is None or len(reviews_to_embed) < args.n:
-                reviews_to_embed.append(create_review_doc_for_embedding(review_id=review_id, review_title=row["title"], review_body=row["text"]))
+                reviews_to_embed.append(
+                    create_review_doc_for_embedding(
+                        review_id=review_id,
+                        review_title=row["title"],
+                        review_body=row["text"],
+                    )
+                )
         if args.n is not None and len(reviews_to_embed) >= args.n:
             break
 
