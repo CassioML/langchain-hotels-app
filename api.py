@@ -49,6 +49,7 @@ permitReactLocalhostClient(app)
 
 # Endpoint that retrieves the travel preferences (base + additional prefs) of the specified user.
 # This has been implemented (TODO remove this note)
+# TODO should this just be a GET, e.g. /v1/user_profile/{user_id} ?
 @app.post("/v1/get_user_profile")
 def get_user_profile(payload: UserRequest) -> Union[UserProfile, None]:
     return read_user_preferences(payload.user_id)

@@ -24,7 +24,7 @@ def read_user_preferences(user_id) -> Union[UserProfile, None]:
     global user_profile_select_stmt
     if user_profile_select_stmt is None:
         user_profile_select_stmt = session.prepare(
-            f"SELECT base_preferences, additional_preferences FROM {keyspace}.{USERS_TABLE_NAME} WHERE id=?;"
+            f"SELECT base_preferences, additional_preferences, travel_profile_summary FROM {keyspace}.{USERS_TABLE_NAME} WHERE id=?;"
         )
 
     user_row = session.execute(user_profile_select_stmt, (user_id,)).one()
@@ -33,6 +33,7 @@ def read_user_preferences(user_id) -> Union[UserProfile, None]:
         profile = UserProfile(
             base_preferences=json.loads(user_row.base_preferences),
             additional_preferences=user_row.additional_preferences,
+            travel_profile_summary=user_row.travel_profile_summary,
         )
         return profile
     else:
