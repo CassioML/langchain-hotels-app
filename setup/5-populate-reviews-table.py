@@ -24,6 +24,7 @@ def create_reviews_table():
                 id text,
                 title text,
                 body text,
+                rating int,
                 featured int,
                 PRIMARY KEY (hotel_id, date_added, id)
             ) WITH CLUSTERING ORDER BY (date_added DESC, id ASC)"""
@@ -51,7 +52,7 @@ def populate_reviews_table_from_csv():
     if insert_review_stmt is None:
         insert_review_stmt = session.prepare(
             f"""insert into {keyspace}.{REVIEWS_TABLE_NAME} 
-                (hotel_id, date_added, id, title, body, featured) values (?, ?, ?, ?, ?, ?)"""
+                (hotel_id, date_added, id, title, body, rating, featured) values (?, ?, ?, ?, ?, ?, ?)"""
         )
 
     hotel_review_file_path = os.path.join(this_dir, HOTEL_REVIEW_FILE_NAME)
@@ -59,20 +60,21 @@ def populate_reviews_table_from_csv():
 
     chosen_columns = pd.DataFrame(
         hotel_review_data,
-        columns=["hotel_id", "date", "id", "title", "text", "review_upvotes"],
+        columns=["hotel_id", "date", "id", "title", "text", "rating", "review_upvotes"],
     )
     review_df = chosen_columns.rename(
         columns={
-            "hotel_id": "hotel_id",
+            # "hotel_id": "hotel_id",
             "date": "date_added",
-            "id": "id",
-            "title": "title",
+            # "id": "id",
+            # "title": "title",
             "text": "body",
             "review_upvotes": "upvotes",
         }
     )
     review_df["title"] = review_df["title"].fillna("Review")
     review_df["body"] = review_df["body"].fillna("(empty review)")
+    review_df["rating"] = review_df["rating"].fillna(5)
 
     futures = []
     for _, row in review_df.iterrows():
@@ -85,6 +87,7 @@ def populate_reviews_table_from_csv():
                     row["id"],
                     row["title"],
                     row["body"],
+                    row["rating"],
                     choose_featured(row["upvotes"]),
                 ],
             )

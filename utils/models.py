@@ -23,6 +23,7 @@ class HotelDetailsRequest(BaseModel):
 class HotelReview(BaseModel):
     title: str
     body: str
+    rating: int
     id: str
 
 
@@ -42,7 +43,6 @@ class Hotel(BaseModel):
     city: str
     country: str
     name: str
-    rating: int
     id: str
 
 

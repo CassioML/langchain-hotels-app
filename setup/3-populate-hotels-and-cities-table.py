@@ -22,7 +22,6 @@ def create_hotel_table():
                             city text, 
                             id text,
                             name text,
-                            rating int,
                             latitude float,
                             longitude float,
                             PRIMARY KEY (( country, city), id )
@@ -108,7 +107,7 @@ def populate_hotel_table_from_csv():
     global insert_hotel_stmt
     if insert_hotel_stmt is None:
         insert_hotel_stmt = session.prepare(
-            f"insert into {keyspace}.{HOTELS_TABLE_NAME} (id, name, rating, city, country, latitude, longitude) values (?, ?, ?, ?, ?, ?, ?)"
+            f"insert into {keyspace}.{HOTELS_TABLE_NAME} (id, name, city, country, latitude, longitude) values (?, ?, ?, ?, ?, ?)"
         )
 
     hotel_review_file_path = os.path.join(this_dir, HOTEL_REVIEW_FILE_NAME)
@@ -118,7 +117,6 @@ def populate_hotel_table_from_csv():
         columns=[
             "hotel_id",
             "hotel_name",
-            "rating",
             "hotel_city",
             "hotel_country",
             "hotel_latitude",
@@ -129,7 +127,6 @@ def populate_hotel_table_from_csv():
         columns={
             "hotel_id": "id",
             "hotel_name": "name",
-            "rating": "rating",
             "hotel_city": "city",
             "hotel_country": "country",
             "hotel_latitude": "latitude",
@@ -145,7 +142,7 @@ def populate_hotel_table_from_csv():
                 insert_hotel_stmt,
                 [
                     row[f]
-                    for f in ["id", "name", "rating", "city", "country", "latitude", "longitude"]
+                    for f in ["id", "name", "city", "country", "latitude", "longitude"]
                 ],
             )
         )

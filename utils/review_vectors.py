@@ -6,7 +6,7 @@ REVIEW_VECTOR_TABLE_NAME = "hotel_reviews_embeddings"
 review_vectorstore = None
 
 
-def get_review_vectorstore(session, keyspace, embeddings):
+def get_review_vectorstore(session, keyspace, embeddings, is_setup: bool = False):
     global review_vectorstore
     if review_vectorstore is None:
         review_vectorstore = Cassandra(
@@ -16,6 +16,7 @@ def get_review_vectorstore(session, keyspace, embeddings):
             table_name=REVIEW_VECTOR_TABLE_NAME,
             partition_id="will-always-be-overridden",
             partitioned=True,
+            skip_provisioning=not is_setup,
         )
     return review_vectorstore
 

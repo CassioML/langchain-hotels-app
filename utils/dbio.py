@@ -6,7 +6,7 @@ from cassandra.cluster import Session
 from common_constants import HOTELS_TABLE_NAME
 from utils.models import Hotel
 
-SELECT_HOTEL_BY_COUNTRY_CITY_CQL = "SELECT country, city, id, name, rating FROM {keyspace}.{table} WHERE COUNTRY = ? AND CITY = ? LIMIT 20;"
+SELECT_HOTEL_BY_COUNTRY_CITY_CQL = "SELECT country, city, id, name FROM {keyspace}.{table} WHERE COUNTRY = ? AND CITY = ? LIMIT 20;"
 
 prepared_statement_cache = {}
 

@@ -161,7 +161,7 @@ def get_base_hotel_summary(payload: HotelDetailsRequest) -> HotelSummary:
 @app.post("/v1/{hotel_id}/add_review")
 def add_review(hotel_id: str, payload: HotelReview):
     insert_review_for_hotel(
-        hotel_id=hotel_id, review_title=payload.title, review_body=payload.body
+        hotel_id=hotel_id, review_title=payload.title, review_body=payload.body, review_rating=payload.rating
     )
 
 
@@ -188,6 +188,7 @@ def get_customized_hotel_details(
             HotelReview(
                 id=f"r_{hotel_id}_{i}",
                 title=f"Review #{i}",
+                rating=5,
                 body=f"This is review #{i} for hotel with id={hotel_id}. Nice view on a dumpster.",
             )
             for i in range(3)

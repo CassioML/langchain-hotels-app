@@ -30,22 +30,22 @@ def select_general_hotel_reviews(hotel_id) -> List[HotelReview]:
     global select_recent_reviews_stmt
     if select_recent_reviews_stmt is None:
         select_recent_reviews_stmt = session.prepare(
-            f"SELECT id, title, body FROM {keyspace}.{REVIEWS_TABLE_NAME} WHERE hotel_id = ? LIMIT 3"
+            f"SELECT id, title, body, rating FROM {keyspace}.{REVIEWS_TABLE_NAME} WHERE hotel_id = ? LIMIT 3"
         )
 
     rows_recent = session.execute(select_recent_reviews_stmt, (hotel_id,))
     for row in rows_recent:
-        review_dict[row.id] = HotelReview(id=row.id, title=row.title, body=row.body)
+        review_dict[row.id] = HotelReview(id=row.id, title=row.title, body=row.body, rating=row.rating)
 
     global select_featured_reviews_stmt
     if select_featured_reviews_stmt is None:
         select_featured_reviews_stmt = session.prepare(
-            f"SELECT id, title, body FROM {keyspace}.{REVIEWS_TABLE_NAME} WHERE hotel_id = ? and featured = 1 LIMIT 3"
+            f"SELECT id, title, body, rating FROM {keyspace}.{REVIEWS_TABLE_NAME} WHERE hotel_id = ? and featured = 1 LIMIT 3"
         )
 
     rows_featured = session.execute(select_recent_reviews_stmt, (hotel_id,))
     for row in rows_featured:
-        review_dict[row.id] = HotelReview(id=row.id, title=row.title, body=row.body)
+        review_dict[row.id] = HotelReview(id=row.id, title=row.title, body=row.body, rating=row.rating)
 
     return list(review_dict.values())
 
@@ -59,14 +59,10 @@ def select_general_hotel_reviews(hotel_id) -> List[HotelReview]:
 # - Stores the review in the non-vectorised table
 # - Embeds the review and then stores it in the vectorised table
 def insert_review_for_hotel(
-    hotel_id: str, review_title: str, review_body: str
+    hotel_id: str, review_title: str, review_body: str, review_rating: int
 ):
     review_id = generate_review_id()
-    insert_into_reviews_table(hotel_id, review_id, review_title, review_body)
-
-    hotel = find_hotel_by_id(hotel_id)
-
-    # TODO check that the hotel was found
+    insert_into_reviews_table(hotel_id, review_id, review_title, review_body, review_rating)
 
     db_session = get_session()
     db_keyspace = get_keyspace()
@@ -80,7 +76,7 @@ def insert_review_for_hotel(
 
     review_metadata = {
         "hotel_id": hotel_id,
-        "rating": hotel.rating,
+        "rating": review_rating,
     }
 
     review_store.add_texts(
@@ -107,7 +103,7 @@ def choose_featured(num_upvotes: int) -> int:
 
 
 def insert_into_reviews_table(
-    hotel_id: str, review_id: str, review_title: str, review_body: str
+    hotel_id: str, review_id: str, review_title: str, review_body: str, review_rating: int
 ):
     session = get_session()
     keyspace = get_keyspace()
@@ -115,8 +111,8 @@ def insert_into_reviews_table(
     global insert_review_stmt
     if insert_review_stmt is None:
         insert_review_stmt = session.prepare(
-            f"""INSERT INTO {keyspace}.{REVIEWS_TABLE_NAME} (hotel_id, date_added, id, title, body, featured) 
-                    VALUES (?, ?, ?, ?, ?, ?)"""
+            f"""INSERT INTO {keyspace}.{REVIEWS_TABLE_NAME} (hotel_id, date_added, id, title, body, rating, featured) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?)"""
         )
 
     date_added = datetime.datetime.now()
@@ -124,5 +120,5 @@ def insert_into_reviews_table(
 
     session.execute(
         insert_review_stmt,
-        (hotel_id, date_added, review_id, review_title, review_body, featured),
+        (hotel_id, date_added, review_id, review_title, review_body, review_rating, featured),
     )

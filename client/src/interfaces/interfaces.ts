@@ -8,14 +8,14 @@ export interface Hotel {
   city: string;
   country: string;
   name: string;
-  rating: number;
   id: string;
 }
 
 export interface HotelReview {
-    title: string;
-    body: string;
-    id: string;
+  title: string;
+  body: string;
+  id: string;
+  rating: number;
 }
 
 export interface HotelSummary {

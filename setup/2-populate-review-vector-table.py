@@ -19,16 +19,16 @@ from utils.db import get_session, get_keyspace
 from utils.review_vectors import get_review_vectorstore, REVIEW_VECTOR_TABLE_NAME
 from utils.reviews import format_review_content_for_embedding
 
-# We create an ad-hoc "Embeddings" class, sitting on the cache,
+# We create an ad-hoc "Embeddings" class, sitting on the precalculated embeddings,
 # to perform all these insertions idiomatically through the lanchain
 # abstraction. This is to avoid having to work at the bare-CassIO lebel
-# while still taking advantage of the cache json with precalculated stuff.
+# while still taking advantage of the stored json with precalculated stuff.
 from langchain.embeddings.base import Embeddings
 
-class JustCachedEmbeddings(Embeddings):
+class JustPreCalculatedEmbeddings(Embeddings):
 
-    def __init__(self, cache_dict: Dict[str, List[float]]) -> None:
-        self.cache_dict = cache_dict
+    def __init__(self, precalc_dict: Dict[str, List[float]]) -> None:
+        self.precalc_dict = precalc_dict
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
         return [self.embed_query(txt) for txt in texts]
@@ -37,8 +37,8 @@ class JustCachedEmbeddings(Embeddings):
         return self.embed_documents(texts)
 
     def embed_query(self, text: str) -> List[float]:
-        if text in self.cache_dict:
-            return self.cache_dict[text]
+        if text in self.precalc_dict:
+            return self.precalc_dict[text]
         else:
             # this happens from LangChain when creating the store:
             print(f"**WARNING: embed request for '{text}'. Returning moot results")
@@ -96,15 +96,15 @@ if __name__ == "__main__":
     hotel_review_file_path = os.path.join(this_dir, HOTEL_REVIEW_FILE_NAME)
     hotel_review_data = pd.read_csv(hotel_review_file_path)
 
-    # sadly the cache for this "embeddings" must be sentence -> vector,
+    # sadly the precalc map for this "embeddings" must be sentence -> vector,
     # so we need a 'join'
-    # (which amounts to a preprocess pass through tne hote reviews)
-    text_to_vector_cache = {
+    # (which amounts to a preprocess pass through the hotel reviews dataframe)
+    precalc_text_to_vector_map = {
         format_review_content_for_embedding(title=row["title"], body=row["text"]): enrichment[row["id"]]
         for _, row in hotel_review_data.iterrows()
         if row["id"] in enrichment
     }
-    c_embeddings = JustCachedEmbeddings(cache_dict=text_to_vector_cache)
+    c_embeddings = JustPreCalculatedEmbeddings(precalc_dict=precalc_text_to_vector_map)
 
     # reviews_table = get_cassio_reviews_vector_table()
     db_session = get_session()
@@ -113,6 +113,7 @@ if __name__ == "__main__":
         session=db_session,
         keyspace=db_keyspace,
         embeddings=c_embeddings,
+        is_setup=True,
     )
 
     inserted = 0
