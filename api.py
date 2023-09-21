@@ -18,7 +18,11 @@ from utils.models import (
 )
 
 from utils.review_llm import summarize_reviews_for_hotel
-from utils.reviews import select_general_hotel_reviews, insert_review_for_hotel, select_hotel_reviews_for_user
+from utils.reviews import (
+    select_general_hotel_reviews,
+    insert_review_for_hotel,
+    select_hotel_reviews_for_user,
+)
 from utils.users import (
     read_user_profile,
     write_user_profile,
@@ -129,10 +133,10 @@ def get_customized_hotel_details(
     """
 
     user_profile = read_user_profile(payload.user_id)
-    hotel_reviews_for_user = select_hotel_reviews_for_user(hotel_id=hotel_id, user_travel_profile_summary=user_profile.travel_profile_summary)
-
-
-
+    hotel_reviews_for_user = select_hotel_reviews_for_user(
+        hotel_id=hotel_id,
+        user_travel_profile_summary=user_profile.travel_profile_summary,
+    )
 
     # import time
     #

@@ -63,7 +63,8 @@ def select_general_hotel_reviews(hotel_id: str) -> List[HotelReview]:
     global select_featured_reviews_stmt
     if select_featured_reviews_stmt is None:
         select_featured_reviews_stmt = session.prepare(
-            f"SELECT id, title, body, rating FROM {keyspace}.{REVIEWS_TABLE_NAME} WHERE hotel_id = ? and featured = 1 LIMIT 3"
+            f"SELECT id, title, body, rating FROM {keyspace}.{REVIEWS_TABLE_NAME} "
+            f" WHERE hotel_id = ? and featured = 1 LIMIT 3"
         )
 
     rows_featured = session.execute(select_recent_reviews_stmt, (hotel_id,))
@@ -74,22 +75,29 @@ def select_general_hotel_reviews(hotel_id: str) -> List[HotelReview]:
 
     return list(review_dict.values())
 
-def select_hotel_reviews_for_user(hotel_id: str, user_travel_profile_summary: str) -> List[HotelReview]:
 
+def select_hotel_reviews_for_user(
+    hotel_id: str, user_travel_profile_summary: str
+) -> List[HotelReview]:
     review_store = get_review_vectorstore(
         session=get_session(),
         keyspace=get_keyspace(),
         embeddings=get_embeddings(),
     )
 
-    review_data = review_store.similarity_search_with_score_id(query=user_travel_profile_summary, k=3, partition_id=hotel_id)
+    review_data = review_store.similarity_search_with_score_id(
+        query=user_travel_profile_summary, k=3, partition_id=hotel_id
+    )
 
     # title = review_doc.metadata["title"]  TODO
 
     reviews = [
         HotelReview(
-            title="My title",  # TODO replace: put title in metadata when populating the table!! title = review_doc.metadata["title"]
-            body=review_doc.page_content[len("My title")+2:], #TODO replace!!!!!
+            title=review_doc.metadata["title"].strip(),
+            body=extract_review_body_from_doc_text(
+                review_doc.page_content, review_doc.metadata["title"]
+            ),
+            # was: body=review_doc.page_content[len(review_doc.metadata["title"].strip())+1:].strip(),
             rating=float(review_doc.metadata["rating"]),
             id=review_id,
         )
@@ -99,11 +107,11 @@ def select_hotel_reviews_for_user(hotel_id: str, user_travel_profile_summary: st
     return reviews
 
 
-
-def find_similar_reviews(query_review: str, hotel_id: str, store: VectorStore):
-    # return a list of (dict-shaped) rows from the vector store
-    docs = store.similarity_search(query_review, k=3, partition_id=hotel_id)
-    return [doc.page_content for doc in docs]
+# Extracts the review body from the text found in the document,
+# cutting out the title and colon and removing any leading / trailing spaces from title and body
+def extract_review_body_from_doc_text(review_doc_text: str, review_title: str) -> str:
+    end_title_index = len(review_title.strip()) + 1
+    return review_doc_text[end_title_index:].strip()
 
 
 # ### ADDING REVIEWS
@@ -186,7 +194,6 @@ def insert_into_review_vector_table(
     review_body: str,
     review_rating: int,
 ):
-
     review_store = get_review_vectorstore(
         session=get_session(),
         keyspace=get_keyspace(),
@@ -196,6 +203,7 @@ def insert_into_review_vector_table(
     review_metadata = {
         "hotel_id": hotel_id,
         "rating": review_rating,
+        "title": review_title,
     }
 
     review_store.add_texts(
@@ -206,9 +214,12 @@ def insert_into_review_vector_table(
     )
 
 
+# TODO remove!
 if __name__ == "__main__":
-    print(select_hotel_reviews_for_user(hotel_id="AWE2EbkcIxWefVJwyEsr", user_travel_profile_summary="I'm looking for a business-friendly hotel that has fine dining options, is pet-friendly, and offers relaxing and sightseeing activities. Ice cream is a plus."))
-    # vs = get_review_vectorstore(get_session(), get_keyspace(), get_embeddings())
-    #reviews = find_similar_reviews("I'm looking for a business-friendly hotel that has fine dining options, is pet-friendly, and offers relaxing and sightseeing activities. Ice cream is a plus.", "AWE2EbkcIxWefVJwyEsr", vs)
-    #reviews = find_similar_reviews("Toilet ran all night. Breakfast area was dirty.", "AWE2EbkcIxWefVJwyEsr", vs)
-    #print(reviews)
+    print(
+        select_hotel_reviews_for_user(
+            hotel_id="AWE2EbkcIxWefVJwyEsr",
+            user_travel_profile_summary="I'm looking for a business-friendly hotel that has fine dining options, is pet-friendly, and offers relaxing and sightseeing activities. Ice cream is a plus.",
+        )
+    )
+

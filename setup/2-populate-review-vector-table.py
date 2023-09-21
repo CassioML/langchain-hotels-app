@@ -116,7 +116,11 @@ if __name__ == "__main__":
             "text": format_review_content_for_embedding(
                 title=row["title"], body=row["text"]
             ),
-            "metadata": {"hotel_id": row["hotel_id"], "rating": row["rating"]},
+            "metadata": {
+                "hotel_id": row["hotel_id"],
+                "rating": row["rating"],
+                "title": row["title"],
+            },
             "id": row["id"],
             "partition_id": row["hotel_id"],
         }
