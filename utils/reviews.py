@@ -8,7 +8,7 @@ from common_constants import (
     REVIEWS_TABLE_NAME,
     REVIEW_VECTOR_TABLE_NAME,
 )
-from utils.models import HotelReview
+from utils.models import HotelReview, UserProfile
 
 from utils.ai import get_embeddings
 from utils.db import get_session, get_keyspace
@@ -42,7 +42,7 @@ select_featured_reviews_stmt = None
 
 
 # Entry point to select reviews for the general (base) hotel summary
-def select_general_hotel_reviews(hotel_id) -> List[HotelReview]:
+def select_general_hotel_reviews(hotel_id: str) -> List[HotelReview]:
     session = get_session()
     keyspace = get_keyspace()
 
@@ -74,8 +74,36 @@ def select_general_hotel_reviews(hotel_id) -> List[HotelReview]:
 
     return list(review_dict.values())
 
+def select_hotel_reviews_for_user(hotel_id: str, user_travel_profile_summary: str) -> List[HotelReview]:
 
-# TODO add function to retrieve reviews relevant to a user
+    review_store = get_review_vectorstore(
+        session=get_session(),
+        keyspace=get_keyspace(),
+        embeddings=get_embeddings(),
+    )
+
+    review_data = review_store.similarity_search_with_score_id(query=user_travel_profile_summary, k=3, partition_id=hotel_id)
+
+    # title = review_doc.metadata["title"]  TODO
+
+    reviews = [
+        HotelReview(
+            title="My title",  # TODO replace: put title in metadata when populating the table!! title = review_doc.metadata["title"]
+            body=review_doc.page_content[len("My title")+2:], #TODO replace!!!!!
+            rating=float(review_doc.metadata["rating"]),
+            id=review_id,
+        )
+        for review_doc, _, review_id in review_data
+    ]
+
+    return reviews
+
+
+
+def find_similar_reviews(query_review: str, hotel_id: str, store: VectorStore):
+    # return a list of (dict-shaped) rows from the vector store
+    docs = store.similarity_search(query_review, k=3, partition_id=hotel_id)
+    return [doc.page_content for doc in docs]
 
 
 # ### ADDING REVIEWS
@@ -158,14 +186,11 @@ def insert_into_review_vector_table(
     review_body: str,
     review_rating: int,
 ):
-    db_session = get_session()
-    db_keyspace = get_keyspace()
-    embeddings = get_embeddings()
 
     review_store = get_review_vectorstore(
-        session=db_session,
-        keyspace=db_keyspace,
-        embeddings=embeddings,
+        session=get_session(),
+        keyspace=get_keyspace(),
+        embeddings=get_embeddings(),
     )
 
     review_metadata = {
@@ -181,7 +206,9 @@ def insert_into_review_vector_table(
     )
 
 
-def find_similar_reviews(query_review: str, hotel_id: str, store: VectorStore):
-    # return a list of (dict-shaped) rows from the vector store
-    docs = store.similarity_search(query_review, k=3, partition_id=hotel_id)
-    return [doc.page_content for doc in docs]
+if __name__ == "__main__":
+    print(select_hotel_reviews_for_user(hotel_id="AWE2EbkcIxWefVJwyEsr", user_travel_profile_summary="I'm looking for a business-friendly hotel that has fine dining options, is pet-friendly, and offers relaxing and sightseeing activities. Ice cream is a plus."))
+    # vs = get_review_vectorstore(get_session(), get_keyspace(), get_embeddings())
+    #reviews = find_similar_reviews("I'm looking for a business-friendly hotel that has fine dining options, is pet-friendly, and offers relaxing and sightseeing activities. Ice cream is a plus.", "AWE2EbkcIxWefVJwyEsr", vs)
+    #reviews = find_similar_reviews("Toilet ran all night. Breakfast area was dirty.", "AWE2EbkcIxWefVJwyEsr", vs)
+    #print(reviews)

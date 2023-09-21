@@ -17,7 +17,7 @@ user_profile_insert_stmt = None
 user_profile_update_stmt = None
 
 
-def read_user_preferences(user_id) -> Union[UserProfile, None]:
+def read_user_profile(user_id) -> Union[UserProfile, None]:
     session = get_session()
     keyspace = get_keyspace()
 

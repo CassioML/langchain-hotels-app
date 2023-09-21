@@ -18,9 +18,9 @@ from utils.models import (
 )
 
 from utils.review_llm import summarize_reviews_for_hotel
-from utils.reviews import select_general_hotel_reviews, insert_review_for_hotel
+from utils.reviews import select_general_hotel_reviews, insert_review_for_hotel, select_hotel_reviews_for_user
 from utils.users import (
-    read_user_preferences,
+    read_user_profile,
     write_user_profile,
     update_user_travel_profile_summary,
 )
@@ -52,7 +52,7 @@ permitReactLocalhostClient(app)
 # TODO should this just be a GET, e.g. /v1/user_profile/{user_id} ?
 @app.post("/v1/get_user_profile")
 def get_user_profile(payload: UserRequest) -> Union[UserProfile, None]:
-    return read_user_preferences(payload.user_id)
+    return read_user_profile(payload.user_id)
 
 
 # Endpoint that stores the travel preferences (base + additional prefs) of the specified user.
@@ -127,19 +127,26 @@ def get_customized_hotel_details(
     4. call the LLM to get the short summary (which takes advantage of the auto cache prompt->response)
     5. return the summary and the reviews used (+ name), as in the structure below
     """
-    import time
 
-    time.sleep(0.8)
-    return CustomizedHotelDetails(
-        name=f"Hotel Name {hotel_id}",
-        summary=f"Fake AI-generated summary for hotel {hotel_id} and user {payload.user_id}",
-        reviews=[
-            HotelReview(
-                id=f"r_{hotel_id}_{i}",
-                title=f"Review #{i}",
-                rating=5,
-                body=f"This is review #{i} for hotel with id={hotel_id}. Nice view on a dumpster.",
-            )
-            for i in range(3)
-        ],
-    )
+    user_profile = read_user_profile(payload.user_id)
+    hotel_reviews_for_user = select_hotel_reviews_for_user(hotel_id=hotel_id, user_travel_profile_summary=user_profile.travel_profile_summary)
+
+
+
+
+    # import time
+    #
+    # time.sleep(0.8)
+    # return CustomizedHotelDetails(
+    #     name=f"Hotel Name {hotel_id}",
+    #     summary=f"Fake AI-generated summary for hotel {hotel_id} and user {payload.user_id}",
+    #     reviews=[
+    #         HotelReview(
+    #             id=f"r_{hotel_id}_{i}",
+    #             title=f"Review #{i}",
+    #             rating=5,
+    #             body=f"This is review #{i} for hotel with id={hotel_id}. Nice view on a dumpster.",
+    #         )
+    #         for i in range(3)
+    #     ],
+    # )
