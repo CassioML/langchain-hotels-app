@@ -17,23 +17,18 @@ def summarize_reviews_for_user(
     concatenated_reviews = "\n".join(review.body for review in reviews)
 
     prompt_template = """ You are an assistant helping travelers choose hotels.
-    Write a bullet-point summary of the following "input reviews" for someone with the travel profile as given below.
-    Do not exceed writing 7 concise bullet points.
+    Write a bullet-point summary of the following "input reviews" for me. {profile_summary}
+    Do not exceed writing 4 concise bullet points. Do not include information about the person who wrote the review.
     
-    Absolutely do not use information other than given in the "input reviews" below.
-    
-    TRAVELER PROFILE: {profile_summary}.
-    
-    INPUT REVIEWS:
+    Absolutely do not use information other than these "input reviews":
     {hotel_reviews}
 
-    EXAMPLE SUMMARY:
+    EXAMPLE SUMMARY (do not use this information):
         - Good hotel, cozy and well furnished.
         - Sometimes noisy at night.
         - Some of the staff are slightly rude.
         - Weak pressure in the showers and water not always very hot.
-        - Kitchen is awesome.
-
+    
     CONCISE SUMMARY: """
 
     query_prompt_template = PromptTemplate.from_template(prompt_template)

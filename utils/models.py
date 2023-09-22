@@ -1,6 +1,6 @@
-from typing import Dict, List, Any
+from typing import Dict, List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class ReviewRequest(BaseModel):
@@ -52,7 +52,7 @@ class UserRequest(BaseModel):
 class UserProfile(BaseModel):
     base_preferences: Dict[str, bool]
     additional_preferences: str
-    travel_profile_summary: str
+    travel_profile_summary: str = Field(default="")
 
 
 class UserProfileSubmitRequest(BaseModel):
