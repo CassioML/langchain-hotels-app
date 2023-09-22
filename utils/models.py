@@ -52,7 +52,7 @@ class UserRequest(BaseModel):
 class UserProfile(BaseModel):
     base_preferences: Dict[str, bool]
     additional_preferences: str
-    travel_profile_summary: str = Field(default="")
+    travel_profile_summary: Optional[str] = Field(default="")
 
 
 class UserProfileSubmitRequest(BaseModel):

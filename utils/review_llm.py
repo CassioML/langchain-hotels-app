@@ -17,10 +17,11 @@ def summarize_reviews_for_user(
     concatenated_reviews = "\n".join(review.body for review in reviews)
 
     prompt_template = """ You are an assistant helping travelers choose hotels.
-    Write a bullet-point summary of the following "input reviews" for me. {profile_summary}
+    Write a bullet-point summary of the following "input reviews" for me, taking into account my preferences. {profile_summary}. 
+    In the summary, do not include in the summary any information about myself. 
     Do not exceed writing 4 concise bullet points. Do not include information about the person who wrote the review.
     
-    Absolutely do not use information other than these "input reviews":
+    Construct the summary using only the following information:
     {hotel_reviews}
 
     EXAMPLE SUMMARY (do not use this information):
