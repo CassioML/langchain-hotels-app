@@ -10,7 +10,7 @@ from utils.models import HotelReview
 # Calls the LLM to generate a summary of the given reviews tailored to the user's travel profile preferences.
 # TODO improve the prompt. Also rename this function with a clearer name.
 def summarize_reviews_for_user(
-    reviews: List[HotelReview], trip_preferences: str
+    reviews: List[HotelReview], travel_profile_summary: str
 ) -> str:
     summarizing_llm = get_llm()
 
@@ -22,7 +22,7 @@ def summarize_reviews_for_user(
     
     Absolutely do not use information other than given in the "input reviews" below.
     
-    TRAVELER PROFILE: {prefs}.
+    TRAVELER PROFILE: {profile_summary}.
     
     INPUT REVIEWS:
     {hotel_reviews}
@@ -38,7 +38,7 @@ def summarize_reviews_for_user(
 
     query_prompt_template = PromptTemplate.from_template(prompt_template)
     populated_prompt = query_prompt_template.format(
-        prefs=trip_preferences, hotel_reviews=concatenated_reviews
+        profile_summary=travel_profile_summary, hotel_reviews=concatenated_reviews
     )
     print(populated_prompt)
 

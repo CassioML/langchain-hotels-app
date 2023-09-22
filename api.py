@@ -17,7 +17,7 @@ from utils.models import (
     UserProfile,
 )
 
-from utils.review_llm import summarize_reviews_for_hotel
+from utils.review_llm import summarize_reviews_for_hotel, summarize_reviews_for_user
 from utils.reviews import (
     select_general_hotel_reviews,
     insert_review_for_hotel,
@@ -28,7 +28,7 @@ from utils.users import (
     write_user_profile,
     update_user_travel_profile_summary,
 )
-from utils.hotels import find_hotels_by_location
+from utils.hotels import find_hotels_by_location, find_hotel_by_id
 
 db_session = get_session()
 db_keyspace = get_keyspace()
@@ -118,39 +118,35 @@ def add_review(hotel_id: str, payload: HotelReview):
     )
 
 
+# Endpoint that selects the three reviews of this hotel that are most relevant to this user
+# and generates a user-tailored summary of these reviews.
+# This has been implemented (TODO remove this note)
 # TODO should this become a GET and have the user_id as part of the path somewhere?
 @app.post("/v1/customized_hotel_details/{hotel_id}")
 def get_customized_hotel_details(
     hotel_id: str, payload: UserRequest
 ) -> CustomizedHotelDetails:
     """
-    TODO:
     1. retrieve user data (esp. textual description)
     2. retrieve *user-relevant* reviews with ANN search
-    3. stuff 1 and 2 into a prompt "get me a short summary"
-    4. call the LLM to get the short summary (which takes advantage of the auto cache prompt->response)
-    5. return the summary and the reviews used (+ name), as in the structure below
+    3. retrieve hotel details
+    4. stuff 1 and 2 into a prompt "get me a short summary"
+    5. call the LLM to get the short summary (which takes advantage of the auto cache prompt->response)
+    6. return the summary and the reviews used (+ name), as in the structure below
     """
 
     user_profile = read_user_profile(payload.user_id)
+
     hotel_reviews_for_user = select_hotel_reviews_for_user(
         hotel_id=hotel_id,
         user_travel_profile_summary=user_profile.travel_profile_summary,
     )
 
-    # import time
-    #
-    # time.sleep(0.8)
-    # return CustomizedHotelDetails(
-    #     name=f"Hotel Name {hotel_id}",
-    #     summary=f"Fake AI-generated summary for hotel {hotel_id} and user {payload.user_id}",
-    #     reviews=[
-    #         HotelReview(
-    #             id=f"r_{hotel_id}_{i}",
-    #             title=f"Review #{i}",
-    #             rating=5,
-    #             body=f"This is review #{i} for hotel with id={hotel_id}. Nice view on a dumpster.",
-    #         )
-    #         for i in range(3)
-    #     ],
-    # )
+    customized_review_summary = summarize_reviews_for_user(reviews=hotel_reviews_for_user, travel_profile_summary=user_profile.travel_profile_summary)
+    hotel_details = find_hotel_by_id(hotel_id)
+
+    return CustomizedHotelDetails(
+        name=hotel_details.name,
+        summary=customized_review_summary,
+        reviews=hotel_reviews_for_user,
+    )
