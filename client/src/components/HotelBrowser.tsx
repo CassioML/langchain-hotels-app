@@ -6,7 +6,9 @@ import {RequestStatus} from "../interfaces/enums";
 import { useState } from "react"
 
 
-const HotelBrowser = () => {
+const HotelBrowser = (props: any) => {
+
+  const {switchToHotel} = props;
 
   const [editHotelCountry, setEditHotelCountry] = useState('');
   const [editHotelCity, setEditHotelCity] = useState('');
@@ -78,6 +80,7 @@ const HotelBrowser = () => {
       <HotelResults
         searchStatus={searchStatus}
         searchResults={searchResults}
+        switchToHotel={switchToHotel}
       />
     </div>
   );

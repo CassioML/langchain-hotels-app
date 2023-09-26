@@ -2,15 +2,12 @@ import './App.css';
 
 import { useEffect, useState } from "react";
 
-import { useParams } from "react-router-dom";
-
 import {customizedHotelDetails} from "../utils/hotel_search";
 import {RequestStatus} from "../interfaces/enums";
 
 const HotelDetails = (props: any) => {
 
-  const {hotelId} = useParams();
-  const {userId} = props;
+  const {userId, hotelId} = props;
 
   const [hotelDetails, setHotelDetails] = useState<any>();
   const [detailsStatus, setDetailsStatus] = useState<RequestStatus>("initialized");

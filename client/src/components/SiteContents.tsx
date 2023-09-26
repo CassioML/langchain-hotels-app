@@ -1,40 +1,47 @@
-// import { useEffect, useState } from "react"
+import { useState } from "react"
 // import { Dispatch, SetStateAction } from "react";
 
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-
 import './App.css';
-import {UserDesc} from "../interfaces/interfaces";
+// import {UserDesc} from "../interfaces/interfaces";
 
 import UserProfileComponent from "./UserProfileComponent";
 import HotelBrowser from "./HotelBrowser";
 import HotelDetails from "./HotelDetails";
 
 
-const SiteContents = ({userId}: UserDesc) => {
+const SiteContents = (props: any) => {
+
+  const [currentHotelId, setCurrentHotelId] = useState<string | undefined>(undefined);
+
+  const {userId, currentUserPage, setCurrentUserPage} = props;
+
+  const switchToHotel = (hotel_id: string) => {
+    setCurrentHotelId(hotel_id);
+    setCurrentUserPage("hotel_details");
+  };
+
   return (
     <div className="App-contents">
       <div className="App-navbar">
-        { userId && 
-          <Router>
-            <div>
-              <p>
-                <Link to="/browse">Browse hotels</Link>
-                <Link to="/profile">User profile</Link>
-              </p>
-            </div>
+        { userId && <>
+          <div>
+            <span onClick={() => setCurrentUserPage("hotel_search")}>Browse hotels</span>
+            <span onClick={() => setCurrentUserPage("user_profile")}>User profile</span>
+          </div>
 
-            <Routes>
-              <Route path="/browse" element={<HotelBrowser />} />
-              <Route path="/browse/:hotelId" element={<HotelDetails userId={userId} />} />
-              <Route
-                path="/profile"
-                element={<UserProfileComponent userId={userId} />}
-              />
-            </Routes>
+          { currentUserPage === "hotel_search" && <>
+            <HotelBrowser switchToHotel={switchToHotel}/>
+          </>}
 
-          </Router>
-        }
+          { currentUserPage === "hotel_details" && <>
+            <HotelDetails userId={userId} hotelId={currentHotelId} />
+          </>}
+
+          { currentUserPage === "user_profile" && <>
+            <UserProfileComponent userId={userId} />
+          </>}
+
+        </> }
       </div>
     </div>
   );

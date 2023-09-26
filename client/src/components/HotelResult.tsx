@@ -1,7 +1,6 @@
 import './App.css';
 
 import {useEffect, useState} from "react";
-import {Link} from "react-router-dom";
 
 import {RequestStatus} from "../interfaces/enums";
 
@@ -12,7 +11,7 @@ const HotelResult = (props: any) => {
   const [summaryStatus, setSummaryStatus] = useState<RequestStatus>("initialized");
   const [hotelSummary, setHotelSummary] = useState<string | undefined>(undefined);
 
-  const {hotel} = props;
+  const {hotel, switchToHotel} = props;
 
   useEffect(
     () => {
@@ -35,7 +34,7 @@ const HotelResult = (props: any) => {
   );
 
   return <li key={hotel.id}>
-    <Link to={`/browse/${hotel.id}`}>
+    <span onClick={() => switchToHotel(hotel.id)}>
       {`${hotel.name} (${hotel.id}):`}
         { (summaryStatus === "initialized" || summaryStatus === "in_flight") &&
           <span>...</span>
@@ -46,7 +45,7 @@ const HotelResult = (props: any) => {
         { (summaryStatus === "errored") &&
           <span>(could not get hotel summary)</span>
         }
-    </Link>
+    </span>
   </li>;
 
 }

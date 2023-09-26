@@ -4,4 +4,5 @@ tiktoken==0.4.0
 #langchain==x.y.z
 # TEMPORARILY
 git+https://github.com/hemidactylus/langchain@updated-full-preview-remove-shims#egg=langchain&subdirectory=libs/langchain
-cassio>=0.1.1
+cassio>=0.1.3
+

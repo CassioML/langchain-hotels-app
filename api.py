@@ -29,6 +29,7 @@ from utils.users import (
     update_user_travel_profile_summary,
 )
 from utils.hotels import find_hotels_by_location, find_hotel_by_id
+from utils.strings import DEFAULT_TRAVEL_PROFILE_SUMMARY
 
 db_session = get_session()
 db_keyspace = get_keyspace()
@@ -137,12 +138,20 @@ def get_customized_hotel_details(
 
     user_profile = read_user_profile(payload.user_id)
 
+    if user_profile:
+        travel_profile_summary = user_profile.travel_profile_summary
+    else:
+        travel_profile_summary = DEFAULT_TRAVEL_PROFILE_SUMMARY
+
     hotel_reviews_for_user = select_hotel_reviews_for_user(
         hotel_id=hotel_id,
-        user_travel_profile_summary=user_profile.travel_profile_summary,
+        user_travel_profile_summary=travel_profile_summary,
     )
 
-    customized_review_summary = summarize_reviews_for_user(reviews=hotel_reviews_for_user, travel_profile_summary=user_profile.travel_profile_summary)
+    customized_review_summary = summarize_reviews_for_user(
+        reviews=hotel_reviews_for_user,
+        travel_profile_summary=travel_profile_summary,
+    )
     hotel_details = find_hotel_by_id(hotel_id)
 
     return CustomizedHotelDetails(

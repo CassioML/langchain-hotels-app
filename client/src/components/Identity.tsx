@@ -4,16 +4,18 @@ import {UserProps} from "../interfaces/interfaces";
 import './App.css';
 
 
-const Identity = (props: UserProps) => {
+const Identity = (props: UserProps & {setCurrentUserPage: any}) => {
 
   const userId = props.userId;
   const setUserId = props.setUserId;
+  const setCurrentUserPage = props.setCurrentUserPage;
 
   const [editUserId, setEditUserId] = useState('');
 
   const trySetUserId = (newUserId: string) => {
     if(newUserId){
       setUserId(newUserId);
+      setCurrentUserPage("hotel_search");
     }
   }
 

@@ -4,7 +4,7 @@ import HotelResult from "./HotelResult";
 
 const HotelResults = (props: any) => {
 
-  const {searchStatus, searchResults} = props;
+  const {searchStatus, searchResults, switchToHotel} = props;
 
   if (searchStatus === "initialized") {
     return <div></div>;
@@ -13,7 +13,7 @@ const HotelResults = (props: any) => {
   } else if (searchStatus === "completed") {
     return <div>
       <ul>
-        {searchResults.map( (r: any) => <HotelResult key={r.id} hotel={r}/>)}
+        {searchResults.map( (r: any) => <HotelResult key={r.id} hotel={r} switchToHotel={switchToHotel}/>)}
       </ul>
     </div>
   } else {
