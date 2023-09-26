@@ -111,12 +111,20 @@ def get_base_hotel_summary(payload: HotelDetailsRequest) -> HotelSummary:
 # This has been implemented (TODO remove this note)
 @app.post("/v1/{hotel_id}/add_review")
 def add_review(hotel_id: str, payload: HotelReview):
-    insert_review_for_hotel(
-        hotel_id=hotel_id,
-        review_title=payload.title,
-        review_body=payload.body,
-        review_rating=payload.rating,
-    )
+    try:
+        insert_review_for_hotel(
+            hotel_id=hotel_id,
+            review_title=payload.title,
+            review_body=payload.body,
+            review_rating=payload.rating,
+        )
+        return {
+            "success": True,
+        }
+    except Exception:
+        return {
+            "success": False,
+        }
 
 
 # Endpoint that selects the three reviews of this hotel that are most relevant to this user

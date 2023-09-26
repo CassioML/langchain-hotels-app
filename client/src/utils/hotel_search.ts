@@ -1,6 +1,6 @@
 import axios, { AxiosResponse, AxiosError } from 'axios'; 
 
-import {Hotel, HotelSummary, CustomizedHotelDetails} from '../interfaces/interfaces';
+import {Hotel, HotelSummary, CustomizedHotelDetails, HotelReview, SuccessMarker} from '../interfaces/interfaces';
 
 export const searchHotels = (country: string, city: string, callback: ( (hs: Hotel[]) => void), errback: any) => {
   axios.post<Hotel[]>(
@@ -43,6 +43,24 @@ export const customizedHotelDetails = (hotelId: string, userId: string, callback
     {user_id: userId}
   )
   .then((response: AxiosResponse<CustomizedHotelDetails>) => {
+    callback(response.data);
+  })
+  .catch((error: AxiosError | Error) => {
+    if(errback){
+      errback(error);
+    }
+  });
+}
+
+export const addHotelReview = (hotelId: string, userId: string, review: HotelReview, callback: ((m: SuccessMarker) => void), errback: any) => {
+  axios.post<SuccessMarker>(
+    `http://127.0.0.1:8000/v1/${hotelId}/add_review`,
+    {
+      ...review,
+      ...{rating: +review.rating, id: "will-be-discarded"},  // trick to coerce into a number
+    }
+  )
+  .then((response: AxiosResponse<SuccessMarker>) => {
     callback(response.data);
   })
   .catch((error: AxiosError | Error) => {

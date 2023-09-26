@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 
 import {customizedHotelDetails} from "../utils/hotel_search";
 import {RequestStatus} from "../interfaces/enums";
+import AddReviewForm from "./AddReviewForm";
+
 
 const HotelDetails = (props: any) => {
 
@@ -11,6 +13,7 @@ const HotelDetails = (props: any) => {
 
   const [hotelDetails, setHotelDetails] = useState<any>();
   const [detailsStatus, setDetailsStatus] = useState<RequestStatus>("initialized");
+  const [reviewSubmitState, setReviewSubmitState] = useState<RequestStatus>("initialized");
 
   useEffect(
     () => {
@@ -51,6 +54,14 @@ const HotelDetails = (props: any) => {
               </li>
             )}
           </ul>
+          <hr />
+          <p>Add review</p>
+          <AddReviewForm
+            userId={userId}
+            hotelId={hotelId}
+            submitState={reviewSubmitState}
+            setSubmitState={setReviewSubmitState}
+          />
         </div>
       </div>
     }

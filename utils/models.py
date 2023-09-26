@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 
 
 class ReviewRequest(BaseModel):
@@ -52,7 +52,11 @@ class UserRequest(BaseModel):
 class UserProfile(BaseModel):
     base_preferences: Dict[str, bool]
     additional_preferences: str
-    travel_profile_summary: Optional[str] = Field(default="")
+    travel_profile_summary: Optional[str]# = Field(default="")
+
+    @validator('travel_profile_summary')
+    def set_contract_ndfl(cls, v):
+        return v or ""
 
 
 class UserProfileSubmitRequest(BaseModel):
