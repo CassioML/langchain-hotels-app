@@ -52,11 +52,14 @@ class UserRequest(BaseModel):
 class UserProfile(BaseModel):
     base_preferences: Dict[str, bool]
     additional_preferences: str
-    travel_profile_summary: Optional[str]# = Field(default="")
+    travel_profile_summary: Optional[str]
 
     @validator('travel_profile_summary')
-    def set_contract_ndfl(cls, v):
-        return v or ""
+    def set_travel_profile_summary(cls, v):
+        if v is None:
+            return ""
+        else:
+            return v
 
 
 class UserProfileSubmitRequest(BaseModel):

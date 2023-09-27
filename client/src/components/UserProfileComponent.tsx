@@ -15,6 +15,8 @@ const UserProfileComponent = (props: UserDesc) => {
   const [submitState, setSubmitState] = useState<RequestStatus>("initialized");
   const [profile, setProfile] = useState<UserProfile>(DEFAULT_USER_PROFILE);
 
+  const [autoSummary, setAutoSummary] = useState<string | undefined>();
+
   const refreshProfile = () => {
     setSubmitState("in_flight");
     getAPIUserProfile(
@@ -29,8 +31,10 @@ const UserProfileComponent = (props: UserDesc) => {
         const this_profile = {
           base_preferences: these_base_prefs,
           additional_preferences: _profile.additional_preferences,
+          travel_profile_summary: _profile.travel_profile_summary,
         }
         setProfile(this_profile);
+        setAutoSummary(this_profile.travel_profile_summary);
         setSubmitState("completed");
       },
       (e: any) => {console.log(`err ${e}`); setSubmitState("errored");}
@@ -53,6 +57,18 @@ const UserProfileComponent = (props: UserDesc) => {
         profile={profile}
         refreshProfile={refreshProfile}
       />
+      <p>
+      Auto-generated: {autoSummary || "(nothing)"}
+      <span onClick={ () => {
+        getAPIUserProfile(
+          userId || "",
+          (api_profile: any) => {
+            setAutoSummary(api_profile.travel_profile_summary);
+          },
+          (e: any) => {console.log(`err ${e}`);}
+        );        
+      }}>[SYNC]</span>
+      </p>
     </div>
   );
 }

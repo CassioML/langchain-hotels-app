@@ -81,9 +81,11 @@ export const BASE_PREFERENCES_LABELS = {
 export type UserProfile = {
   base_preferences: UserProfileBasePreferences;
   additional_preferences: string;
+  travel_profile_summary: string | undefined;
 }
 
 export const DEFAULT_USER_PROFILE = {
   base_preferences: DEFAULT_BASE_PREFERENCES,
   additional_preferences: "",
+  travel_profile_summary: undefined,
 }
