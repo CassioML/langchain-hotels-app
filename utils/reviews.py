@@ -39,6 +39,7 @@ def get_review_vectorstore(session, keyspace, embeddings, is_setup: bool = False
 # Prepared statements for selecting reviews
 select_recent_reviews_stmt = None
 select_featured_reviews_stmt = None
+select_review_count_by_hotel_stmt = None
 
 
 # Entry point to select reviews for the general (base) hotel summary
@@ -105,6 +106,19 @@ def select_hotel_reviews_for_user(
     ]
 
     return reviews
+
+
+def select_review_count_by_hotel(hotel_id: str) -> int:
+    session = get_session()
+    keyspace = get_keyspace()
+
+    global select_review_count_by_hotel_stmt
+    if select_review_count_by_hotel_stmt is None:
+        select_review_count_by_hotel_stmt = session.prepare(f"SELECT COUNT(id) AS num_reviews FROM {keyspace}.{REVIEWS_TABLE_NAME} "
+                                                            f"WHERE hotel_id = ?")
+
+    row = session.execute(select_review_count_by_hotel_stmt, (hotel_id,)).one()
+    return row.num_reviews
 
 
 # Extracts the review body from the text found in the document,
@@ -216,10 +230,12 @@ def insert_into_review_vector_table(
 
 # TODO remove!
 if __name__ == "__main__":
+    # "AWE2EbkcIxWefVJwyEsr" --> 105
+    # "AV3HoVhXa4HuVbed-zd_" --> 2
+    # "ejhrfgjwhw" --> 0 (hotel not found)
     print(
-        select_hotel_reviews_for_user(
-            hotel_id="AWE2EbkcIxWefVJwyEsr",
-            user_travel_profile_summary="I'm looking for a business-friendly hotel that has fine dining options, is pet-friendly, and offers relaxing and sightseeing activities. Ice cream is a plus.",
+        select_review_count_by_hotel(
+            hotel_id="AV3HoVhXa4HuVbed-zd_"
         )
     )
 

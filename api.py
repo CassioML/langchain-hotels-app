@@ -22,6 +22,7 @@ from utils.reviews import (
     select_general_hotel_reviews,
     insert_review_for_hotel,
     select_hotel_reviews_for_user,
+    select_review_count_by_hotel
 )
 from utils.users import (
     read_user_profile,
@@ -91,7 +92,10 @@ def set_user_profile(
 # TODO implement geo search based on proximity to a point
 @app.post("/v1/find_hotels")
 def get_hotels(hotel_request: HotelSearchRequest) -> List[Hotel]:
-    return find_hotels_by_location(hotel_request.city, hotel_request.country)
+    hotels = find_hotels_by_location(hotel_request.city, hotel_request.country)
+    for hotel in hotels:
+        hotel.num_reviews = select_review_count_by_hotel(hotel.id)
+    return hotels
 
 
 # Endpoint that selects the most recent reviews + some featured ones and creates a general concise summary.

@@ -43,6 +43,14 @@ class Hotel(BaseModel):
     country: str
     name: str
     id: str
+    num_reviews: Optional[int]
+
+    @validator('num_reviews')
+    def set_num_reviews(cls, v):
+        if v is None:
+            return 0
+        else:
+            return v
 
 
 class UserRequest(BaseModel):
