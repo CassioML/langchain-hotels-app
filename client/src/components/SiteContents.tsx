@@ -13,11 +13,11 @@ const SiteContents = (props: any) => {
 
   const [currentHotelId, setCurrentHotelId] = useState<string | undefined>(undefined);
 
-  const {userId, currentUserPage, setCurrentUserPage} = props;
+  const {userId, currentNavPage, setCurrentNavPage} = props;
 
   const switchToHotel = (hotel_id: string) => {
     setCurrentHotelId(hotel_id);
-    setCurrentUserPage("hotel_details");
+    setCurrentNavPage("hotel_details");
   };
 
   return (
@@ -25,20 +25,24 @@ const SiteContents = (props: any) => {
       <div className="App-navbar">
         { userId && <>
           <div>
-            <span onClick={() => setCurrentUserPage("hotel_search")}>Browse hotels</span>
-            <span onClick={() => setCurrentUserPage("user_profile")}>User profile</span>
+            <span onClick={() => setCurrentNavPage("hotel_search")}>Browse hotels</span>
+            <span onClick={() => setCurrentNavPage("user_preferences")}>User profile</span>
           </div>
 
-          { currentUserPage === "hotel_search" && <>
+          { currentNavPage === "hotel_search" && <>
             <HotelBrowser switchToHotel={switchToHotel}/>
           </>}
 
-          { currentUserPage === "hotel_details" && <>
+          { currentNavPage === "hotel_details" && <>
             <HotelDetails userId={userId} hotelId={currentHotelId} />
           </>}
 
-          { currentUserPage === "user_profile" && <>
+          { currentNavPage === "user_preferences" && <>
             <UserProfileComponent userId={userId} />
+          </>}
+
+          { currentNavPage === "login" && <>
+            <p>LOGIN</p>
           </>}
 
         </> }
