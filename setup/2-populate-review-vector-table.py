@@ -4,6 +4,7 @@ import argparse
 import pandas as pd
 from itertools import groupby
 from typing import Dict, List
+import concurrent.futures
 
 from setup.embedding_dump import deflate_embeddings_map
 from setup.setup_constants import EMBEDDING_FILE_NAME, HOTEL_REVIEW_FILE_NAME
@@ -56,8 +57,8 @@ class JustPreCalculatedEmbeddings(Embeddings):
 
 this_dir = os.path.abspath(os.path.dirname(__file__))
 
-DEFAULT_BATCH_SIZE = 50
-
+DEFAULT_BATCH_SIZE = 100
+DEFAULT_CONCURRENT_HOTELS = 80
 
 if __name__ == "__main__":
     #
@@ -65,18 +66,18 @@ if __name__ == "__main__":
         description="Store reviews with embeddings to cassIO vector table"
     )
     parser.add_argument(
-        "-n",
-        metavar="NUM_ROWS",
-        type=int,
-        help="Number of rows to insert",
-        default=None,
-    )
-    parser.add_argument(
         "-b",
         metavar="BATCH_SIZE",
         type=int,
         help="Batch size (for concurrent writes)",
         default=DEFAULT_BATCH_SIZE,
+    )
+    parser.add_argument(
+        "-c",
+        metavar="CONCURRENT_HOTELS",
+        type=int,
+        help="Number of hotels inserted at once",
+        default=DEFAULT_CONCURRENT_HOTELS,
     )
     args = parser.parse_args()
 
@@ -107,8 +108,6 @@ if __name__ == "__main__":
         embeddings=c_embeddings,
         is_setup=True,
     )
-
-    inserted = 0
 
     eligibles = (
         {
@@ -150,24 +149,33 @@ if __name__ == "__main__":
         sorted(eligibles, key=lambda eli: eli["partition_id"]),
         key=lambda eli: eli["partition_id"],
     )
-    for partition_id, items_in_partition_id in groups_by_partition_id:
-        items_list = list(items_in_partition_id)
-        # Even within a hotel, we might need to batch insertions:
-        this_batch = []
-        for eli in items_list:
-            this_batch.append(eli)
-            if len(this_batch) >= args.b:
-                # the batch is full: flush, then increment inserted counter
+    insertion_hotel_groups = [
+        (part_id, list(items_in_hotel))
+        for (part_id, items_in_hotel) in groups_by_partition_id
+    ]
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=args.c) as executor:
+        def handle_hotel(insertion_hotel_group):
+            inserted = 0
+            partition_id, items_in_partition_id = insertion_hotel_group
+            items_list = list(items_in_partition_id)
+            print(f"  [{len(items_list)}]")
+            # Even within a hotel, we might need to batch insertions:
+            this_batch = []
+            for eli in items_list:
+                this_batch.append(eli)
+                if len(this_batch) >= args.b:
+                    # the batch is full: flush, then increment inserted counter
+                    inserted += _flush_batch(review_vectorstore, this_batch)
+                    this_batch = []
+            # flush any insertions that may be left, then increment inserted counter
+            if this_batch:
                 inserted += _flush_batch(review_vectorstore, this_batch)
-                print(f"  * {inserted} rows written.")
-                this_batch = []
-            if args.n is not None and inserted >= args.n:
-                break
-        if args.n is not None and inserted >= args.n:
-            break
-        # flush any insertions that may be left, then increment inserted counter
-        if this_batch:
-            inserted += _flush_batch(review_vectorstore, this_batch)
-            print(f"  * {inserted} rows written.")
-        this_batch = []
-    print(f"Finished. {inserted} rows written.")
+            this_batch = []
+            return inserted
+
+        print(f"Inserting hotel reviews...")
+        # print(f"Inserting reviews for {len(insertion_hotel_groups)} hotels:")
+        total_inserted = sum(executor.map(handle_hotel, insertion_hotel_groups))
+
+    print(f"Finished. {total_inserted} rows written.")
