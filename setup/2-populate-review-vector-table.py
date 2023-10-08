@@ -52,8 +52,8 @@ class JustPreCalculatedEmbeddings(Embeddings):
 #  - The compressed JSON file containing the precalculated embeddings (you can either use the precalculated embeddings
 #      in this repo, or run step 1 to calculate them on the fly).
 #
-# The data is inserted asynchronously in batches to reduce loading time.
-
+# The data is inserted asynchronously in batches within a given hotel to reduce loading time.
+# Also, the hotels are processed concurrently in a thread-based way for the same reason.
 
 this_dir = os.path.abspath(os.path.dirname(__file__))
 
