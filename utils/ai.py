@@ -35,8 +35,5 @@ def get_embeddings():
     return embeddings
 
 
-def enable_llm_cache(session, keyspace):
-    langchain.llm_cache = CassandraCache(
-        session=session,
-        keyspace=keyspace,
-    )
+def enable_llm_cache():
+    langchain.llm_cache = CassandraCache()

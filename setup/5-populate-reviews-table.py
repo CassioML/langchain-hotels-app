@@ -12,11 +12,11 @@ this_dir = os.path.abspath(os.path.dirname(__file__))
 
 insert_review_stmt = None
 
+session = get_session()
+keyspace = get_keyspace()
+
 
 def create_reviews_table():
-    session = get_session()
-    keyspace = get_keyspace()
-
     session.execute(
         f"""CREATE TABLE IF NOT EXISTS {keyspace}.{REVIEWS_TABLE_NAME} (
                 hotel_id text,
@@ -29,7 +29,6 @@ def create_reviews_table():
                 PRIMARY KEY (hotel_id, date_added, id)
             ) WITH CLUSTERING ORDER BY (date_added DESC, id ASC)"""
     )
-
     session.execute(
         f"""CREATE CUSTOM INDEX IF NOT EXISTS {FEATURED_INDEX_NAME} ON {keyspace}.{REVIEWS_TABLE_NAME}(featured) 
             USING 'StorageAttachedIndex' """
@@ -43,11 +42,7 @@ def parse_date(date_str) -> datetime:
 
 def populate_reviews_table_from_csv():
     # Not batched: all insertions take place concurrently.
-    # Take care if you have 100k hotels to insert...
-
-    session = get_session()
-    keyspace = get_keyspace()
-
+    # Take care if you have 100k rows to insert...
     global insert_review_stmt
     if insert_review_stmt is None:
         insert_review_stmt = session.prepare(

@@ -11,11 +11,11 @@ insert_city_stmt = None
 
 this_dir = os.path.abspath(os.path.dirname(__file__))
 
+session = get_session()
+keyspace = get_keyspace()
+
 
 def create_hotel_table():
-    session = get_session()
-    keyspace = get_keyspace()
-
     session.execute(
         f"""CREATE TABLE IF NOT EXISTS {keyspace}.{HOTELS_TABLE_NAME} (
                             country text,
@@ -35,9 +35,6 @@ def create_hotel_table():
 
 
 def create_city_table():
-    session = get_session()
-    keyspace = get_keyspace()
-
     session.execute(
         f"""CREATE TABLE IF NOT EXISTS {keyspace}.{CITIES_TABLE_NAME} (
                             country text,
@@ -52,10 +49,6 @@ def create_city_table():
 def populate_city_table_from_csv():
     # Not batched: all insertions take place concurrently.
     # Take care if you have 100k cities to insert...
-
-    session = get_session()
-    keyspace = get_keyspace()
-
     global insert_city_stmt
     if insert_city_stmt is None:
         insert_city_stmt = session.prepare(
@@ -100,10 +93,6 @@ def populate_city_table_from_csv():
 def populate_hotel_table_from_csv():
     # Not batched: all insertions take place concurrently.
     # Take care if you have 100k hotels to insert...
-
-    session = get_session()
-    keyspace = get_keyspace()
-
     global insert_hotel_stmt
     if insert_hotel_stmt is None:
         insert_hotel_stmt = session.prepare(

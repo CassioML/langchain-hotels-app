@@ -19,13 +19,11 @@ from typing import List
 review_vectorstore = None
 
 
-def get_review_vectorstore(session, keyspace, embeddings, is_setup: bool = False):
+def get_review_vectorstore(embeddings, is_setup: bool = False):
     global review_vectorstore
     if review_vectorstore is None:
         review_vectorstore = Cassandra(
             embedding=embeddings,
-            session=session,
-            keyspace=keyspace,
             table_name=REVIEW_VECTOR_TABLE_NAME,
             partition_id="will-always-be-overridden",
             partitioned=True,
@@ -81,8 +79,6 @@ def select_hotel_reviews_for_user(
     hotel_id: str, user_travel_profile_summary: str
 ) -> List[HotelReview]:
     review_store = get_review_vectorstore(
-        session=get_session(),
-        keyspace=get_keyspace(),
         embeddings=get_embeddings(),
     )
 
@@ -209,8 +205,6 @@ def insert_into_review_vector_table(
     review_rating: int,
 ):
     review_store = get_review_vectorstore(
-        session=get_session(),
-        keyspace=get_keyspace(),
         embeddings=get_embeddings(),
     )
 

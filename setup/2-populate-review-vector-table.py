@@ -9,8 +9,9 @@ from setup.embedding_dump import deflate_embeddings_map
 from setup.setup_constants import EMBEDDING_FILE_NAME, HOTEL_REVIEW_FILE_NAME
 
 from utils.ai import EMBEDDING_DIMENSION
-from utils.db import get_session, get_keyspace
+from utils.db import init_cassio
 from utils.reviews import format_review_content_for_embedding, get_review_vectorstore
+
 
 # We create an ad-hoc "Embeddings" class, sitting on the precalculated embeddings,
 # to perform all these insertions idiomatically through the LangChain
@@ -79,6 +80,8 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    init_cassio()
+
     embedding_file_path = os.path.join(this_dir, EMBEDDING_FILE_NAME)
     if os.path.isfile(embedding_file_path):
         # review_id -> vector, which was stored in a compressed format to shrink file size
@@ -100,11 +103,7 @@ if __name__ == "__main__":
     }
     c_embeddings = JustPreCalculatedEmbeddings(precalc_dict=precalc_text_to_vector_map)
 
-    db_session = get_session()
-    db_keyspace = get_keyspace()
     review_vectorstore = get_review_vectorstore(
-        session=db_session,
-        keyspace=db_keyspace,
         embeddings=c_embeddings,
         is_setup=True,
     )

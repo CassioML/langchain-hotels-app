@@ -4,7 +4,7 @@ from fastapi import FastAPI, BackgroundTasks
 
 from utils.localCORS import permitReactLocalhostClient
 from utils.ai import enable_llm_cache
-from utils.db import get_keyspace, get_session
+from utils.db import init_cassio
 from utils.models import (
     CustomizedHotelDetails,
     Hotel,
@@ -32,18 +32,13 @@ from utils.users import (
 from utils.hotels import find_hotels_by_location, find_hotel_by_id
 from utils.strings import DEFAULT_TRAVEL_PROFILE_SUMMARY
 
-db_session = get_session()
-db_keyspace = get_keyspace()
-
 
 # init
 
 
 def init():
-    enable_llm_cache(
-        get_session(),
-        get_keyspace(),
-    )
+    init_cassio()
+    enable_llm_cache()
 
 
 # app
