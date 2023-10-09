@@ -30,7 +30,7 @@ function App() {
     <div className="App">
       <MDBNavbar expand='lg' light bgColor='light'>
         <MDBContainer fluid>
-          <MDBNavbarBrand href='#'>
+          <MDBNavbarBrand>
             <img
               src='/mono.png'
               height='30'
