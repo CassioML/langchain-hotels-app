@@ -16,8 +16,9 @@ import './App.css';
 import SiteContents from './SiteContents';
 import HomeComponent from './pages/HomeComponent';
 import LoginComponent from './pages/LoginComponent';
+import PreferencesComponent from './pages/PreferencesComponent';
 
-import {NavPage} from "../interfaces/enums";
+import {NavPage} from "../schema/enums";
 
 function App() {
 
@@ -114,6 +115,10 @@ function App() {
             setCurrentNavPage={setCurrentNavPage}
           />
         </> }
+
+        { (userId && (currentNavPage === "user_preferences")) && <>
+          <PreferencesComponent userId={userId} />
+        </>}
 
       </MDBContainer>
 

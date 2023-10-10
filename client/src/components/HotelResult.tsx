@@ -2,7 +2,7 @@ import './App.css';
 
 import {useEffect, useState} from "react";
 
-import {RequestStatus} from "../interfaces/enums";
+import {RequestStatus} from "../schema/enums";
 
 import {baseHotelSummary} from "../utils/hotel_search";
 

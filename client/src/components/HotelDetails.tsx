@@ -3,7 +3,7 @@ import './App.css';
 import { useEffect, useState } from "react";
 
 import {customizedHotelDetails} from "../utils/hotel_search";
-import {RequestStatus} from "../interfaces/enums";
+import {RequestStatus} from "../schema/enums";
 import AddReviewForm from "./AddReviewForm";
 
 

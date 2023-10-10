@@ -1,7 +1,7 @@
 import './App.css';
 import {searchHotels} from "../utils/hotel_search";
 import HotelResults from "./HotelResults";
-import {RequestStatus} from "../interfaces/enums";
+import {RequestStatus} from "../schema/enums";
 
 import { useState } from "react"
 

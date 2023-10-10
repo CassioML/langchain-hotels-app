@@ -1,3 +1,17 @@
 .navbar {
   margin-bottom: 30px;
 }
+
+.spacedButton {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.preferencesLabel {
+  float: right;
+}
+
+.preferencesTitle {
+  font-weight: bold;
+  margin-bottom: 15px;
+}

@@ -2,7 +2,7 @@ import { useState } from "react"
 import {MDBInput, MDBBtn} from 'mdb-react-ui-kit';
 
 import '../App.css';
-import {LoginProps} from "../../interfaces/props";
+import {LoginProps} from "../../schema/props";
 
 
 const LoginComponent = (props: LoginProps) => {

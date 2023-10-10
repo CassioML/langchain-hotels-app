@@ -6,3 +6,7 @@ export interface LoginProps {
   setUserId: Dispatch<SetStateAction<string|undefined>>;
   setCurrentNavPage: Dispatch<SetStateAction<NavPage>>;
 }
+
+export interface PreferencesProps {
+  userId: string|undefined;
+}

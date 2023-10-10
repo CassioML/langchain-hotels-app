@@ -1,14 +1,17 @@
-import './App.css';
-
 import { useEffect, useState } from "react"
+import { MDBCol } from 'mdb-react-ui-kit';
 
-import {UserDesc, UserProfile, UserProfileBasePreferences, DEFAULT_USER_PROFILE} from "../interfaces/interfaces";
-import {RequestStatus} from "../interfaces/enums";
-import {getAPIUserProfile} from "../utils/user_profile";
+import '../App.css';
 
-import UserProfileForm from "./UserProfileForm"
+import {UserDesc, UserProfile, UserProfileBasePreferences, DEFAULT_USER_PROFILE} from "../../interfaces/interfaces"; // TODO
+import {RequestStatus} from "../../schema/enums";
+import {PreferencesProps} from "../../schema/props";
 
-const UserProfileComponent = (props: UserDesc) => {
+import {getAPIUserProfile} from "../../utils/user_profile";
+
+import UserProfileForm from "../UserProfileForm";
+
+const PreferencesComponent = (props: PreferencesProps) => {
 
   const {userId} = props;
 
@@ -47,30 +50,20 @@ const UserProfileComponent = (props: UserDesc) => {
   );
 
 
-  return (
-    <div>
-      USER PROFILE FOR {userId}
+  return ( <>
+    <div className="d-flex flex-column mb-3 col-md-6">
       <UserProfileForm
         userId={userId}
         submitState={submitState}
         setSubmitState={setSubmitState}
         profile={profile}
         refreshProfile={refreshProfile}
+        autoSummary={autoSummary}
+        setAutoSummary={setAutoSummary}
       />
-      <p>
-      Auto-generated: {autoSummary || "(nothing)"}
-      <span onClick={ () => {
-        getAPIUserProfile(
-          userId || "",
-          (api_profile: any) => {
-            setAutoSummary(api_profile.travel_profile_summary);
-          },
-          (e: any) => {console.log(`err ${e}`);}
-        );        
-      }}>[SYNC]</span>
-      </p>
     </div>
-  );
+  </> );
+
 }
 
-export default UserProfileComponent
+export default PreferencesComponent
