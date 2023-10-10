@@ -6,7 +6,7 @@ import {
   MDBInput,
   MDBCol,
   MDBRow,
-  MDBCheckbox,
+  // MDBCheckbox,
   MDBBtn
 } from 'mdb-react-ui-kit';
 
@@ -225,10 +225,11 @@ const UserProfileForm = (props: UserDesc & {submitState: any, setSubmitState: an
                   <MDBBtn
                     type='button'
                     onClick={ () => {
+                      setAutoSummary("...");
                       getAPIUserProfile(
                         userId || "",
                         (api_profile: any) => {
-                          setAutoSummary(api_profile.travel_profile_summary);
+                          setAutoSummary((api_profile || {}).travel_profile_summary || "(nothing)");
                         },
                         (e: any) => {console.log(`err ${e}`);}
                       );        

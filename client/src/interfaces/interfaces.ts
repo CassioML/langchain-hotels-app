@@ -7,6 +7,7 @@ export interface SuccessMarker {
 export interface Hotel {
   city: string;
   country: string;
+  num_reviews: number;
   name: string;
   id: string;
 }

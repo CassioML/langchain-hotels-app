@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
-import { MDBCol } from 'mdb-react-ui-kit';
+// import { MDBCol } from 'mdb-react-ui-kit';
 
 import '../App.css';
 
-import {UserDesc, UserProfile, UserProfileBasePreferences, DEFAULT_USER_PROFILE} from "../../interfaces/interfaces"; // TODO
+import {/*UserDesc,*/ UserProfile, UserProfileBasePreferences, DEFAULT_USER_PROFILE} from "../../interfaces/interfaces"; // TODO
 import {RequestStatus} from "../../schema/enums";
 import {PreferencesProps} from "../../schema/props";
 

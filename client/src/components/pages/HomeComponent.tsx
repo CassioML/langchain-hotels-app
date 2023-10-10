@@ -14,18 +14,18 @@ import '../App.css';
 
 const slides = [
   "/slideshow/monopoli.png",
-  "/slideshow/ad1.png",
-  "/slideshow/ad2.png",
+  "/slideshow/monopoli.png",
+  "/slideshow/monopoli.png",
 ];
 const titles = [
   "Welcome",
-  "Flow",
-  "Profile",
+  "Diagram",
+  "Diagram",
 ]
 const descs = [
   "Your personalized and AI-powered hotel search. Built with LangChain and Astra DB.",
-  "Here a diagram ...",
-  "Another diagram...",
+  "Here a diagram (todo) ...",
+  "Another diagram (todo) ...",
 ]
 
 const HomeComponent = () => {

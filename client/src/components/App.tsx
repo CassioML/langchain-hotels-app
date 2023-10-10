@@ -16,6 +16,7 @@ import './App.css';
 import SiteContents from './SiteContents';
 import HomeComponent from './pages/HomeComponent';
 import LoginComponent from './pages/LoginComponent';
+import SearchComponent from './pages/SearchComponent';
 import PreferencesComponent from './pages/PreferencesComponent';
 
 import {NavPage} from "../schema/enums";
@@ -104,7 +105,7 @@ function App() {
         </MDBContainer>
       </MDBNavbar>
 
-      <MDBContainer className="d-flex justify-content-center align-items-center">
+      <MDBContainer className="justify-content-center align-items-center">
 
         { (currentNavPage === "home") && <>
           <HomeComponent />
@@ -115,21 +116,17 @@ function App() {
             setCurrentNavPage={setCurrentNavPage}
           />
         </> }
+        { (currentNavPage === "hotel_search") && <>
+          <SearchComponent
+            userId={userId}
+          />
+        </> }
 
         { (userId && (currentNavPage === "user_preferences")) && <>
           <PreferencesComponent userId={userId} />
         </>}
 
       </MDBContainer>
-
-
-      <div className="App-body">
-        <SiteContents
-          userId={userId}
-          currentNavPage={currentNavPage}
-          setCurrentNavPage={setCurrentNavPage}
-        />
-      </div>
     </div>
   );
 }
