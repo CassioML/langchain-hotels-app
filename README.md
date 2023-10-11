@@ -5,6 +5,8 @@
 A full demo app (API + front-end) to search and review hotels, powered by
 GenAI, LLMs and embedding vectors.
 
+![App screenshot](images/hotels_animated.gif)
+
 The demo features:
 
 - LLM-processed user profile;
@@ -20,8 +22,6 @@ Tech stack:
 - FastAPI, LangChain and [CassIO](https://cassio.org) for the API.
 
 _Note that at the time of writing, pending a PR to LangChain, a custom fork of the repo will be installed._
-
-![App screenshot](images/hotels_animated.gif)
 
 ## Prerequisites
 
