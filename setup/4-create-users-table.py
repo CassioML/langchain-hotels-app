@@ -14,7 +14,7 @@ def create_user_table():
                             travel_profile_summary text
                             )"""
     )
-    print("table created")
+    print("[4-create-users-table.py] Users table created")
 
 
 if __name__ == "__main__":

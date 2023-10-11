@@ -91,7 +91,7 @@ def populate_reviews_table_from_csv():
     for f in futures:
         f.result()
 
-    print(f"Inserted {len(review_df)} reviews")
+    print(f"[5-populate-reviews-table.py] Inserted {len(review_df)} reviews")
 
 
 if __name__ == "__main__":

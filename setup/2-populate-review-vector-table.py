@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import argparse
 import pandas as pd
@@ -36,7 +37,7 @@ class JustPreCalculatedEmbeddings(Embeddings):
             return self.precalc_dict[text]
         else:
             # this happens from LangChain when creating the store:
-            print(f"**WARNING: embed request for '{text}'. Returning moot results")
+            print(f"** [JustPreCalculatedEmbeddings] INFO: embed request for '{text}'. Returning moot results")
             return [0.0] * EMBEDDING_DIMENSION
 
     async def aembed_query(self, text: str) -> List[float]:
@@ -159,7 +160,8 @@ if __name__ == "__main__":
             inserted = 0
             partition_id, items_in_partition_id = insertion_hotel_group
             items_list = list(items_in_partition_id)
-            print(f"  [{len(items_list)}]")
+            print(f"[{len(items_list)}] ", end="")
+            sys.stdout.flush()
             # Even within a hotel, we might need to batch insertions:
             this_batch = []
             for eli in items_list:
@@ -174,8 +176,7 @@ if __name__ == "__main__":
             this_batch = []
             return inserted
 
-        print(f"Inserting hotel reviews...")
-        # print(f"Inserting reviews for {len(insertion_hotel_groups)} hotels:")
+        print(f"[2-populate-review-vector-table.py] Inserting hotel reviews...")
         total_inserted = sum(executor.map(handle_hotel, insertion_hotel_groups))
 
-    print(f"Finished. {total_inserted} rows written.")
+    print(f"\n[2-populate-review-vector-table.py] Finished. {total_inserted} rows written.")

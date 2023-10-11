@@ -87,7 +87,7 @@ def populate_city_table_from_csv():
     for f in futures:
         f.result()
 
-    print(f"Inserted {len(city_centres_df)} cities")
+    print(f"[3-populate-hotels-and-cities-table.py] Inserted {len(city_centres_df)} cities")
 
 
 def populate_hotel_table_from_csv():
@@ -139,7 +139,7 @@ def populate_hotel_table_from_csv():
     for f in futures:
         f.result()
 
-    print(f"Inserted {len(hotel_df)} hotels")
+    print(f"[3-populate-hotels-and-cities-table.py] Inserted {len(hotel_df)} hotels")
 
 
 if __name__ == "__main__":

@@ -91,4 +91,4 @@ if __name__ == "__main__":
         file_name = hotel_review_file_path
         renamed_csv.to_csv(file_name)
 
-        print(f"Saved to {file_name}")
+        print(f"[0-clean-csv.py] Cleaned CSV saved to {file_name}")
