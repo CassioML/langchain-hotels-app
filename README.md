@@ -21,6 +21,8 @@ Tech stack:
 
 _Note that at the time of writing, pending a PR to LangChain, a custom fork of the repo will be installed._
 
+![App screenshot](images/hotels_animated.gif)
+
 ## Prerequisites
 
 You need:
