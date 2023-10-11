@@ -14,7 +14,7 @@ The demo features:
 
 Tech stack:
 
-- Astra DB as the vector database;
+- [Astra DB](https://docs.datastax.com/en/astra-serverless/docs/vector-search/overview.html) as the vector database;
 - OpenAI for the LLM and the embeddings;
 - React+Typescript for the client;
 - FastAPI, LangChain and [CassIO](https://cassio.org) for the API.
