@@ -1,0 +1,31 @@
+tasks:
+  - name: app-console
+    before: |
+      cd /workspace/langchain-hotels-app/client
+      npm install
+    command: |
+      cd /workspace/langchain-hotels-app/client
+      REACT_APP_API_BASE_URL=`gp url 8000` npm start
+  - name: api-console
+    before: |
+      cd /workspace/langchain-hotels-app
+      mkdir .gitpod_logs
+      # curl -Ls "https://dtsx.io/get-astra-cli" | bash | tee -a /workspace/langchain-hotels-app/.gitpod_logs/astra-cli-install.log
+      echo -e "\n\n** NOW YOU CAN RUN THE COMMAND scripts/prepare_and_launch.sh **"
+    command: /workspace/langchain-hotels-app/scripts/prepare_and_launch.sh | tee -a /workspace/langchain-hotels-app/.gitpod_logs/dotenv-setup.log
+ports:
+  - port: 3000
+    onOpen: open-preview
+  - port: 8000
+    onOpen: ignore
+    visibility: public
+github:
+  prebuilds:
+    master: true
+    branches: true
+    pullRequests: true
+    pullRequestsFromForks: false
+    addCheck: true
+    addComment: false
+    addBadge: true
+    addLabel: false

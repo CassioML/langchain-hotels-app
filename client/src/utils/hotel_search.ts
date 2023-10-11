@@ -2,9 +2,11 @@ import axios, { AxiosResponse, AxiosError } from 'axios';
 
 import {Hotel, HotelSummary, CustomizedHotelDetails, HotelReview, SuccessMarker} from '../interfaces/interfaces';
 
+const base_url: string = process.env["REACT_APP_API_BASE_URL"] || "http://127.0.0.1:8000";
+
 export const searchHotels = (country: string, city: string, callback: ( (hs: Hotel[]) => void), errback: any) => {
   axios.post<Hotel[]>(
-    'http://127.0.0.1:8000/v1/find_hotels',
+    `${base_url}/v1/find_hotels`,
     {city, country}
   )
   .then((response: AxiosResponse<Hotel[]>) => {
@@ -19,7 +21,7 @@ export const searchHotels = (country: string, city: string, callback: ( (hs: Hot
 
 export const baseHotelSummary = (hotel: any, requestId: string, callback: ( (hr: HotelSummary) => void), errback: any) => {
   axios.post<HotelSummary>(
-    'http://127.0.0.1:8000/v1/base_hotel_summary',
+    `${base_url}/v1/base_hotel_summary`,
     {
       request_id: requestId,
       city: hotel.city,
@@ -39,7 +41,7 @@ export const baseHotelSummary = (hotel: any, requestId: string, callback: ( (hr:
 
 export const customizedHotelDetails = (hotelId: string, userId: string, callback: ( (cd: CustomizedHotelDetails) => void), errback: any) => {
   axios.post<CustomizedHotelDetails>(
-    `http://127.0.0.1:8000/v1/customized_hotel_details/${hotelId}`,
+    `${base_url}/v1/customized_hotel_details/${hotelId}`,
     {user_id: userId}
   )
   .then((response: AxiosResponse<CustomizedHotelDetails>) => {
@@ -54,7 +56,7 @@ export const customizedHotelDetails = (hotelId: string, userId: string, callback
 
 export const addHotelReview = (hotelId: string, userId: string, review: HotelReview, callback: ((m: SuccessMarker) => void), errback: any) => {
   axios.post<SuccessMarker>(
-    `http://127.0.0.1:8000/v1/${hotelId}/add_review`,
+    `${base_url}/v1/${hotelId}/add_review`,
     {
       ...review,
       ...{rating: +review.rating, id: "will-be-discarded"},  // trick to coerce into a number
