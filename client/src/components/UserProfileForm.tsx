@@ -6,7 +6,9 @@ import {
   MDBInput,
   MDBCol,
   MDBRow,
-  MDBBtn
+  MDBBtn,
+  MDBSpinner,
+  MDBTypography,
 } from 'mdb-react-ui-kit';
 
 
@@ -42,13 +44,22 @@ const UserProfileForm = (props: UserDesc & {submitState: any, setSubmitState: an
     [profile, reset]
   );
 
-  if (submitState === "initialized" || submitState === "errored" || submitState === "completed"){
-    return (
+  return ( <>
+    { (submitState === "in_flight") && <>
+      <MDBSpinner role='status' color='success'>
+        <span className='visually-hidden'>Loading...</span>
+      </MDBSpinner>
+    </> }
+    { (submitState === "initialized" || submitState === "errored" || submitState === "completed") && <>
       <div>
         { (submitState === "errored") && 
-          <div>
-            Submission errored!
-          </div>
+          <MDBRow>
+            <MDBCol>
+              <MDBTypography note noteColor='danger'>
+                <strong>Error:</strong> Could not store user preferences.
+              </MDBTypography>
+            </MDBCol>
+          </MDBRow>
         }
         <form onSubmit={handleSubmit(onSubmitHandler)} className="form">
           <div>
@@ -221,6 +232,7 @@ const UserProfileForm = (props: UserDesc & {submitState: any, setSubmitState: an
                 </div>
                 <div className="p-2">
                   <MDBBtn
+                    color='warning'
                     type='button'
                     onClick={ () => {
                       setAutoSummary("...");
@@ -241,12 +253,8 @@ const UserProfileForm = (props: UserDesc & {submitState: any, setSubmitState: an
           </div>
         </form>
       </div>
-    );
-  } else if (submitState === "in_flight"){
-    return <p>Please wait ...</p>
-  } else {
-    return <p>(trouble with form) {submitState}</p>
-  }
+    </> }
+  </> );
 }
 
 export default UserProfileForm
