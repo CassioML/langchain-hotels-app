@@ -6,7 +6,6 @@ import {
   MDBInput,
   MDBCol,
   MDBRow,
-  // MDBCheckbox,
   MDBBtn
 } from 'mdb-react-ui-kit';
 
@@ -23,7 +22,6 @@ const UserProfileForm = (props: UserDesc & {submitState: any, setSubmitState: an
 
   const onSubmitHandler = (values: UserProfile) => {
     setSubmitState("in_flight");
-    // console.log(`values = ${JSON.stringify(values)}`);
     setAPIUserProfile(
       userId || "",
       values,

@@ -13,7 +13,6 @@ import {
 
 import './App.css';
 
-import SiteContents from './SiteContents';
 import HomeComponent from './pages/HomeComponent';
 import LoginComponent from './pages/LoginComponent';
 import SearchComponent from './pages/SearchComponent';
