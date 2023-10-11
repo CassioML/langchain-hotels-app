@@ -24,3 +24,9 @@
 .inlineButton {
   margin-left: 25px;
 }
+
+.slideImage {
+  height: 75vh;
+  object-position: center top;
+  object-fit: cover;
+}

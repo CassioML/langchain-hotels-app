@@ -1,4 +1,4 @@
-import { useState } from "react"
+import {useState} from "react"
 import {MDBBreadcrumb, MDBBreadcrumbItem } from 'mdb-react-ui-kit';
 
 import '../App.css';
@@ -9,6 +9,7 @@ import {HotelType, CustomizedHotelDetailsType} from "../../schema/data";
 import SearchFormComponent from "../forms/SearchFormComponent";
 import SearchResultsComponent from "../subpages/SearchResultsComponent";
 import SearchDetailsComponent from "../subpages/SearchDetailsComponent";
+import PostHotelReviewFormComponent from "../forms/PostHotelReviewFormComponent";
 
 const SearchComponent = (props: SearchProps) => {
 
@@ -26,6 +27,11 @@ const SearchComponent = (props: SearchProps) => {
   // details-stage states
   const [detailsHotel, setDetailsHotel] = useState<HotelType>();
   const [hotelDetails, setHotelDetails] = useState<CustomizedHotelDetailsType>();
+
+  // post-review-stage states
+  const [editReviewTitle, setEditReviewTitle] = useState('');
+  const [editReviewBody, setEditReviewBody] = useState('');
+  const [editReviewRating, setEditReviewRating] = useState('');
 
   const shortenName = (name: string) => {
     return (name.length > 24 ? name.slice(0, 24) + "..." : name);
@@ -46,9 +52,20 @@ const SearchComponent = (props: SearchProps) => {
           >
             Results
           </MDBBreadcrumbItem>
-          { (searchStep === "details") && <>
-            <MDBBreadcrumbItem active>
+          { (searchStep !== "results") && <>
+            <MDBBreadcrumbItem
+              onClick={(searchStep !== "details") ? () => setSearchStep("details") : () => {}}
+              active={searchStep === "details"}
+            >
               {shortenName((detailsHotel || {}).name || "(unnamed hotel)")}
+            </MDBBreadcrumbItem>
+          </> }
+          { (searchStep !== "results" && searchStep !== "details") && <>
+            <MDBBreadcrumbItem
+              onClick={(searchStep !== "post_review") ? () => setSearchStep("post_review") : () => {}}
+              active={searchStep === "post_review"}
+            >
+              New review
             </MDBBreadcrumbItem>
           </> }
         </MDBBreadcrumb>
@@ -72,6 +89,18 @@ const SearchComponent = (props: SearchProps) => {
       detailsHotel={detailsHotel}
       hotelDetails={hotelDetails}
       setHotelDetails={setHotelDetails}
+      setSearchStep={setSearchStep}
+    /> }
+    { (searchStep === "post_review") && <PostHotelReviewFormComponent
+      userId={userId}
+      detailsHotel={detailsHotel}
+      setSearchStep={setSearchStep}
+      editReviewTitle={editReviewTitle}
+      setEditReviewTitle={setEditReviewTitle}
+      editReviewBody={editReviewBody}
+      setEditReviewBody={setEditReviewBody}
+      editReviewRating={editReviewRating}
+      setEditReviewRating={setEditReviewRating}
     /> }
   </>)
 

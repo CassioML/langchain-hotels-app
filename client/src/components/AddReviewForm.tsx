@@ -1,5 +1,4 @@
 import './App.css';
-// import { useEffect } from "react"
 import { useForm } from "react-hook-form";
 
 import {HotelReview} from "../interfaces/interfaces";
@@ -12,7 +11,6 @@ const AddReviewForm = (props: {userId: string, hotelId: string, submitState: any
   const {register, handleSubmit, reset} = useForm<HotelReview>();
 
   const onSubmitHandler = (values: HotelReview) => {
-    // console.log(`REV ${JSON.stringify(values)}`);
     setSubmitState("in_flight");
     addHotelReview(
       hotelId,
@@ -30,11 +28,6 @@ const AddReviewForm = (props: {userId: string, hotelId: string, submitState: any
       (e: any) => {console.log(`err setting: ${e}`); setSubmitState("errored");}
     );
   };
-
-  // useEffect(
-  //   () => {reset(profile);},
-  //   [profile, reset]
-  // );
 
   if (submitState === "initialized" || submitState === "errored" || submitState === "completed"){
     return (

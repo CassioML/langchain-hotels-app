@@ -13,7 +13,7 @@ import '../App.css';
 
 
 const slides = [
-  "/slideshow/monopoli.png",
+  "/slideshow/hotels.png",
   "/slideshow/monopoli.png",
   "/slideshow/monopoli.png",
 ];
@@ -34,7 +34,7 @@ const HomeComponent = () => {
 
   return (
     <MDBCard>
-      <MDBCardImage src={slides[slide]} position='top' />
+      <MDBCardImage src={slides[slide]} position='top' className="slideImage" />
       <MDBCardBody>
         <MDBCardTitle>{titles[slide]} ({1+ (slide % slides.length)} / {slides.length})</MDBCardTitle>
         <MDBCardText>

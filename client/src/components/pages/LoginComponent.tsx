@@ -1,4 +1,4 @@
-import { useState } from "react"
+import {useState} from "react"
 import {MDBInput, MDBBtn} from 'mdb-react-ui-kit';
 
 import '../App.css';

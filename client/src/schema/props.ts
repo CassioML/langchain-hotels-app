@@ -42,4 +42,17 @@ export interface HotelDetailsProps {
   detailsHotel: HotelType | undefined;
   hotelDetails: CustomizedHotelDetailsType|undefined;
   setHotelDetails: Dispatch<SetStateAction<CustomizedHotelDetailsType|undefined>>;
+  setSearchStep: Dispatch<SetStateAction<HotelSearchStep>>;
+}
+
+export interface PostHotelReviewFormProps {
+  userId: string|undefined;
+  detailsHotel: HotelType | undefined;
+  setSearchStep: Dispatch<SetStateAction<HotelSearchStep>>;
+  editReviewTitle: string;
+  setEditReviewTitle: Dispatch<SetStateAction<string>>;
+  editReviewBody: string;
+  setEditReviewBody: Dispatch<SetStateAction<string>>;
+  editReviewRating: string;
+  setEditReviewRating: Dispatch<SetStateAction<string>>;
 }

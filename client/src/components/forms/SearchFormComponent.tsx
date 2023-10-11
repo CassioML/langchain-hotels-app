@@ -1,4 +1,4 @@
-import { useState } from "react"
+import {useState} from "react"
 import {MDBInput, MDBBtn, MDBRow, MDBCol, MDBSpinner} from 'mdb-react-ui-kit';
 
 import '../App.css';
@@ -52,7 +52,7 @@ const SearchFormComponent = (props: HotelFormProps) => {
           label='Country'
           value={editHotelCountry}
           onChange={(e) => setEditHotelCountry(e.target.value.toUpperCase())}
-          // onKeyPress={(e) => {if (e.key === 'Enter') { trySetUserId(editUserId) }}}
+          onKeyPress={(e) => {if (e.key === 'Enter') { trySearchHotels(editHotelCountry, editHotelCity) }}}
         />
         <MDBInput
           className='mb-4'
@@ -61,7 +61,7 @@ const SearchFormComponent = (props: HotelFormProps) => {
           label='City'
           value={editHotelCity}
           onChange={(e) => setEditHotelCity(e.target.value)}
-          // onKeyPress={(e) => {if (e.key === 'Enter') { trySetUserId(editUserId) }}}
+          onKeyPress={(e) => {if (e.key === 'Enter') { trySearchHotels(editHotelCountry, editHotelCity) }}}
         />
 
         <MDBRow>

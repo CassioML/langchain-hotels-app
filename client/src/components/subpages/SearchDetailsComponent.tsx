@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import {useState, useEffect} from "react"
 import {
   MDBCard,
   MDBCardTitle,
@@ -25,6 +25,7 @@ const SearchDetailsComponent = (props: HotelDetailsProps) => {
     detailsHotel,
     hotelDetails,
     setHotelDetails,
+    setSearchStep,
   } = props;
 
   const [detailsStatus, setDetailsStatus] = useState<RequestStatus>("initialized");
@@ -46,7 +47,7 @@ const SearchDetailsComponent = (props: HotelDetailsProps) => {
 
       customizedHotelDetails((detailsHotel || {}).id || "", userId || "", callback, errback);
     },
-    [detailsHotel, userId]
+    [detailsHotel, setHotelDetails, userId]
   );
 
   return ( <>
@@ -75,12 +76,15 @@ const SearchDetailsComponent = (props: HotelDetailsProps) => {
       <hr className="hr hr-blurry" />
       <h3>
         Reviews chosen for you:
-        <MDBBtn className="inlineButton">
+        <MDBBtn
+          className="inlineButton"
+          onClick={() => setSearchStep("post_review")}
+        >
           Post a review...
         </MDBBtn>        
       </h3>
       { ((hotelDetails || {}).reviews || []).map( (r: HotelReviewType) =>
-        <MDBCard shadow='0' border='info' background='white' className='mb-3'>
+        <MDBCard shadow='0' border='info' background='white' className='mb-3' key={r.id}>
           <MDBCardHeader>Rating: {r.rating}</MDBCardHeader>
           <MDBCardBody>
             <MDBCardTitle>{r.title}</MDBCardTitle>
