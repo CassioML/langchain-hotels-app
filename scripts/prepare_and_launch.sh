@@ -27,7 +27,7 @@ fi
 
 ${REPO_HOME}/scripts/ingest_openai_key.sh ${REPO_HOME}/.env
 
-cd /workspace/langchain-flare-pdf-qa-demo/
+cd ${REPO_HOME}
 pip install -r requirements.txt
 
 # provision DB (i.e. all necessary steps in sequence)

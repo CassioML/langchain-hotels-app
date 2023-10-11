@@ -49,6 +49,8 @@ In the meantime, the app will open in the top panel.
 
 Create a `python3.8+` virtualenv and `pip install -r requirements.txt`.
 
+> _Note_: this demo has been tested with Python versions 3.8, 3.9 and 3.10.
+
 Copy `.env.template` to `.env` and fill the values (see Prerequisites above).
 
 ### Prepare database
