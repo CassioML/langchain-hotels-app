@@ -1,6 +1,7 @@
 import axios, { AxiosResponse, AxiosError } from 'axios'; 
 
-import {Hotel, HotelSummary, CustomizedHotelDetails, HotelReview, SuccessMarker} from '../interfaces/interfaces';
+import {Hotel, /*HotelSummary, CustomizedHotelDetails,*/ HotelReview, SuccessMarker} from '../interfaces/interfaces';
+import {HotelSummaryType, CustomizedHotelDetailsType} from '../schema/data';
 
 const base_url: string = process.env["REACT_APP_API_BASE_URL"] || "http://127.0.0.1:8000";
 
@@ -19,8 +20,8 @@ export const searchHotels = (country: string, city: string, callback: ( (hs: Hot
   });
 }
 
-export const baseHotelSummary = (hotel: any, requestId: string, callback: ( (hr: HotelSummary) => void), errback: any) => {
-  axios.post<HotelSummary>(
+export const baseHotelSummary = (hotel: any, requestId: string, callback: ( (hr: HotelSummaryType) => void), errback: any) => {
+  axios.post<HotelSummaryType>(
     `${base_url}/v1/base_hotel_summary`,
     {
       request_id: requestId,
@@ -29,7 +30,7 @@ export const baseHotelSummary = (hotel: any, requestId: string, callback: ( (hr:
       id: hotel.id,
     }
   )
-  .then((response: AxiosResponse<HotelSummary>) => {
+  .then((response: AxiosResponse<HotelSummaryType>) => {
     callback(response.data);
   })
   .catch((error: AxiosError | Error) => {
@@ -39,12 +40,12 @@ export const baseHotelSummary = (hotel: any, requestId: string, callback: ( (hr:
   });
 }
 
-export const customizedHotelDetails = (hotelId: string, userId: string, callback: ( (cd: CustomizedHotelDetails) => void), errback: any) => {
-  axios.post<CustomizedHotelDetails>(
+export const customizedHotelDetails = (hotelId: string, userId: string, callback: ( (cd: CustomizedHotelDetailsType) => void), errback: any) => {
+  axios.post<CustomizedHotelDetailsType>(
     `${base_url}/v1/customized_hotel_details/${hotelId}`,
     {user_id: userId}
   )
-  .then((response: AxiosResponse<CustomizedHotelDetails>) => {
+  .then((response: AxiosResponse<CustomizedHotelDetailsType>) => {
     callback(response.data);
   })
   .catch((error: AxiosError | Error) => {

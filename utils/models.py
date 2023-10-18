@@ -29,13 +29,13 @@ class HotelReview(BaseModel):
 class CustomizedHotelDetails(BaseModel):
     name: str
     reviews: List[HotelReview]
-    summary: str
+    summary: List[str]
 
 
 class HotelSummary(BaseModel):
     request_id: str
     reviews: List[HotelReview]
-    summary: str
+    summary: List[str]
 
 
 class Hotel(BaseModel):

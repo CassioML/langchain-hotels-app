@@ -7,6 +7,18 @@ from utils.ai import get_llm
 from utils.models import HotelReview
 
 
+_linestart = "- "
+
+
+def _split_bulletpoints(text: str) -> List[str]:
+    """
+    Parse the LLM bullet-point returned stringy blob into a list of stripped items.
+    """
+    lines = [l.strip() for l in text.split("\n") if l.strip()]
+    bplines = [l[len(_linestart):] if l.startswith(_linestart) else l for l in lines]
+    return bplines
+
+
 # Calls the LLM to generate a summary of the given reviews tailored to the user's travel profile preferences.
 # TODO improve the prompt. Also rename this function with a clearer name.
 def summarize_reviews_for_user(
@@ -40,7 +52,7 @@ def summarize_reviews_for_user(
 
     chain = load_summarize_chain(llm=summarizing_llm, chain_type="stuff")
     docs = [Document(page_content=populated_prompt)]
-    return chain.run(docs)
+    return _split_bulletpoints(chain.run(docs))
 
 
 # Calls the LLM to generate a concise summary of the given reviews for a hotel.
@@ -72,4 +84,4 @@ def summarize_reviews_for_hotel(reviews: List[HotelReview]) -> str:
 
     chain = load_summarize_chain(llm=summarizing_llm, chain_type="stuff")
     docs = [Document(page_content=populated_prompt)]
-    return chain.run(docs)
+    return _split_bulletpoints(chain.run(docs))

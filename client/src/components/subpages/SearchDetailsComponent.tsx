@@ -9,6 +9,8 @@ import {
   MDBCol,
   MDBRow,
   MDBBtn,
+  MDBTypography,
+  MDBIcon,
 } from 'mdb-react-ui-kit';
 
 import '../App.css';
@@ -69,7 +71,15 @@ const SearchDetailsComponent = (props: HotelDetailsProps) => {
         <MDBCardBody>
           <MDBCardTitle>Your personal summary for "{(detailsHotel || {}).name || "(no hotel name)"}"</MDBCardTitle>
           <MDBCardText>
-            {(hotelDetails || {}).summary || "(no personal summary)"}
+            <MDBTypography listUnStyled className='mb-0'>
+              { ((hotelDetails || {}).summary || ["(no personal summary)"]).map( (itm, i) =>
+                  <li key={i} className='mb-1'>
+                    <MDBIcon fas icon="sticky-note" className='me-2 text-warning' />
+                    {itm}
+                  </li>
+                )
+              }
+            </MDBTypography>
           </MDBCardText>
         </MDBCardBody>
       </MDBCard>

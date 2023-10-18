@@ -7,7 +7,9 @@ import {
   MDBCardText,
   MDBCardFooter,
   MDBCol,
-  MDBBtn
+  MDBBtn,
+  MDBTypography,
+  MDBIcon,
 } from 'mdb-react-ui-kit';
 
 import '../App.css';
@@ -20,7 +22,7 @@ import {baseHotelSummary} from "../../utils/hotel_search";
 const HotelCardComponent = (props: HotelCardProps) => {
 
   const [summaryStatus, setSummaryStatus] = useState<RequestStatus>("initialized");
-  const [hotelSummary, setHotelSummary] = useState<string | undefined>(undefined);
+  const [hotelSummary, setHotelSummary] = useState<string[] | undefined>(undefined);
 
   const {
     hotel,
@@ -68,9 +70,17 @@ const HotelCardComponent = (props: HotelCardProps) => {
           { (summaryStatus === "errored") && <span>
             (Could not get hotel summary)
           </span> }
-          { (summaryStatus !== "in_flight" && summaryStatus !== "errored") && <span>
-            {hotelSummary || "(no summary available)"}
-          </span> }
+          { (summaryStatus !== "in_flight" && summaryStatus !== "errored") &&
+            <MDBTypography listUnStyled className='mb-0'>
+              { (hotelSummary || ["(no summary available)"]).map( (itm, i) =>
+                  <li key={i} className='mb-1'>
+                    <MDBIcon fas icon="sticky-note" className='me-2 text-success' />
+                    {itm}
+                  </li>
+                )
+              }
+            </MDBTypography>
+          }
         </MDBCardText>
         <MDBBtn
           onClick={() => {setDetailsHotel(hotel); setSearchStep("details");}}

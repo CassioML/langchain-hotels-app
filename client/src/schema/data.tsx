@@ -16,9 +16,15 @@ export interface HotelReviewType {
 export interface CustomizedHotelDetailsType {
   name: string;
   reviews: HotelReviewType[];
-  summary: string;
+  summary: string[];
 }
 
 export interface SuccessMarkerType {
   success: boolean;
+}
+
+export interface HotelSummaryType {
+  request_id: string;
+  reviews: HotelReviewType[];
+  summary: string[];
 }
