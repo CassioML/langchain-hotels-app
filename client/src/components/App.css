@@ -28,5 +28,5 @@
 .slideImage {
   height: 75vh;
   object-position: center top;
-  object-fit: cover;
+  object-fit: scale-down;
 }
