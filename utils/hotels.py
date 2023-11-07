@@ -21,7 +21,7 @@ def find_hotels_by_location(city: str, country: str) -> List[Hotel]:
     # TODO decide if we want to have a limit on the hotels, and if so, how large + extract it to a constant
     if not find_hotels_stmt:
         find_hotels_stmt = session.prepare(
-            f"SELECT id, name FROM {keyspace}.{HOTELS_TABLE_NAME} where city = ? and country = ? limit 10"
+            f"SELECT id, name FROM {keyspace}.{HOTELS_TABLE_NAME} where city = ? and country = ? limit 15"
         )
 
     hotel_rows = session.execute(find_hotels_stmt, (city, country))

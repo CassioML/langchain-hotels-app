@@ -30,10 +30,10 @@ def summarize_reviews_for_user(
 
     prompt_template = """ You are an assistant helping travelers choose hotels.
     Write a bullet-point summary of the following "input reviews" for me, taking into account my travel preferences. {profile_summary}. 
-    In the summary, do not include any information directly from my travel preferences.    
+    In the summary, do not include any information directly from my travel preferences. Prioritize information from the reviews that is similar to my travel preferences.    
     Do not exceed writing 4 concise bullet points. Do not include information about the person who wrote the review.
     
-    Construct the summary using only the following information:
+    Construct the summary using only the following information. INPUT REVIEWS:
     {hotel_reviews}
 
     EXAMPLE SUMMARY (do not use this information):
