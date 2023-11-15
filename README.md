@@ -31,7 +31,7 @@ You need:
 - likewise, get your [Database ID](https://awesome-astra.github.io/docs/pages/astra/faq/#where-should-i-find-a-database-identifier) ready, you will have to enter it;
 - an **OpenAI API Key**. (More info [here](https://cassio.org/start_here/#llm-access), note that out-of-the-box this demo supports OpenAI unless you tinker with the code.)
 
-<details><summary>_Note:_ If you have switched Astra to the **New Vector Developer Experience UI**, click here for instructions on the DB credentials.
+<details><summary><i>Note:</i>i> If you have switched Astra to the <b>New Vector Developer Experience UI</b>, click here for instructions on the DB credentials.
 </summary>
 
 Go to your database dashboard and click on the "Connection Details" button on the right. A dialog will open with instructions for connecting. You'll do two things:
