@@ -37,7 +37,7 @@ You need:
 Go to your database dashboard and click on the "Connection Details" button on the right. A dialog will open with instructions for connecting. You'll do two things:
 
 - click "Generate Token" and copy the `AstraCS:...` string in its entirety once that appears on the dialog;
-- locate the `api_endpoint=...` line in the Python code example. The database ID is the sequence after `https://` and the region name in the definition of the endpoint. It looks like `01234567-89ab-cdef-0123-456789abcdef` (and has always this length).
+- locate the `api_endpoint=...` line in the Python code example. The database ID is the sequence after `https://` and before the dash + region name (e.g. `-us-east1`) in the definition of the endpoint. It looks like `01234567-89ab-cdef-0123-456789abcdef` (and has always this length).
 
 ![DB credentials in the Vector Developer Experience](images/new_vector_ui.png)
 
