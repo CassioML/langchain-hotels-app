@@ -5,7 +5,7 @@ import tqdm
 import pandas as pd
 
 from utils.ai import get_embeddings
-from utils.reviews import create_review_doc_for_embedding
+from utils.reviews import format_review_content_for_embedding
 from setup.embedding_dump import compress_embeddings_map, deflate_embeddings_map
 from setup.setup_constants import EMBEDDING_FILE_NAME, HOTEL_REVIEW_FILE_NAME
 
@@ -66,11 +66,13 @@ if __name__ == "__main__":
         if review_id not in enrichment or args.force:
             if args.n is None or len(reviews_to_embed) < args.n:
                 reviews_to_embed.append(
-                    create_review_doc_for_embedding(
-                        review_id=review_id,
-                        review_title=row["title"],
-                        review_body=row["text"],
-                    )
+                    {
+                        "id": review_id,
+                        "body": format_review_content_for_embedding(
+                            title=row["title"],
+                            body=row["text"],
+                        ),
+                    }
                 )
         if args.n is not None and len(reviews_to_embed) >= args.n:
             break
