@@ -35,7 +35,7 @@ def create_reviews_table():
     )
 
 
-def parse_date(date_str) -> datetime:
+def parse_date(date_str) -> datetime.datetime:
     trunc_date = date_str[: date_str.find("T")]
     return datetime.datetime.strptime(trunc_date, "%Y-%m-%d")
 
