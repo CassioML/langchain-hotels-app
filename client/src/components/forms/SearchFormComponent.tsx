@@ -1,5 +1,5 @@
 import {useState} from "react"
-import {MDBInput, MDBBtn, MDBRow, MDBCol, MDBSpinner} from 'mdb-react-ui-kit';
+import {MDBInput, MDBBtn, MDBRow, MDBCol, MDBSpinner, MDBTypography} from 'mdb-react-ui-kit';
 
 import '../App.css';
 import {HotelFormProps} from "../../schema/props";
@@ -63,6 +63,10 @@ const SearchFormComponent = (props: HotelFormProps) => {
           onChange={(e) => setEditHotelCity(e.target.value)}
           onKeyPress={(e) => {if (e.key === 'Enter') { trySearchHotels(editHotelCountry, editHotelCity) }}}
         />
+
+        <MDBTypography>
+          <MDBTypography tag='small'>Demo values: use "US" and any major US city ("Atlanta", "Miami" ...) Use correct capitalization.</MDBTypography>
+        </MDBTypography>
 
         <MDBRow>
           <MDBCol>

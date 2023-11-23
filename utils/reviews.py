@@ -86,8 +86,6 @@ def select_hotel_reviews_for_user(
         query=user_travel_profile_summary, k=3, partition_id=hotel_id
     )
 
-    # title = review_doc.metadata["title"]  TODO
-
     reviews = [
         HotelReview(
             title=review_doc.metadata["title"].strip(),
@@ -220,16 +218,3 @@ def insert_into_review_vector_table(
         ids=[review_id],
         partition_id=hotel_id,
     )
-
-
-# TODO remove!
-if __name__ == "__main__":
-    # "AWE2EbkcIxWefVJwyEsr" --> 105
-    # "AV3HoVhXa4HuVbed-zd_" --> 2
-    # "ejhrfgjwhw" --> 0 (hotel not found)
-    print(
-        select_review_count_by_hotel(
-            hotel_id="AV3HoVhXa4HuVbed-zd_"
-        )
-    )
-

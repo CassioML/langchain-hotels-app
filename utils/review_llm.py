@@ -1,6 +1,6 @@
 from typing import List
 
-from langchain import PromptTemplate
+from langchain.prompts import PromptTemplate
 from langchain.docstore.document import Document
 from langchain.chains.summarize import load_summarize_chain
 from utils.ai import get_llm

@@ -80,7 +80,8 @@ python -m setup.5-populate-reviews-table
 ```
 
 **Note**: the repo comes with a dataset ready for ingestion in the DB, i.e.
-already cleaned and made into the correct format. If you are curious about
+already cleaned and made into the correct format (including the embedding calculation!).
+If you are curious about
 how _that_ was prepared, we have included the scripts for that - which
 you _do not need to run_, to be clear.
 

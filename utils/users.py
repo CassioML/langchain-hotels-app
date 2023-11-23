@@ -62,13 +62,7 @@ def write_user_profile(user_id, user_profile):
 
 # def update_user_desc(user_id, base_preferences, additional_preferences):
 def update_user_travel_profile_summary(user_id, user_profile):
-    import time
-
     print("Updating automated travel preferences for user ", user_id)
-    # time.sleep(2)  # instead of an LLM or something
-    # fake_desc = ", ".join(
-    #     "%s=%s" % (k.upper(), "yes" if v else "no") for k, v in base_preferences.items()
-    # )
 
     summarizing_llm = get_llm()
 
