@@ -31,7 +31,7 @@ const titles = [
   "Thank you for watching",
 ]
 const descs = [
-  "Your personalized and AI-powered hotel search. Built with LangChain and Astra DB.",
+  "Your personalized and AI-powered hotel search. Built with RAGStack and Astra DB.",
   "For each hotel, some of its reviews are condensed into a quick bullet-point summary.",
   "Users can specify their preferences, which are then made into a user-summary string.",
   "When looking at hotel details, a user-specific quick hotel description is created.",

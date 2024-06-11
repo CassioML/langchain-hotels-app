@@ -2,6 +2,8 @@ image: gitpod/workspace-full:2023-02-27-14-39-56
 tasks:
   - name: app-console
     before: |
+      apt update
+      apt install -y npm
       cd /workspace/langchain-hotels-app/client
       npm install
     command: |
